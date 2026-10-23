@@ -16,6 +16,7 @@ import difflib
 import io
 import re
 import zipfile
+import zlib
 from xml.etree import ElementTree as ET
 
 VISIO = "{http://schemas.microsoft.com/office/visio/2012/main}"
@@ -151,8 +152,9 @@ def shape_texts(document: bytes) -> list[tuple[str, bool]] | None:
             shapes = package.first_page().find(f"{VISIO}Shapes")
             if shapes is not None:
                 walker.walk(shapes, None)
-    # RecursionError: shapes nested deeper than the stack of the walk
-    except (KeyError, ValueError, OSError, RecursionError, zipfile.BadZipFile, ET.ParseError):
+    # zipfile raises EOFError on a cut entry, zlib.error on a broken one, NotImplementedError on an unknown
+    # compression and RuntimeError on an encrypted one; RecursionError, a RuntimeError, on shapes nested too deep
+    except (KeyError, ValueError, OSError, EOFError, NotImplementedError, RuntimeError, zlib.error, zipfile.BadZipFile, ET.ParseError):
         return None
     return walker.texts
 

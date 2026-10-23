@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import io
 import zipfile
+import zlib
 
 import pytest
 
@@ -96,6 +97,16 @@ def test_masters_that_share_a_part_read_it_once(monkeypatch: pytest.MonkeyPatch)
         total = sum(item.file_size for item in archive.infolist())
     monkeypatch.setattr(hidden_text, "MAX_TOTAL", total)
     assert shape_texts(many) == [("Icon", True)]
+
+
+@pytest.mark.parametrize("error", [EOFError("cut"), zlib.error("broken"), NotImplementedError("method"), RuntimeError("encrypted")])
+def test_an_entry_that_does_not_unpack_keeps_the_text(monkeypatch: pytest.MonkeyPatch, error: Exception) -> None:
+    def fail(self: zipfile.ZipFile, name: str) -> bytes:
+        raise error
+
+    document = vsdx("<Shape ID='1'><Text>a</Text></Shape>")
+    monkeypatch.setattr(zipfile.ZipFile, "read", fail)
+    assert shape_texts(document) is None
 
 
 def test_a_part_too_large_to_unpack(monkeypatch: pytest.MonkeyPatch) -> None:
