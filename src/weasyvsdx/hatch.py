@@ -79,16 +79,23 @@ def fill_hatches(page: ET.Element, calls: list[Call]) -> bool:
         fill = style.get("draw:fill-color", "#ffffff") if style.get("draw:fill-hatch-solid") == "true" else "none"
         path.set("style", f"{path.get('style', '').rstrip()} fill: {fill};".strip())
         lines = hatch_lines(path.get("d") or "", style)
+        if lines is None:
+            continue
         # Past the budget of the page a shape keeps its fill without lines
-        count = sum(len(turned) for turned in lines) if lines is not None else 0
-        if lines is None or used + count > MAX_PAGE_LINES:
+        count = sum(len(turned) for turned in lines)
+        if used + count > MAX_PAGE_LINES:
             continue
         used += count
         if defs is None:
             defs = ET.Element(f"{{{SVG_NS}}}defs")
             page.insert(0, defs)
-        clip = ET.SubElement(defs, f"{{{SVG_NS}}}clipPath", {"id": f"weasyvsdx-hatch-{len(defs)}"})
-        ET.SubElement(clip, f"{{{SVG_NS}}}path", {"d": path.get("d") or "", "clip-rule": style.get("svg:fill-rule", "nonzero")})
-        lines.set("clip-path", f"url(#{clip.get('id')})")
+        clip_lines(defs, lines, path, style)
         parent.insert(list(parent).index(path) + 1, lines)
     return True
+
+
+def clip_lines(defs: ET.Element, lines: ET.Element, path: ET.Element, style: Properties) -> None:
+    """Clip the lines of a hatch to its path, through a clipPath added to the definitions."""
+    clip = ET.SubElement(defs, f"{{{SVG_NS}}}clipPath", {"id": f"weasyvsdx-hatch-{len(defs)}"})
+    ET.SubElement(clip, f"{{{SVG_NS}}}path", {"d": path.get("d") or "", "clip-rule": style.get("svg:fill-rule", "nonzero")})
+    lines.set("clip-path", f"url(#{clip.get('id')})")

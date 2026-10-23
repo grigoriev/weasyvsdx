@@ -153,8 +153,8 @@ def shape_texts(document: bytes) -> list[tuple[str, bool]] | None:
             if shapes is not None:
                 walker.walk(shapes, None)
     # zipfile raises EOFError on a cut entry, zlib.error on a broken one, NotImplementedError on an unknown
-    # compression and RuntimeError on an encrypted one; RecursionError, a RuntimeError, on shapes nested too deep
-    except (KeyError, ValueError, OSError, EOFError, NotImplementedError, RuntimeError, zlib.error, zipfile.BadZipFile, ET.ParseError):
+    # compression and RuntimeError on an encrypted one, both RuntimeError, as is RecursionError on shapes nested too deep
+    except (KeyError, ValueError, OSError, EOFError, RuntimeError, zlib.error, zipfile.BadZipFile, ET.ParseError):
         return None
     return walker.texts
 
