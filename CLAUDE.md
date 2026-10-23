@@ -53,6 +53,7 @@ uv build                # wheel and sdist
   by the box of its path, as LibreOffice scales it.
 - `images.py`: each `data:image/emf` image becomes SVG through `emf2svg-conv`, and the EMF a `data:image/wmf`
   holds in its MS-WMF comment records (`embedded_emf()`) too.
+- `pathdata.py`: path data as tokens, read by hand: the numbers of SVG (`.5.5` is two) make a pattern backtrack.
 - `errors.py`: `ConversionError`.
 
 A count that differs between `vsd2xhtml` and `vsd2raw` leaves the page as `vsd2xhtml` wrote it, with a
