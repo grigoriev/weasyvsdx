@@ -56,6 +56,14 @@ def test_the_lines_of_the_hatch_drawn_add_no_path() -> None:
     assert remove_hidden(svg, calls(PATH, PATH))
 
 
+def test_a_hidden_hatched_shape_gets_no_lines() -> None:
+    hidden = "drawPath (draw:display: none, svg:d: ((librevenge:path-action: M, svg:x: 0in, svg:y: 0in)))"
+    svg = page(SQUARE)
+    assert fill_hatches(svg, calls(HATCH, hidden))
+    assert remove_hidden(svg, calls(hidden))
+    assert list(svg[0]) == []
+
+
 def test_a_hatch_without_solid_fill_leaves_the_shape_open() -> None:
     svg = page(SQUARE)
     assert fill_hatches(svg, calls(HATCH.replace("draw:fill-hatch-solid: true", "draw:fill-hatch-solid: false"), PATH))

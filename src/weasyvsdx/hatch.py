@@ -25,14 +25,15 @@ MAX_LINES = 500  # each way from the center: a hatch of a huge shape at a tiny d
 
 
 def draw_styles(calls: list[Call]) -> list[Properties]:
-    """The style of each drawPath call with path data: the last setStyle before it."""
+    """The style of each drawPath call with path data: the last setStyle before it, and its own draw:display."""
     style: Properties = {}
     styles = []
     for name, argument in calls:
         if name == "setStyle":
             style = properties(argument)
         elif name == "drawPath" and "svg:d:" in argument:
-            styles.append(style)
+            display = properties(argument).get("draw:display")
+            styles.append({**style, "draw:display": display} if display else style)
     return styles
 
 
@@ -69,7 +70,8 @@ def fill_hatches(page: ET.Element, calls: list[Call]) -> bool:
         return False
     defs = None
     for (path, parent), style in zip(paths, styles, strict=True):
-        if style.get("draw:fill") != "hatch":
+        # A hidden shape goes with hidden.py, which removes its path but would leave its lines
+        if style.get("draw:fill") != "hatch" or style.get("draw:display") == "none":
             continue
         fill = style.get("draw:fill-color", "#ffffff") if style.get("draw:fill-hatch-solid") == "true" else "none"
         path.set("style", f"{path.get('style', '').rstrip()} fill: {fill};".strip())
