@@ -3,7 +3,7 @@
 libvisio is the importer of LibreOffice. Its tool vsd2xhtml writes each page of a drawing as an SVG inside
 one XHTML document. The first page is the image, as LibreOffice exports it. Its text and its arrowheads are
 drawn anew from the output of vsd2raw (text.py, markers.py), and its EMF images become SVG through
-emf2svg-conv (images.py). Both tools are optional: without them the page stays as vsd2xhtml writes it.
+emf2svg-conv (images.py). A path that starts without a moveto gets one (paths.py). Both tools are optional: without them the page stays as vsd2xhtml writes it.
 
 The tools parse untrusted input in C, and a broken file can crash them: ``recursion-cycle.vsdx`` of the
 libvisio tests ends in a segmentation fault. So each runs in a process of its own, in a temporary
@@ -21,7 +21,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
-from . import images, markers, raw, text
+from . import images, markers, paths, raw, text
 from .errors import ConversionError
 
 SVG_NS = "http://www.w3.org/2000/svg"
@@ -120,6 +120,7 @@ def convert(data: bytes, tools: Tools, limits: Limits) -> bytes:
         raw_job = Job([tools.raw, str(source)], folder, limits) if tools.raw is not None else None
         try:
             page = first_page(run([tools.converter, str(source)], folder, limits))
+            paths.start_with_moveto(page)
             if raw_job is not None:
                 redraw(page, raw_job)
         finally:
