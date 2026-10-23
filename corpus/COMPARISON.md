@@ -18,7 +18,7 @@ Each drawing of the corpus in three renderings: LibreOffice, its PDF export; lib
 
 ### libvisio-bgcolor
 
-[`visio/libvisio/bgcolor.vsdx`](visio/libvisio/bgcolor.vsdx) · mismatch with LibreOffice: libvisio 13.8 %, weasyvsdx 8.4 %
+[`visio/libvisio/bgcolor.vsdx`](visio/libvisio/bgcolor.vsdx) · mismatch with LibreOffice: libvisio 12.5 %, weasyvsdx 7.3 %
 
 | LibreOffice | libvisio | weasyvsdx |
 |---|---|---|
@@ -82,7 +82,7 @@ Each drawing of the corpus in three renderings: LibreOffice, its PDF export; lib
 
 ### libvisio-fdo86729-ms1252-vsd
 
-[`visio/libvisio/fdo86729-ms1252.vsd`](visio/libvisio/fdo86729-ms1252.vsd) · mismatch with LibreOffice: libvisio 10.2 %, weasyvsdx 1.2 %
+[`visio/libvisio/fdo86729-ms1252.vsd`](visio/libvisio/fdo86729-ms1252.vsd) · mismatch with LibreOffice: libvisio 9.9 %, weasyvsdx 1.2 %
 
 | LibreOffice | libvisio | weasyvsdx |
 |---|---|---|
@@ -90,7 +90,7 @@ Each drawing of the corpus in three renderings: LibreOffice, its PDF export; lib
 
 ### libvisio-fdo86729-utf8-vsd
 
-[`visio/libvisio/fdo86729-utf8.vsd`](visio/libvisio/fdo86729-utf8.vsd) · mismatch with LibreOffice: libvisio 10.2 %, weasyvsdx 1.2 %
+[`visio/libvisio/fdo86729-utf8.vsd`](visio/libvisio/fdo86729-utf8.vsd) · mismatch with LibreOffice: libvisio 9.9 %, weasyvsdx 1.2 %
 
 | LibreOffice | libvisio | weasyvsdx |
 |---|---|---|
@@ -98,7 +98,7 @@ Each drawing of the corpus in three renderings: LibreOffice, its PDF export; lib
 
 ### libvisio-no-bgcolor-vsd
 
-[`visio/libvisio/no-bgcolor.vsd`](visio/libvisio/no-bgcolor.vsd) · mismatch with LibreOffice: libvisio 66.3 %, weasyvsdx 72.2 %
+[`visio/libvisio/no-bgcolor.vsd`](visio/libvisio/no-bgcolor.vsd) · mismatch with LibreOffice: libvisio 66.3 %, weasyvsdx 56.5 %
 
 | LibreOffice | libvisio | weasyvsdx |
 |---|---|---|
@@ -138,7 +138,7 @@ Each drawing of the corpus in three renderings: LibreOffice, its PDF export; lib
 
 ### libvisio-tdf136564-WhiteTextBackground
 
-[`visio/libvisio/tdf136564-WhiteTextBackground.vsdx`](visio/libvisio/tdf136564-WhiteTextBackground.vsdx) · mismatch with LibreOffice: libvisio 12.8 %, weasyvsdx 11 %
+[`visio/libvisio/tdf136564-WhiteTextBackground.vsdx`](visio/libvisio/tdf136564-WhiteTextBackground.vsdx) · mismatch with LibreOffice: libvisio 11.6 %, weasyvsdx 9.6 %
 
 | LibreOffice | libvisio | weasyvsdx |
 |---|---|---|
@@ -154,7 +154,7 @@ Each drawing of the corpus in three renderings: LibreOffice, its PDF export; lib
 
 ### libvisio-tdf154379-QuickStyleFillMatrix
 
-[`visio/libvisio/tdf154379-QuickStyleFillMatrix.vsdx`](visio/libvisio/tdf154379-QuickStyleFillMatrix.vsdx) · mismatch with LibreOffice: libvisio 25.9 %, weasyvsdx 16 %
+[`visio/libvisio/tdf154379-QuickStyleFillMatrix.vsdx`](visio/libvisio/tdf154379-QuickStyleFillMatrix.vsdx) · mismatch with LibreOffice: libvisio 20.7 %, weasyvsdx 12.1 %
 
 | LibreOffice | libvisio | weasyvsdx |
 |---|---|---|
@@ -170,7 +170,7 @@ Each drawing of the corpus in three renderings: LibreOffice, its PDF export; lib
 
 ### libvisio-tdf76829-numeric-format-vsd
 
-[`visio/libvisio/tdf76829-numeric-format.vsd`](visio/libvisio/tdf76829-numeric-format.vsd) · mismatch with LibreOffice: libvisio 82.5 %, weasyvsdx 72.7 %
+[`visio/libvisio/tdf76829-numeric-format.vsd`](visio/libvisio/tdf76829-numeric-format.vsd) · mismatch with LibreOffice: libvisio 87.6 %, weasyvsdx 56.9 %
 
 | LibreOffice | libvisio | weasyvsdx |
 |---|---|---|
@@ -218,7 +218,7 @@ Each drawing of the corpus in three renderings: LibreOffice, its PDF export; lib
 
 ### libvisio-Visio11FormatLine-vsd
 
-[`visio/libvisio/Visio11FormatLine.vsd`](visio/libvisio/Visio11FormatLine.vsd) · mismatch with LibreOffice: libvisio 74.2 %, weasyvsdx 54.6 %
+[`visio/libvisio/Visio11FormatLine.vsd`](visio/libvisio/Visio11FormatLine.vsd) · mismatch with LibreOffice: libvisio 74.8 %, weasyvsdx 55.8 %
 
 | LibreOffice | libvisio | weasyvsdx |
 |---|---|---|
@@ -242,7 +242,7 @@ Each drawing of the corpus in three renderings: LibreOffice, its PDF export; lib
 
 ### libvisio-Visio11TextFieldsWithCurrency-vsd
 
-[`visio/libvisio/Visio11TextFieldsWithCurrency.vsd`](visio/libvisio/Visio11TextFieldsWithCurrency.vsd) · mismatch with LibreOffice: libvisio 92.3 %, weasyvsdx 63.5 %
+[`visio/libvisio/Visio11TextFieldsWithCurrency.vsd`](visio/libvisio/Visio11TextFieldsWithCurrency.vsd) · mismatch with LibreOffice: libvisio 96.1 %, weasyvsdx 60.5 %
 
 | LibreOffice | libvisio | weasyvsdx |
 |---|---|---|
@@ -250,7 +250,7 @@ Each drawing of the corpus in three renderings: LibreOffice, its PDF export; lib
 
 ### libvisio-Visio11TextFieldsWithUnits-vsd
 
-[`visio/libvisio/Visio11TextFieldsWithUnits.vsd`](visio/libvisio/Visio11TextFieldsWithUnits.vsd) · mismatch with LibreOffice: libvisio 84.1 %, weasyvsdx 64.5 %
+[`visio/libvisio/Visio11TextFieldsWithUnits.vsd`](visio/libvisio/Visio11TextFieldsWithUnits.vsd) · mismatch with LibreOffice: libvisio 90.8 %, weasyvsdx 53.9 %
 
 | LibreOffice | libvisio | weasyvsdx |
 |---|---|---|
@@ -292,7 +292,7 @@ Each drawing of the corpus in three renderings: LibreOffice, its PDF export; lib
 
 ### poi-60489
 
-[`visio/poi/60489.vsdx`](visio/poi/60489.vsdx) · mismatch with LibreOffice: libvisio 40.1 %, weasyvsdx 25.3 %
+[`visio/poi/60489.vsdx`](visio/poi/60489.vsdx) · mismatch with LibreOffice: libvisio 38.9 %, weasyvsdx 24 %
 
 | LibreOffice | libvisio | weasyvsdx |
 |---|---|---|
@@ -300,7 +300,7 @@ Each drawing of the corpus in three renderings: LibreOffice, its PDF export; lib
 
 ### poi-60973
 
-[`visio/poi/60973.vsdx`](visio/poi/60973.vsdx) · mismatch with LibreOffice: libvisio 55.4 %, weasyvsdx 37.5 %
+[`visio/poi/60973.vsdx`](visio/poi/60973.vsdx) · mismatch with LibreOffice: libvisio 53.7 %, weasyvsdx 35.9 %
 
 | LibreOffice | libvisio | weasyvsdx |
 |---|---|---|
@@ -316,7 +316,7 @@ Each drawing of the corpus in three renderings: LibreOffice, its PDF export; lib
 
 ### poi-SimpleMacro-vsdm
 
-[`visio/poi/SimpleMacro.vsdm`](visio/poi/SimpleMacro.vsdm) · mismatch with LibreOffice: libvisio 87 %, weasyvsdx 70.7 %
+[`visio/poi/SimpleMacro.vsdm`](visio/poi/SimpleMacro.vsdm) · mismatch with LibreOffice: libvisio 89.9 %, weasyvsdx 62.5 %
 
 | LibreOffice | libvisio | weasyvsdx |
 |---|---|---|
@@ -324,7 +324,7 @@ Each drawing of the corpus in three renderings: LibreOffice, its PDF export; lib
 
 ### poi-test
 
-[`visio/poi/test.vsdx`](visio/poi/test.vsdx) · mismatch with LibreOffice: libvisio 31.7 %, weasyvsdx 24.1 %
+[`visio/poi/test.vsdx`](visio/poi/test.vsdx) · mismatch with LibreOffice: libvisio 29.3 %, weasyvsdx 18.5 %
 
 | LibreOffice | libvisio | weasyvsdx |
 |---|---|---|
@@ -332,7 +332,7 @@ Each drawing of the corpus in three renderings: LibreOffice, its PDF export; lib
 
 ### poi-test_text_extraction
 
-[`visio/poi/test_text_extraction.vsdx`](visio/poi/test_text_extraction.vsdx) · mismatch with LibreOffice: libvisio 70.2 %, weasyvsdx 55.9 %
+[`visio/poi/test_text_extraction.vsdx`](visio/poi/test_text_extraction.vsdx) · mismatch with LibreOffice: libvisio 69.4 %, weasyvsdx 52.6 %
 
 | LibreOffice | libvisio | weasyvsdx |
 |---|---|---|
