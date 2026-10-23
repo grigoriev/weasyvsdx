@@ -54,6 +54,10 @@ uv build                # wheel and sdist
 - `images.py`: each `data:image/emf` image becomes SVG through `emf2svg-conv`, and the EMF a `data:image/wmf`
   holds in its MS-WMF comment records (`embedded_emf()`) too. A `data:object/ole` shows the EMF of its
   MS-OLEDS presentation stream (`ole_preview()`, read with olefile).
+- `paths.py`: a path without a leading moveto loses its first segment, whose end becomes the start
+  (`start_with_moveto()`); `shortened()` ends a line at the base of its arrowhead.
+- `hidden.py`: the n-th drawn path goes when the n-th `drawPath` of `vsd2raw` has `draw:display: none`, a
+  shape on a hidden or non-printing layer.
 - `pathdata.py`: path data as tokens, read by hand: the numbers of SVG (`.5.5` is two) make a pattern backtrack.
 - `errors.py`: `ConversionError`.
 

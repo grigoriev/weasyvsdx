@@ -112,9 +112,13 @@ Where the license allows it, install the original fonts instead.
      edge of its block.
    - **Arrowheads**: each marker gets the shape and size of its line end. The generator drew one stock
      arrow for all of them, sized by the width of the line.
+   - **Hidden shapes**: a shape on a hidden or non-printing layer goes. The generator drew it.
+   - **Line ends**: a line under an arrowhead ends at its base, as in Visio, not at its tip.
 3. EMF images become SVG through `emf2svg-conv`, and so does the EMF that Office puts inside a WMF image,
    and the picture an embedded OLE object shows.
    WeasyPrint reads neither, and left them out.
+4. A path that starts without a moveto loses its first segment, whose start libvisio does not give. Drawn as
+   it was, it ran from the corner of the page.
 
 The tools parse untrusted input in C, and a broken file can crash them. Each runs in a process of its own,
 in a temporary directory, with a time limit and, on Linux, limits on its memory and its output.
