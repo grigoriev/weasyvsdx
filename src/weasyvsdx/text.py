@@ -12,6 +12,7 @@ HTML: weasysvg lays it out, so it wraps and aligns as in Visio. A page whose cou
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from xml.etree import ElementTree as ET
 
@@ -55,47 +56,80 @@ class TextObject:
     paragraphs: list[Paragraph] = field(default_factory=list)
 
 
+class _Reader:
+    """Collects the text objects of a page, one call at a time: each call has its method."""
+
+    PIECES = {"insertText": None, "insertSpace": " ", "insertTab": "\t", "insertLineBreak": "\n"}
+
+    def __init__(self) -> None:
+        self.objects: list[TextObject] = []
+        self.current: TextObject | None = None
+        self.paragraph: Paragraph | None = None
+        self.span: Span | None = None
+        self.bullet: str | None = None
+        self.label_width = 0.0
+
+    def read(self, name: str, argument: str) -> None:
+        if name == "startTextObject":
+            self.current = TextObject(properties(argument))
+            self.objects.append(self.current)
+        elif name == "endTextObject":
+            self.current = self.paragraph = self.span = None
+        elif self.current is not None:
+            handler = self.HANDLERS.get(name)
+            if handler is not None:
+                handler(self, name, argument)
+            elif name in self.PIECES and self.span is not None:
+                self.span.text.append(self.PIECES[name] or argument)
+
+    def open_list(self, name: str, argument: str) -> None:
+        level = properties(argument)
+        # libvisio opens unordered lists only: Visio has no numbered lists
+        self.bullet = level.get("text:bullet-char", "\u2022") if name == "openUnorderedListLevel" else ""
+        self.label_width = points(level.get("text:min-label-width"))
+
+    def close_list(self, name: str, argument: str) -> None:
+        self.bullet = None
+
+    def open_paragraph(self, name: str, argument: str) -> None:
+        assert self.current is not None
+        self.paragraph = Paragraph(properties(argument), bullet=self.bullet if name == "openListElement" else None, label_width=self.label_width)
+        self.current.paragraphs.append(self.paragraph)
+
+    def close_paragraph(self, name: str, argument: str) -> None:
+        self.paragraph = self.span = None
+
+    def open_span(self, name: str, argument: str) -> None:
+        assert self.current is not None
+        if self.paragraph is None:
+            self.paragraph = Paragraph({})
+            self.current.paragraphs.append(self.paragraph)
+        self.span = Span(properties(argument))
+        self.paragraph.spans.append(self.span)
+
+    def close_span(self, name: str, argument: str) -> None:
+        self.span = None
+
+    HANDLERS: dict[str, Callable[[_Reader, str, str], None]] = {
+        "openUnorderedListLevel": open_list,
+        "openOrderedListLevel": open_list,
+        "closeUnorderedListLevel": close_list,
+        "closeOrderedListLevel": close_list,
+        "openParagraph": open_paragraph,
+        "openListElement": open_paragraph,
+        "closeParagraph": close_paragraph,
+        "closeListElement": close_paragraph,
+        "openSpan": open_span,
+        "closeSpan": close_span,
+    }
+
+
 def text_objects(calls: list[Call]) -> list[TextObject]:
     """The text objects among the calls of a page, in their order."""
-    objects: list[TextObject] = []
-    current: TextObject | None = None
-    paragraph: Paragraph | None = None
-    span: Span | None = None
-    bullet: str | None = None
-    label_width = 0.0
+    reader = _Reader()
     for name, argument in calls:
-        if name == "startTextObject":
-            current = TextObject(properties(argument))
-            objects.append(current)
-        elif name == "endTextObject":
-            current = paragraph = span = None
-        elif current is None:
-            continue
-        elif name in ("openUnorderedListLevel", "openOrderedListLevel"):
-            level = properties(argument)
-            # An ordered list gets no numbers: libvisio gives none, and Visio diagrams hardly use them
-            bullet = level.get("text:bullet-char", "•") if name == "openUnorderedListLevel" else ""
-            label_width = points(level.get("text:min-label-width"))
-        elif name in ("closeUnorderedListLevel", "closeOrderedListLevel"):
-            bullet = None
-        elif name in ("openParagraph", "openListElement"):
-            paragraph = Paragraph(properties(argument), bullet=bullet if name == "openListElement" else None, label_width=label_width)
-            current.paragraphs.append(paragraph)
-        elif name in ("closeParagraph", "closeListElement"):
-            paragraph = span = None
-        elif name == "openSpan":
-            if paragraph is None:
-                paragraph = Paragraph({})
-                current.paragraphs.append(paragraph)
-            span = Span(properties(argument))
-            paragraph.spans.append(span)
-        elif name == "closeSpan":
-            span = None
-        elif span is not None:
-            piece = {"insertText": argument, "insertSpace": " ", "insertTab": "\t", "insertLineBreak": "\n"}.get(name)
-            if piece is not None:
-                span.text.append(piece)
-    return objects
+        reader.read(name, argument)
+    return reader.objects
 
 
 def css(declarations: dict[str, str]) -> str:

@@ -28,7 +28,7 @@ def export(folder: Path, inputs: list[Path], kind: str = "png") -> None:
     """Each input as kind, png or pdf, into folder/kind, by one LibreOffice."""
     command = ["soffice", f"-env:UserInstallation=file://{folder}/profile", "--headless", "--convert-to", kind, "--outdir", str(folder / kind), *map(str, inputs)]
     try:
-        subprocess.run(command, check=False, timeout=TIMEOUT * len(inputs), capture_output=True)  # noqa: S603  a fixed command
+        subprocess.run(command, check=False, timeout=TIMEOUT * len(inputs), capture_output=True)
     except subprocess.TimeoutExpired:
         print(f"LibreOffice took more than {TIMEOUT} s per drawing, for {len(inputs)} drawings")
 

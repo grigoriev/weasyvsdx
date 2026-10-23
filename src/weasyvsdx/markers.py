@@ -17,6 +17,7 @@ over the page. The viewBox serves only where the path has no box.
 from __future__ import annotations
 
 import re
+from collections.abc import Iterator
 from xml.etree import ElementTree as ET
 
 from .raw import Call, Properties, percent, points, properties
@@ -25,7 +26,8 @@ SVG_NS = "http://www.w3.org/2000/svg"
 ENDS = {"start": "startMarker", "end": "endMarker"}
 # The start of each subpath of path data
 SUBPATH = re.compile(r"[Mm]")
-PATH_TOKEN = re.compile(r"[MmLlHhVvCcSsQqTtAaZz]|[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?")
+# A command letter, or a number with its sign and exponent; float() rejects what is no number
+PATH_TOKEN = re.compile(r"[A-Za-z]|[-+]?[0-9.]+(?:[eE][-+]?[0-9]+)?")
 # The numbers each command of path data takes
 ARGUMENTS = {"M": 2, "L": 2, "H": 1, "V": 1, "C": 6, "S": 4, "Q": 4, "T": 2, "A": 7}
 
@@ -36,45 +38,58 @@ def marker_styles(calls: list[Call], end: str) -> list[Properties]:
     return [style for style in styles if f"draw:marker-{end}-path" in style]
 
 
-def path_box(data: str) -> tuple[float, float, float, float] | None:
-    """The box of path data, x, y, width and height, through its points and control points; None without area."""
-    xs: list[float] = []
-    ys: list[float] = []
-    x = y = start_x = start_y = 0.0
-    command = ""
+def segments(data: str) -> Iterator[tuple[str, list[float]]]:
+    """Path data as its commands, each with its numbers; the pairs after a moveto come as linetos."""
     tokens = PATH_TOKEN.findall(data)
+    command = ""
     index = 0
     while index < len(tokens):
         if tokens[index].isalpha():
             command = tokens[index]
             index += 1
             if command in "Zz":
-                x, y = start_x, start_y
+                yield command, []
             continue
-        upper = command.upper()
-        count = ARGUMENTS.get(upper)
+        count = ARGUMENTS.get(command.upper())
         if count is None or index + count > len(tokens):
-            break
-        numbers = [float(token) for token in tokens[index : index + count]]
+            return
+        yield command, [float(token) for token in tokens[index : index + count]]
         index += count
-        base_x, base_y = (x, y) if command.islower() else (0.0, 0.0)
-        if upper == "H":
-            x = base_x + numbers[0]
-        elif upper == "V":
-            y = base_y + numbers[0]
-        else:
-            # An arc counts by its end point only: its radii and flags are no points
-            pairs = numbers[5:] if upper == "A" else numbers
-            for px, py in zip(pairs[0::2], pairs[1::2], strict=True):
-                xs.append(base_x + px)
-                ys.append(base_y + py)
-            x, y = xs[-1], ys[-1]
-        xs.append(x)
-        ys.append(y)
-        if upper == "M":
-            start_x, start_y = x, y
-            # The pairs after the first of a moveto are linetos
+        if command in "Mm":
             command = "l" if command == "m" else "L"
+
+
+def points_of(command: str, numbers: list[float], x: float, y: float) -> list[tuple[float, float]]:
+    """The points and control points of one command from (x, y); the last is where it ends."""
+    upper = command.upper()
+    base_x, base_y = (x, y) if command.islower() else (0.0, 0.0)
+    if upper == "H":
+        return [(base_x + numbers[0], y)]
+    if upper == "V":
+        return [(x, base_y + numbers[0])]
+    # An arc counts by its end point only: its radii and flags are no points
+    pairs = numbers[5:] if upper == "A" else numbers
+    return [(base_x + px, base_y + py) for px, py in zip(pairs[0::2], pairs[1::2], strict=True)]
+
+
+def path_box(data: str) -> tuple[float, float, float, float] | None:
+    """The box of path data, x, y, width and height, through its points and control points; None without area."""
+    found: list[tuple[float, float]] = []
+    x = y = start_x = start_y = 0.0
+    try:
+        for command, numbers in segments(data):
+            if command in "Zz":
+                x, y = start_x, start_y
+                continue
+            points = points_of(command, numbers, x, y)
+            found += points
+            x, y = points[-1]
+            if command in "Mm":
+                start_x, start_y = x, y
+    except ValueError:
+        # A number of two dots, as "1.2.3"
+        return None
+    xs, ys = [px for px, _ in found], [py for _, py in found]
     if not xs or max(xs) == min(xs) or max(ys) == min(ys):
         return None
     return min(xs), min(ys), max(xs) - min(xs), max(ys) - min(ys)
@@ -103,8 +118,7 @@ def fill_marker(marker: ET.Element, style: Properties, end: str) -> bool:
     for name, value in (("markerUnits", "userSpaceOnUse"), ("orient", "auto"), ("overflow", "visible"), ("markerWidth", "1"), ("markerHeight", "1"), ("refX", "0"), ("refY", "0")):
         marker.set(name, value)
     marker.attrib.pop("viewBox", None)
-    for child in list(marker):
-        marker.remove(child)
+    del marker[:]
     data = style[f"draw:marker-{end}-path"]
     transform = f"rotate({angle}) scale({scale:g}) translate({-(x + box_width / 2):g} {-tip_y:g})"
     if len(SUBPATH.findall(data)) > 1:

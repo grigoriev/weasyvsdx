@@ -95,14 +95,16 @@ def test_a_binary_vsd_converts_too() -> None:
 
 
 def test_a_drawing_the_converter_rejects() -> None:
+    drawing = helpers.drawing("libvisio/tab-short-prefix.vsdx")
     with pytest.raises(ConversionError, match=r"vsd2xhtml failed with exit code"):
-        convert(helpers.drawing("libvisio/tab-short-prefix.vsdx"), helpers.TOOLS, LIMITS)
+        convert(drawing, helpers.TOOLS, LIMITS)
 
 
 def test_a_crash_of_the_converter_stays_in_its_process() -> None:
     # libvisio 0.1.7 recurses until the stack runs out on this test of its own, a segmentation fault
+    drawing = helpers.drawing("libvisio/recursion-cycle.vsdx")
     with pytest.raises(ConversionError, match=r"vsd2xhtml failed with exit code"):
-        convert(helpers.drawing("libvisio/recursion-cycle.vsdx"), helpers.TOOLS, LIMITS)
+        convert(drawing, helpers.TOOLS, LIMITS)
 
 
 def test_vsd2raw_stops_when_vsd2xhtml_fails(tmp_path: Path) -> None:
@@ -135,35 +137,40 @@ def test_the_text_stays_when_the_tools_count_other_objects(tmp_path: Path, caplo
 
 def test_a_drawing_past_the_input_limit_never_reaches_the_converter(tmp_path: Path) -> None:
     marker = tmp_path / "ran"
+    tools = Tools(script(tmp_path, f"touch {marker}"))
     with pytest.raises(ConversionError, match=r"more than 10 bytes"):
-        convert(b"x" * 11, Tools(script(tmp_path, f"touch {marker}")), Limits(max_input=10))
+        convert(b"x" * 11, tools, Limits(max_input=10))
     assert not marker.exists()
 
 
 def test_a_slow_converter_stops_at_the_timeout(tmp_path: Path) -> None:
     start = time.monotonic()
+    tools = Tools(script(tmp_path, "sleep 10"))
     with pytest.raises(ConversionError, match=r"took more than 0.5 s"):
-        convert(b"x", Tools(script(tmp_path, "sleep 10")), Limits(timeout=0.5))
+        convert(b"x", tools, Limits(timeout=0.5))
     assert time.monotonic() - start < 5
 
 
 def test_the_converter_is_killed_past_the_output_limit(tmp_path: Path) -> None:
     # ulimit -f: the process gets SIGXFSZ when its output passes the limit
+    tools = Tools(script(tmp_path, "head -c 100000 /dev/zero"))
     with pytest.raises(ConversionError, match=r"exit code"):
-        convert(b"x", Tools(script(tmp_path, "head -c 100000 /dev/zero")), Limits(max_output=4096))
+        convert(b"x", tools, Limits(max_output=4096))
 
 
 def test_output_past_the_limit_fails_where_ulimit_does_not_hold(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     # As on macOS, where ulimit -f fails and the limit is checked after the run
     monkeypatch.setattr(convert_module, "LIMITED", 'shift 2; exec "$@"')
+    tools = Tools(script(tmp_path, "head -c 100000 /dev/zero"))
     with pytest.raises(ConversionError, match=r"wrote more than 4096 bytes"):
-        convert(b"x", Tools(script(tmp_path, "head -c 100000 /dev/zero")), Limits(max_output=4096))
+        convert(b"x", tools, Limits(max_output=4096))
 
 
 def test_the_converter_runs_with_the_memory_limit() -> None:
     # Too little address space to load libvisio at all
+    drawing = helpers.drawing("poi/test.vsdx")
     with pytest.raises(ConversionError, match=r"exit code"):
-        convert(helpers.drawing("poi/test.vsdx"), PLAIN, Limits(max_memory=1024 * 1024))
+        convert(drawing, PLAIN, Limits(max_memory=1024 * 1024))
 
 
 def test_the_converter_reads_the_drawing_from_a_file_of_its_own(tmp_path: Path) -> None:

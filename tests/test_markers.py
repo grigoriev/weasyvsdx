@@ -105,6 +105,8 @@ def test_a_path_wider_than_its_viewbox_takes_the_width_of_its_style() -> None:
         ("M0 0 H10", None),
         ("M0 0 L", None),
         ("5 5", None),
+        # A number of two dots is no number
+        ("M1.2.3 0 L 5 5", None),
     ],
 )
 def test_the_box_of_path_data(data: str, box: tuple[float, float, float, float] | None) -> None:

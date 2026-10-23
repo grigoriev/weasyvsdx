@@ -33,7 +33,7 @@ def test_the_calls_of_the_first_page() -> None:
 
 
 def test_a_line_that_is_no_call_is_skipped() -> None:
-    assert first_page("startPage()\n  ??? not a call\n  endPage\n") == [("startPage", ""), ("endPage", "")]
+    assert first_page("startPage()\n  ??? not a call\n  insertText without parentheses\n  endPage\n") == [("startPage", ""), ("endPage", "")]
 
 
 def test_properties_keep_a_list_in_parentheses_whole() -> None:

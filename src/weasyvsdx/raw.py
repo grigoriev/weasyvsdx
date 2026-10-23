@@ -8,8 +8,6 @@ from __future__ import annotations
 
 import re
 
-# A call: its name, then its properties or its text in parentheses
-CALL = re.compile(r"^\s*([A-Za-z]+)\s*(?:\((.*)\))?\s*$")
 LENGTH = re.compile(r"^(-?[0-9.]+)(in|pt)?$")
 # The key of a property, in the namespaces of ODF and librevenge: fo:font-size, librevenge:path-action
 KEY = re.compile(r"^[a-z]+:[A-Za-z0-9-]+: ")
@@ -19,21 +17,40 @@ Properties = dict[str, str]
 Call = tuple[str, str]
 
 
+def parse_call(line: str) -> Call | None:
+    """A line of vsd2raw as its call: the name, then the properties or the text in parentheses. None for another line.
+
+    Read by hand, not by a regular expression: a line can hold the base64 of a large image, where the
+    backtracking of a pattern around ".*" would cost more than linear time.
+    """
+    text = line.strip()
+    end = 0
+    while end < len(text) and text[end].isascii() and text[end].isalpha():
+        end += 1
+    if end == 0:
+        return None
+    rest = text[end:].lstrip()
+    if not rest:
+        return text[:end], ""
+    if rest[0] == "(" and rest[-1] == ")":
+        return text[:end], rest[1:-1]
+    return None
+
+
 def first_page(raw: str) -> list[Call]:
     """The calls of the first page, each its name and its argument."""
     calls: list[Call] = []
     pages = 0
     for line in raw.splitlines():
-        match = CALL.match(line)
-        if match is None:
+        call = parse_call(line)
+        if call is None:
             continue
-        name = match.group(1)
-        if name == "startPage":
+        if call[0] == "startPage":
             pages += 1
             if pages > 1:
                 break
         if pages == 1:
-            calls.append((name, match.group(2) or ""))
+            calls.append(call)
     return calls
 
 
