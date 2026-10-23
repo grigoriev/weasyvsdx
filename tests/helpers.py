@@ -93,3 +93,37 @@ def wmf_holding(emf: bytes, chunk: int = 64, placeable: bool = False) -> bytes:
     header = struct.pack("<HHHIHIH", 1, 9, 0x0300, (18 + len(body)) // 2, 0, 0, 0)
     prefix = struct.pack("<IH4hHI", 0x9AC6CDD7, 0, 0, 0, 100, 60, 1440, 0) + b"\0\0" if placeable else b""
     return prefix + header + body
+
+
+def presentation(data: bytes, clipboard_format: int = 14) -> bytes:
+    """An MS-OLEDS OLEPresentationStream of the data, with no target device."""
+    # Marker, format, target device size, aspect, lindex, advf, reserved, width, height, data size
+    return struct.pack("<IIIIiIIIII", 0xFFFFFFFF, clipboard_format, 4, 1, -1, 0, 0, 100, 60, len(data)) + data
+
+
+def ole_holding(streams: dict[str, bytes]) -> bytes:
+    """A compound file of version 3 with the streams under its root, at most three, each in plain sectors."""
+    sector, end, free, nostream = 512, 0xFFFFFFFE, 0xFFFFFFFF, 0xFFFFFFFF
+    # Streams under 4096 bytes would go to the mini stream: pad them past it
+    bodies = [data.ljust(4096, b"\0") for data in streams.values()]
+    fat = [0xFFFFFFFD, end]
+    entries = [_directory_entry("Root Entry", 5, child=1 if streams else nostream, start=end, size=0)]
+    for index, (name, body) in enumerate(zip(streams, bodies, strict=True)):
+        start, count = len(fat), -(-len(body) // sector)
+        fat += [*range(start + 1, start + count), end]
+        following = index + 2 if index + 1 < len(bodies) else nostream
+        entries.append(_directory_entry(name, 2, right=following, start=start, size=len(body)))
+    entries += [b"\0" * 64 + struct.pack("<HBBIII", 0, 0, 0, nostream, nostream, nostream) + b"\0" * 48] * (4 - len(entries))
+    # Header: signature, CLSID, versions, byte order, sector shifts, counts, the directory start, mini stream
+    # cutoff, no mini FAT, no DIFAT, then the DIFAT array with the one FAT sector
+    header = b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1" + b"\0" * 16
+    header += struct.pack("<HHHHH6sIIIIIIIII", 0x3E, 3, 0xFFFE, 9, 6, b"", 0, 1, 1, 0, 4096, end, 0, end, 0)
+    header += struct.pack("<109I", 0, *[free] * 108)
+    fat_sector = struct.pack(f"<{len(fat)}I", *fat) + struct.pack("<I", free) * (128 - len(fat))
+    return header + fat_sector + b"".join(entries) + b"".join(body.ljust(-(-len(body) // sector) * sector, b"\0") for body in bodies)
+
+
+def _directory_entry(name: str, kind: int, *, right: int = 0xFFFFFFFF, child: int = 0xFFFFFFFF, start: int, size: int) -> bytes:
+    """A directory entry of 128 bytes: the name, its type, black, its siblings and child, its sectors."""
+    encoded = (name + "\0").encode("utf-16-le")
+    return encoded.ljust(64, b"\0") + struct.pack("<HBBIII16sIQQIQ", len(encoded), kind, 1, 0xFFFFFFFF, right, child, b"", 0, 0, 0, start, size)

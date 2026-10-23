@@ -7,6 +7,10 @@ it out as before.
 
 A WMF, the older metafile, that Office wrote holds an EMF of the same picture in its comment records
 (MS-WMF META_ESCAPE_ENHANCED_METAFILE): that EMF converts as any other. A WMF without one stays out.
+
+An OLE object, a picture or a drawing pasted from another program, comes as ``data:object/ole``. Its
+presentation stream (MS-OLEDS OLEPresentationStream) holds the picture Office shows for it, a WMF with the
+same embedded EMF, which converts as well.
 """
 
 from __future__ import annotations
@@ -14,11 +18,14 @@ from __future__ import annotations
 import base64
 import binascii
 import hashlib
+import io
 import logging
 import struct
 from collections.abc import Callable
 from pathlib import Path
 from xml.etree import ElementTree as ET
+
+import olefile
 
 from .errors import ConversionError
 
@@ -26,6 +33,7 @@ SVG_NS = "http://www.w3.org/2000/svg"
 XLINK_HREF = "{http://www.w3.org/1999/xlink}href"
 EMF_PREFIX = "data:image/emf;base64,"
 WMF_PREFIX = "data:image/wmf;base64,"
+OLE_PREFIX = "data:object/ole;base64,"
 LOGGER = logging.getLogger("weasyvsdx")
 
 # The WMF records of MS-WMF that carry an EMF: META_ESCAPE with the escape MFCOMMENT, the comment "WMFC"
@@ -38,6 +46,11 @@ MFCOMMENT = 0x000F
 WMFC = b"WMFC"
 ENHANCED_METAFILE = 1
 EMF_SIGNATURE = b" EMF"
+
+# The presentation streams of MS-OLEDS: a clipboard format, the target device, then the fields up to the data
+PRESENTATION = "\x02OlePres"
+CLIPBOARD_FORMAT_MARKER = 0xFFFFFFFF
+CF_ENHMETAFILE = 14
 
 # Takes the path of an EMF file, returns its SVG; raises ConversionError
 Converter = Callable[[Path], bytes]
@@ -68,13 +81,34 @@ def embedded_emf(wmf: bytes) -> bytes | None:
     return emf if emf[40:44] == EMF_SIGNATURE else None
 
 
+def ole_preview(ole: bytes) -> bytes | None:
+    """The EMF an OLE object shows as its picture, or None when it shows none."""
+    # Bytes shorter than a sector would be taken as a file name: always a stream
+    with olefile.OleFileIO(io.BytesIO(ole)) as storage:
+        streams = sorted("/".join(entry) for entry in storage.listdir() if entry[0].startswith(PRESENTATION))
+        for name in streams:
+            stream = storage.openstream(name).read()
+            # The ANSI clipboard format, the size of the target device with its own 4 bytes, the device, then
+            # aspect, lindex, advf, reserved, width, height and the size of the data
+            marker, kind, device = struct.unpack_from("<III", stream)
+            if marker != CLIPBOARD_FORMAT_MARKER or kind != CF_ENHMETAFILE:
+                continue
+            start = 8 + device + 24
+            (size,) = struct.unpack_from("<I", stream, start)
+            # An EMF presentation is stored as a WMF that holds the EMF in its comments
+            emf = embedded_emf(stream[start + 4 : start + 4 + size])
+            if emf is not None:
+                return emf
+    return None
+
+
 def replace_emf(page: ET.Element, convert: Converter, folder: Path) -> int:
-    """Turn each EMF image of the page, and the EMF inside each WMF, into SVG; return how many. Each converts once."""
+    """Turn each EMF image of the page, and the EMF inside each WMF and OLE object, into SVG; return how many. Each converts once."""
     done: dict[str, str | None] = {}
     count = 0
     for image in page.iter(f"{{{SVG_NS}}}image"):
         href = image.get(XLINK_HREF) or image.get("href") or ""
-        if not href.startswith((EMF_PREFIX, WMF_PREFIX)):
+        if not href.startswith((EMF_PREFIX, WMF_PREFIX, OLE_PREFIX)):
             continue
         key = hashlib.sha256(href.encode()).hexdigest()
         if key not in done:
@@ -87,18 +121,25 @@ def replace_emf(page: ET.Element, convert: Converter, folder: Path) -> int:
     return count
 
 
+def _emf(data: bytes, kind: str) -> bytes:
+    """The EMF of an image of the kind, the EMF inside a WMF or the picture of an OLE object; raises ConversionError."""
+    if kind == "EMF":
+        return data
+    emf = embedded_emf(data) if kind == "WMF" else ole_preview(data)
+    if emf is None:
+        raise ConversionError(f"the {kind} holds no EMF")
+    return emf
+
+
 def _svg_url(href: str, convert: Converter, path: Path) -> str | None:
-    """The EMF of the data URL, or the EMF inside its WMF, as an SVG data URL; None when it does not convert."""
-    wmf = href.startswith(WMF_PREFIX)
+    """The EMF of the data URL, or the EMF inside its WMF or OLE object, as an SVG data URL; None when it does not convert."""
+    prefix = next(prefix for prefix in (EMF_PREFIX, WMF_PREFIX, OLE_PREFIX) if href.startswith(prefix))
+    kind = {EMF_PREFIX: "EMF", WMF_PREFIX: "WMF", OLE_PREFIX: "OLE object"}[prefix]
     try:
-        data = base64.b64decode(href[len(WMF_PREFIX if wmf else EMF_PREFIX) :], validate=True)
-        emf = embedded_emf(data) if wmf else data
-        if emf is None:
-            raise ConversionError("the WMF holds no EMF")
-        path.write_bytes(emf)
+        path.write_bytes(_emf(base64.b64decode(href[len(prefix) :], validate=True), kind))
         svg = convert(path)
-    except (binascii.Error, struct.error, ConversionError) as e:
-        LOGGER.warning("A%s image of a Visio drawing stays out: %s", " WMF" if wmf else "n EMF", e)
+    except (binascii.Error, struct.error, OSError, ConversionError) as e:
+        LOGGER.warning("An image of a Visio drawing (%s) stays out: %s", kind, e)
         return None
     finally:
         path.unlink(missing_ok=True)

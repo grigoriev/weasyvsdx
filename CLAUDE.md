@@ -52,7 +52,8 @@ uv build                # wheel and sdist
 - `markers.py`: the k-th `startMarker`/`endMarker` gets the path of the k-th style with that marker, scaled
   by the box of its path, as LibreOffice scales it.
 - `images.py`: each `data:image/emf` image becomes SVG through `emf2svg-conv`, and the EMF a `data:image/wmf`
-  holds in its MS-WMF comment records (`embedded_emf()`) too.
+  holds in its MS-WMF comment records (`embedded_emf()`) too. A `data:object/ole` shows the EMF of its
+  MS-OLEDS presentation stream (`ole_preview()`, read with olefile).
 - `pathdata.py`: path data as tokens, read by hand: the numbers of SVG (`.5.5` is two) make a pattern backtrack.
 - `errors.py`: `ConversionError`.
 
@@ -62,7 +63,8 @@ warning: the mapping relies on both walking the drawing in one order.
 ## Testing
 
 - `tests/helpers.py` installs weasyvsdx, renders HTML with WeasyPrint, reads text back with PDFium, and
-  builds a minimal EMF (`emf_rectangle()`) and a WMF that holds one (`wmf_holding()`).
+  builds a minimal EMF (`emf_rectangle()`), a WMF that holds one (`wmf_holding()`), and an OLE object
+  (`ole_holding()` of `presentation()` streams).
 - Fake tools are shell scripts written into `tmp_path` (`script()` in `test_convert.py`).
 - Coverage is 100% of lines and branches.
 
