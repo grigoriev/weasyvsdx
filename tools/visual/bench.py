@@ -1,6 +1,6 @@
 """The visual regression bench: render each drawing with WeasyPrint and weasyvsdx, compare with LibreOffice.
 
-Usage: bench.py [--only TEXT] [--out DIR] [--against FILE | --write-baseline FILE]
+Usage: bench.py [--only TEXT] [--corpus-only] [--out DIR] [--plain] [--against FILE | --write-baseline FILE]
 
 1. Each drawing is an <img> with a data URL, on a page of the size of its LibreOffice reference. LibreOffice
    Draw has one page size for a whole document, the largest of its pages, and draws the first page at
@@ -11,7 +11,8 @@ Usage: bench.py [--only TEXT] [--out DIR] [--against FILE | --write-baseline FIL
 A dev tool, not a CI gate: the numbers guide the eye. LibreOffice is no exact reference either: it lays
 out text with its own engine, and two versions of it render some drawings differently.
 
---write-baseline stores the mismatch of each drawing in FILE; --against compares with it and fails when a
+--plain renders the SVG of vsd2xhtml as it is, without the text, arrowheads and EMF images of weasyvsdx:
+the comparison page shows what weasyvsdx adds. --write-baseline stores the mismatch of each drawing in FILE; --against compares with it and fails when a
 drawing got worse. The Azure diagrams count only where the cache holds them (make azure).
 """
 
@@ -198,6 +199,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--only", default="", help="render only the names that contain this text")
     parser.add_argument("--out", type=Path, default=ROOT / "tools" / "visual" / "out")
+    parser.add_argument("--corpus-only", action="store_true", help="render the drawings of the repository, not the Azure diagrams of the cache")
+    parser.add_argument("--plain", action="store_true", help="the SVG of vsd2xhtml as it is, without the text, arrowheads and EMF images of weasyvsdx")
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--against", type=Path, help="compare the mismatch with this baseline")
     group.add_argument("--write-baseline", type=Path, help="store the mismatch in this baseline")
@@ -206,12 +209,15 @@ def main() -> int:
     (out / "pdf").mkdir(parents=True, exist_ok=True)
     (out / "img").mkdir(parents=True, exist_ok=True)
     # Time to spare: the bench measures the rendering, not the limits of a service
-    print(f"WeasyPrint {weasyprint.__version__}, converter {weasyvsdx.install(timeout=120)}", flush=True)
+    converter = weasyvsdx.install(text=not args.plain, emf=not args.plain, timeout=120)
+    print(f"WeasyPrint {weasyprint.__version__}, converter {converter}{', plain' if args.plain else ''}", flush=True)
     handler = Warnings()
     for logger in ("weasyprint", "weasyvsdx"):
         logging.getLogger(logger).addHandler(handler)
     rows = []
     for drawing in drawings(args.only):
+        if args.corpus_only and drawing.group == "azure":
+            continue
         row = run(drawing, out, handler)
         rows.append(row)
         print(f"{row['name']}: mismatch {row['mismatch']} in {row['ms']} ms {row['error'] or ''}", flush=True)

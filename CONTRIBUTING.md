@@ -14,6 +14,7 @@ make test                           # pytest with coverage, in Docker
 make test BASE=python:3.11-slim-trixie  # the same on the lowest supported Python
 make visual                         # the visual bench, in Docker
 make visual-check                   # the bench against corpus/baseline.json
+make comparison                     # corpus/COMPARISON.md, corpus/comparison.html, panels in corpus/render
 uv build                            # wheel and sdist
 ```
 
@@ -37,6 +38,10 @@ CI gate, and LibreOffice no exact reference: it picks its own fonts and breaks w
 blocks. Judge a change by looking at the drawings it moves, zoomed in. A change that alters renderings
 runs `make visual-baseline` and commits `corpus/baseline.json`; `make visual-check` fails when a drawing got
 worse than its baseline.
+
+A change that alters a rendering also runs `make comparison` and commits `corpus/COMPARISON.md`,
+`corpus/comparison.html` and `corpus/render`. GitHub Pages serves the page from the default branch. Edit the
+template `tools/visual/comparison.html`, never the page it writes.
 
 Never judge a rendering with poppler (`pdftoppm`, Evince, Okular). Its Splash backend drops WeasyPrint
 gradients, and its cairo backend drops soft masks that PDFium and Quartz apply. Use PDFium, which is the

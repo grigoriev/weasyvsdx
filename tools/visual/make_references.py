@@ -24,13 +24,21 @@ from drawings import Drawing, drawings
 TIMEOUT = 120  # seconds per drawing
 
 
-def export(folder: Path, inputs: list[Path]) -> None:
-    """The PNG of each input into folder/png, by one LibreOffice."""
-    command = ["soffice", f"-env:UserInstallation=file://{folder}/profile", "--headless", "--convert-to", "png", "--outdir", str(folder / "png"), *map(str, inputs)]
+def export(folder: Path, inputs: list[Path], kind: str = "png") -> None:
+    """Each input as kind, png or pdf, into folder/kind, by one LibreOffice."""
+    command = ["soffice", f"-env:UserInstallation=file://{folder}/profile", "--headless", "--convert-to", kind, "--outdir", str(folder / kind), *map(str, inputs)]
     try:
         subprocess.run(command, check=False, timeout=TIMEOUT * len(inputs), capture_output=True)  # noqa: S603  a fixed command
     except subprocess.TimeoutExpired:
         print(f"LibreOffice took more than {TIMEOUT} s per drawing, for {len(inputs)} drawings")
+
+
+def export_all(folder: Path, inputs: list[Path], kind: str = "png") -> None:
+    """Each input as kind into folder/kind: all in one LibreOffice, then one each for those it left out."""
+    export(folder, inputs, kind)
+    for path in inputs:
+        if not (folder / kind / f"{path.stem}.{kind}").exists():
+            export(folder, [path], kind)
 
 
 def main() -> int:
@@ -46,10 +54,7 @@ def main() -> int:
             path = folder / f"{drawing.name}{drawing.path.suffix}"
             shutil.copyfile(drawing.path, path)
             inputs[drawing.name] = (drawing, path)
-        export(folder, [path for _, path in inputs.values()])
-        for name, (_, path) in inputs.items():
-            if not (folder / "png" / f"{name}.png").exists():
-                export(folder, [path])
+        export_all(folder, [path for _, path in inputs.values()])
         missing = 0
         for name, (drawing, _) in inputs.items():
             png = folder / "png" / f"{name}.png"

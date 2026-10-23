@@ -1,6 +1,6 @@
 default_install_hook_types: [pre-commit, commit-msg]
 # The corpus files and license notices stay byte for byte as their sources published them
-exclude: ^corpus/(visio|reference|licenses)/
+exclude: ^corpus/(visio|reference|licenses|render)/|^corpus/(comparison\.html|COMPARISON\.md)$
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
