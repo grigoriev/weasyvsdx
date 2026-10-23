@@ -55,3 +55,7 @@ def test_points(value: str | None, expected: float) -> None:
 @pytest.mark.parametrize(("value", "expected"), [("120.0000%", 1.2), ("100%", 1.0), (None, 0.5), ("1.2", 0.5), ("x%", 0.5)])
 def test_percent(value: str | None, expected: float) -> None:
     assert percent(value, 0.5) == expected
+
+
+def test_a_line_separator_inside_a_text_stays_in_its_line() -> None:
+    assert first_page("startPage()\n  insertText (a b c)\r\nendPage\n") == [("startPage", ""), ("insertText", "a b c"), ("endPage", "")]

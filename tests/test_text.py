@@ -243,3 +243,9 @@ def test_a_block_with_a_width_wraps() -> None:
 )
 def test_black_behind_dark_text_is_white(background: str, color: str, expected: str) -> None:
     assert text_background(background, color) == expected
+
+
+def test_a_line_separator_breaks_the_line() -> None:
+    raw = page("startTextObject ()", f"openParagraph ({PARAGRAPH})", f"openSpan({SPAN})", "insertText (Transparency Geometry Width)", "closeSpan", "closeParagraph", "endTextObject")
+    [text] = text_objects(first_page(raw))
+    assert text.paragraphs[0].spans[0].text == ["Transparency\nGeometry\nWidth"]

@@ -40,6 +40,7 @@ ANCHOR = {"left": 0.0, "start": 0.0, "justify": 0.0, "center": 0.5, "right": 1.0
 VERTICAL_ANCHOR = {"top": 0.0, "middle": 0.5, "bottom": 1.0}
 VERTICAL = {"top": "flex-start", "middle": "center", "bottom": "flex-end"}
 TEXT_ALIGN = "fo:text-align"
+LINE_SEPARATORS = str.maketrans({"\u2028": "\n", "\u2029": "\n"})
 # Text darker than this luminance does not read on black
 DARK = 0.5
 ALIGN = {"left": "left", "center": "center", "right": "right", "end": "right", "justify": "justify", "start": "left"}
@@ -89,7 +90,8 @@ class _Reader:
             if handler is not None:
                 handler(self, name, argument)
             elif name in self.PIECES and self.span is not None:
-                self.span.text.append(self.PIECES[name] or argument)
+                # Visio breaks a line inside a paragraph with U+2028, which HTML does not break at
+                self.span.text.append(self.PIECES[name] or argument.translate(LINE_SEPARATORS))
 
     def open_list(self, name: str, argument: str) -> None:
         level = properties(argument)
