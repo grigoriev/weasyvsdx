@@ -164,6 +164,17 @@ def replace_markers(svg: ET.Element, calls: list[Call]) -> bool:
     return complete
 
 
+def cut_lines(svg: ET.Element, end: str, reach: dict[str, float]) -> dict[str, list[tuple[ET.Element, str]]]:
+    """The paths under each marker of the end with a reach, each with its data cut back by that reach."""
+    lines: dict[str, list[tuple[ET.Element, str]]] = {}
+    for path in svg.iter(f"{{{SVG_NS}}}path"):
+        match = MARKER_URL[end].search(path.get("style") or "")
+        if match and match.group(1) in reach:
+            data = path.get("d") or ""
+            lines.setdefault(match.group(1), []).append((path, shortened(data, reach[match.group(1)], end)))
+    return lines
+
+
 def end_lines(svg: ET.Element, end: str, reach: dict[str, float]) -> None:
     """End each line under one of the markers at its base, and keep the tip of the marker where the line ended.
 
@@ -171,14 +182,8 @@ def end_lines(svg: ET.Element, end: str, reach: dict[str, float]) -> None:
     is cut back. A marker is shared by the lines of one style: where one of them is too short to cut, none is,
     and the marker stays.
     """
-    lines: dict[str, list[tuple[ET.Element, str]]] = {}
-    for path in svg.iter(f"{{{SVG_NS}}}path"):
-        match = MARKER_URL[end].search(path.get("style") or "")
-        if match and match.group(1) in reach:
-            data = path.get("d") or ""
-            lines.setdefault(match.group(1), []).append((path, shortened(data, reach[match.group(1)], end)))
     markers = {marker.get("id"): marker for marker in svg.iter(f"{{{SVG_NS}}}marker")}
-    for marker_id, cut in lines.items():
+    for marker_id, cut in cut_lines(svg, end, reach).items():
         if any(new == (path.get("d") or "") for path, new in cut):
             continue
         for path, new in cut:
