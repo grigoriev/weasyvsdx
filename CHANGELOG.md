@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   SVG: an `<img>`, `<object>` or `<embed>`, a CSS image, an `<image>` inside an SVG. `vsd2xhtml` of
   libvisio draws the first page.
 - The text of a drawing wraps and aligns as in Visio: each text block is HTML in a `<foreignObject>`, from
-  the output of `vsd2raw`, with its padding, vertical alignment, rotation, paragraphs, bullets and fonts.
+  the output of `vsd2raw`, with its padding, vertical alignment, rotation, paragraphs, bullets and fonts,
+  and the character scale of Visio, which widens the glyphs.
 - Arrowheads take their own shape and size. A hollow one hides the line under it, as in Visio.
 - EMF images become SVG through `emf2svg-conv`, and so does the EMF that Office puts inside a WMF image.
 - The tools run in processes of their own, with a timeout and, on Linux, limits on memory and output.

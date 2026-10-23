@@ -166,20 +166,36 @@ def paragraph_style(paragraph: Paragraph, fallback: Properties) -> str:
     return css(style)
 
 
+def text_scale(text: TextObject) -> float:
+    """The horizontal scale of the glyphs that all spans with text share, else 1."""
+    scales = {percent(span.properties.get("style:text-scale"), 1.0) for paragraph in text.paragraphs for span in paragraph.spans if "".join(span.text)}
+    scale = scales.pop() if len(scales) == 1 else 1.0
+    return scale if scale > 0 else 1.0
+
+
 def foreign_object(text: TextObject) -> ET.Element:
     """The text object as a foreignObject of the size of its text block."""
     props = text.properties
     x, y = points(props.get("svg:x")), points(props.get("svg:y"))
     width, height = points(props.get("svg:width")), points(props.get("svg:height"))
-    element = ET.Element(f"{{{SVG_NS}}}foreignObject", {"x": f"{x:g}", "y": f"{y:g}", "width": f"{width:g}", "height": f"{height:g}", "style": "overflow:visible"})
+    scale = text_scale(text)
+    # A scaled font (the Scale of Visio) widens its glyphs: the text is laid out in a block that much
+    # narrower, then stretched to the block, so lines break where the wider glyphs make them break
+    element = ET.Element(f"{{{SVG_NS}}}foreignObject", {"x": f"{x:g}", "y": f"{y:g}", "width": f"{width / scale:g}", "height": f"{height:g}", "style": "overflow:visible"})
+    transforms = []
     angle = float(props.get("librevenge:rotate", "0") or 0)
     if angle:
         # About the center of the block, as the SVG generator of librevenge turns its <text>
-        element.set("transform", f"rotate({angle:g} {x + width / 2:g} {y + height / 2:g})")
-    padding = " ".join(length(points(props.get(f"fo:padding-{side}"))) for side in ("top", "right", "bottom", "left"))
+        transforms.append(f"rotate({angle:g} {x + width / 2:g} {y + height / 2:g})")
+    if scale != 1:
+        transforms.append(f"translate({x:g} 0) scale({scale:g} 1) translate({-x:g} 0)")
+    if transforms:
+        element.set("transform", " ".join(transforms))
+    # The padding keeps its size after the stretch
+    padding = " ".join(length(points(props.get(f"fo:padding-{side}")) / (scale if side in ("left", "right") else 1)) for side in ("top", "right", "bottom", "left"))
     box = {
         "box-sizing": "border-box",
-        "width": length(width),
+        "width": length(width / scale),
         "height": length(height),
         "padding": padding,
         "display": "flex",

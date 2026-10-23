@@ -5,7 +5,7 @@ from __future__ import annotations
 from xml.etree import ElementTree as ET
 
 from weasyvsdx.raw import first_page
-from weasyvsdx.text import SVG_NS, XHTML_NS, foreign_object, replace_text, text_objects
+from weasyvsdx.text import SVG_NS, XHTML_NS, TextObject, foreign_object, replace_text, text_objects
 
 BLOCK = (
     "draw:textarea-vertical-align: middle, fo:padding-bottom: 0.0556in, fo:padding-left: 0.0833in, fo:padding-right: 0.0833in, fo:padding-top: 0.0556in, "
@@ -162,3 +162,34 @@ def test_a_font_of_microsoft_gets_its_free_replacement() -> None:
     [text] = text_objects(first_page(page("startTextObject ()", "openParagraph ()", *[line for call in calls for line in (call, "insertText (a)", "closeSpan")], "closeParagraph", "endTextObject")))
     styles = [span.get("style") for span in html(foreign_object(text))[0]]
     assert styles == ['font-family:"Segoe UI Semibold", "Selawik Semibold", sans-serif', 'font-family:"Cambria", "Caladea", sans-serif', 'font-family:"Arial", sans-serif']
+
+
+def scaled(*scales: str) -> TextObject:
+    spans = [line for scale in scales for line in (f"openSpan(style:text-scale: {scale})", "insertText (a)", "closeSpan")]
+    [text] = text_objects(first_page(page("startTextObject (svg:x: 1in, svg:width: 2in, fo:padding-left: 0.5in, fo:padding-top: 0.5in)", "openParagraph ()", *spans, "closeParagraph", "endTextObject")))
+    return text
+
+
+def test_a_scaled_font_lays_out_narrower_and_stretches() -> None:
+    element = foreign_object(scaled("200.0000%", "200%"))
+    assert element.get("width") == "72"
+    assert element.get("transform") == "translate(72 0) scale(2 1) translate(-72 0)"
+    style = html(element).get("style") or ""
+    assert "width:72px" in style
+    assert "padding:36px 0px 0px 18px" in style
+
+
+def test_a_turned_and_scaled_block_turns_first() -> None:
+    [text] = text_objects(
+        first_page(
+            page("startTextObject (librevenge:rotate: 90, svg:x: 1in, svg:y: 1in, svg:width: 2in, svg:height: 1in)", "openParagraph ()", "openSpan(style:text-scale: 50%)", "insertText (a)", "closeSpan", "closeParagraph", "endTextObject")
+        )
+    )
+    assert foreign_object(text).get("transform") == "rotate(90 144 108) translate(72 0) scale(0.5 1) translate(-72 0)"
+
+
+def test_mixed_or_odd_scales_lay_out_unscaled() -> None:
+    for text in (scaled("200%", "100%"), scaled("0%")):
+        element = foreign_object(text)
+        assert element.get("width") == "144"
+        assert element.get("transform") is None

@@ -107,7 +107,7 @@ Where the license allows it, install the original fonts instead.
    same calls with all their properties, and weasyvsdx takes the rest from there:
    - **Text**: each text block becomes a `<foreignObject>` of its size, with its padding, vertical
      alignment and rotation, and its paragraphs and spans as HTML: alignment, line spacing, indents, bullets,
-     font, size, weight, style, color, underline, highlight, super- and subscript. WeasyPrint lays it out,
+     font, size, scale, weight, style, color, underline, highlight, super- and subscript. WeasyPrint lays it out,
      so labels wrap inside their shapes as in Visio. The generator wrote each text as one line at the left
      edge of its block.
    - **Arrowheads**: each marker gets the shape and size of its line end. The generator drew one stock
@@ -152,8 +152,8 @@ of tens of MB take seconds, 17 of the 250 more than one: libvisio writes the bit
   to its free replacement, else to sans-serif: Calibri to Carlito and Cambria to Caladea, which share their
   metrics, so text breaks where Visio breaks it; Segoe UI to Selawik, the open fallback of Microsoft, close
   to it but not equal. Install them, see "Fonts".
-- Character scaling (the "Scale" of a Visio font) and numbered lists draw as plain text. Fields show the
-  value libvisio formats.
+- Character scaling (the "Scale" of a Visio font) applies where all text of a block shares one scale; a block
+  of mixed scales draws unscaled. Fields show the value libvisio formats.
 - A WMF image without an EMF inside, and an embedded OLE object, are left out. Office writes the EMF into
   each WMF it saves.
 
