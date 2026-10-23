@@ -85,6 +85,20 @@ raises `ConverterNotFoundError` when `vsd2xhtml` is not on the PATH. A later cal
 A drawing that does not convert, or that passes a limit, renders as a broken image: WeasyPrint logs the
 error and leaves it out, and the rest of the document renders.
 
+## Fonts
+
+Visio drawings ask for fonts of Microsoft, Segoe UI and Calibri most. weasyvsdx names a free replacement
+after each, so an installed original still wins:
+
+| Font | Replacement | Debian package |
+|---|---|---|
+| Calibri | Carlito, same metrics | `fonts-crosextra-carlito` |
+| Cambria | Caladea, same metrics | `fonts-crosextra-caladea` |
+| Segoe UI, Light, Semilight, Semibold | Selawik, close, not equal | none: the [release of microsoft/Selawik](https://github.com/microsoft/Selawik/releases) |
+
+Without them, text falls back to the sans-serif font of the system, which breaks lines elsewhere than Visio.
+Where the license allows it, install the original fonts instead.
+
 ## How it works
 
 1. `vsd2xhtml` of libvisio writes each page of the drawing as SVG. weasyvsdx takes the first page, as
@@ -93,12 +107,13 @@ error and leaves it out, and the rest of the document renders.
    same calls with all their properties, and weasyvsdx takes the rest from there:
    - **Text**: each text block becomes a `<foreignObject>` of its size, with its padding, vertical
      alignment and rotation, and its paragraphs and spans as HTML: alignment, line spacing, indents, bullets,
-     font, size, weight, style, color, underline, highlight, super- and subscript. WeasyPrint lays it out,
+     font, size, scale, weight, style, color, underline, highlight, super- and subscript. WeasyPrint lays it out,
      so labels wrap inside their shapes as in Visio. The generator wrote each text as one line at the left
      edge of its block.
    - **Arrowheads**: each marker gets the shape and size of its line end. The generator drew one stock
      arrow for all of them, sized by the width of the line.
-3. EMF images become SVG through `emf2svg-conv`. WeasyPrint cannot read EMF, and left them out.
+3. EMF images become SVG through `emf2svg-conv`, and so does the EMF that Office puts inside a WMF image.
+   WeasyPrint reads neither, and left them out.
 
 The tools parse untrusted input in C, and a broken file can crash them. Each runs in a process of its own,
 in a temporary directory, with a time limit and, on Linux, limits on its memory and its output.
@@ -133,13 +148,14 @@ of tens of MB take seconds, 17 of the 250 more than one: libvisio writes the bit
 ## Known gaps
 
 - Only the first page renders. LibreOffice and the converters before it did the same.
-- A font the system lacks falls back to the sans-serif font. Visio drawings ask for Calibri and Segoe UI
-  most: install Carlito, the metric-compatible replacement of Calibri, for text that breaks where Visio
-  breaks it. Segoe UI has none.
-- Character scaling (the "Scale" of a Visio font) and numbered lists draw as plain text. Fields show the
-  value libvisio formats.
-- WMF images and embedded OLE objects are left out: neither WeasyPrint nor emf2svg reads them.
-- A line under a hollow arrowhead shows through it, where LibreOffice shortens the line.
+- Visio drawings ask for Calibri and Segoe UI most, fonts of Microsoft. A font the system lacks falls back
+  to its free replacement, else to sans-serif: Calibri to Carlito and Cambria to Caladea, which share their
+  metrics, so text breaks where Visio breaks it; Segoe UI to Selawik, the open fallback of Microsoft, close
+  to it but not equal. Install them, see "Fonts".
+- Character scaling (the "Scale" of a Visio font) applies where all text of a block shares one scale; a block
+  of mixed scales draws unscaled. Fields show the value libvisio formats.
+- A WMF image without an EMF inside, and an embedded OLE object, are left out. Office writes the EMF into
+  each WMF it saves.
 
 ## Development
 

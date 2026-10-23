@@ -19,6 +19,18 @@ from .raw import Call, Properties, percent, points, properties
 
 SVG_NS = "http://www.w3.org/2000/svg"
 XHTML_NS = "http://www.w3.org/1999/xhtml"
+# Free fonts in place of the fonts of Microsoft that Visio drawings ask for most: Carlito and Caladea share
+# the metrics of Calibri and Cambria, so text breaks where Visio breaks it; Selawik is the open fallback
+# Microsoft made for Segoe UI, close to it but not equal. Each comes after the font itself, so an installed
+# original still wins.
+REPLACEMENTS = {
+    "calibri": "Carlito",
+    "cambria": "Caladea",
+    "segoe ui": "Selawik",
+    "segoe ui light": "Selawik Light",
+    "segoe ui semilight": "Selawik Semilight",
+    "segoe ui semibold": "Selawik Semibold",
+}
 VERTICAL = {"top": "flex-start", "middle": "center", "bottom": "flex-end"}
 ALIGN = {"left": "left", "center": "center", "right": "right", "end": "right", "justify": "justify", "start": "left"}
 
@@ -98,9 +110,11 @@ def font(props: Properties) -> dict[str, str]:
     """The font family and size of a span."""
     style = {}
     if "style:font-name" in props:
-        # A font the system lacks falls back to sans-serif, as Visio diagrams mostly use sans-serif fonts
+        # A font the system lacks falls back to its replacement, else to sans-serif, as Visio diagrams
+        # mostly use sans-serif fonts
         family = props["style:font-name"].replace("\\", "").replace('"', "")
-        style["font-family"] = f'"{family}", sans-serif'
+        families = [family, REPLACEMENTS.get(family.lower())]
+        style["font-family"] = ", ".join(f'"{name}"' for name in families if name) + ", sans-serif"
     if "fo:font-size" in props:
         style["font-size"] = length(points(props["fo:font-size"], 12.0))
     return style
@@ -152,20 +166,36 @@ def paragraph_style(paragraph: Paragraph, fallback: Properties) -> str:
     return css(style)
 
 
+def text_scale(text: TextObject) -> float:
+    """The horizontal scale of the glyphs that all spans with text share, else 1."""
+    scales = {percent(span.properties.get("style:text-scale"), 1.0) for paragraph in text.paragraphs for span in paragraph.spans if "".join(span.text)}
+    scale = scales.pop() if len(scales) == 1 else 1.0
+    return scale if scale > 0 else 1.0
+
+
 def foreign_object(text: TextObject) -> ET.Element:
     """The text object as a foreignObject of the size of its text block."""
     props = text.properties
     x, y = points(props.get("svg:x")), points(props.get("svg:y"))
     width, height = points(props.get("svg:width")), points(props.get("svg:height"))
-    element = ET.Element(f"{{{SVG_NS}}}foreignObject", {"x": f"{x:g}", "y": f"{y:g}", "width": f"{width:g}", "height": f"{height:g}", "style": "overflow:visible"})
+    scale = text_scale(text)
+    # A scaled font (the Scale of Visio) widens its glyphs: the text is laid out in a block that much
+    # narrower, then stretched to the block, so lines break where the wider glyphs make them break
+    element = ET.Element(f"{{{SVG_NS}}}foreignObject", {"x": f"{x:g}", "y": f"{y:g}", "width": f"{width / scale:g}", "height": f"{height:g}", "style": "overflow:visible"})
+    transforms = []
     angle = float(props.get("librevenge:rotate", "0") or 0)
     if angle:
         # About the center of the block, as the SVG generator of librevenge turns its <text>
-        element.set("transform", f"rotate({angle:g} {x + width / 2:g} {y + height / 2:g})")
-    padding = " ".join(length(points(props.get(f"fo:padding-{side}"))) for side in ("top", "right", "bottom", "left"))
+        transforms.append(f"rotate({angle:g} {x + width / 2:g} {y + height / 2:g})")
+    if scale != 1:
+        transforms.append(f"translate({x:g} 0) scale({scale:g} 1) translate({-x:g} 0)")
+    if transforms:
+        element.set("transform", " ".join(transforms))
+    # The padding keeps its size after the stretch
+    padding = " ".join(length(points(props.get(f"fo:padding-{side}")) / (scale if side in ("left", "right") else 1)) for side in ("top", "right", "bottom", "left"))
     box = {
         "box-sizing": "border-box",
-        "width": length(width),
+        "width": length(width / scale),
         "height": length(height),
         "padding": padding,
         "display": "flex",

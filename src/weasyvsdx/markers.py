@@ -23,6 +23,8 @@ from .raw import Call, Properties, percent, points, properties
 
 SVG_NS = "http://www.w3.org/2000/svg"
 ENDS = {"start": "startMarker", "end": "endMarker"}
+# The start of each subpath of path data
+SUBPATH = re.compile(r"[Mm]")
 PATH_TOKEN = re.compile(r"[MmLlHhVvCcSsQqTtAaZz]|[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?")
 # The numbers each command of path data takes
 ARGUMENTS = {"M": 2, "L": 2, "H": 1, "V": 1, "C": 6, "S": 4, "Q": 4, "T": 2, "A": 7}
@@ -103,9 +105,15 @@ def fill_marker(marker: ET.Element, style: Properties, end: str) -> bool:
     marker.attrib.pop("viewBox", None)
     for child in list(marker):
         marker.remove(child)
+    data = style[f"draw:marker-{end}-path"]
+    transform = f"rotate({angle}) scale({scale:g}) translate({-(x + box_width / 2):g} {-tip_y:g})"
+    if len(SUBPATH.findall(data)) > 1:
+        # A hollow marker, an outline around a hole, hides the line under it as in LibreOffice and Visio,
+        # which end the line at the marker: white over its whole outline first
+        ET.SubElement(marker, f"{{{SVG_NS}}}path", {"d": data, "transform": transform, "fill": "#ffffff", "stroke": "none"})
     shape = ET.SubElement(marker, f"{{{SVG_NS}}}path")
-    shape.set("d", style[f"draw:marker-{end}-path"])
-    shape.set("transform", f"rotate({angle}) scale({scale:g}) translate({-(x + box_width / 2):g} {-tip_y:g})")
+    shape.set("d", data)
+    shape.set("transform", transform)
     # A marker takes the color of its line, which the marker element does not inherit
     shape.set("fill", style.get("svg:stroke-color", "#000000"))
     opacity = percent(style.get("svg:stroke-opacity"), 1.0)

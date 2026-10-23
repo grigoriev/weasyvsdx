@@ -73,3 +73,23 @@ def emf_rectangle(left: int = 10, top: int = 10, right: int = 90, bottom: int = 
     # description length and offset, palette entries, device size in pixels and in millimeters
     header = struct.pack("<II4i4iIIIIHHIIIiiii", 1, 88, 0, 0, 100, 60, 0, 0, 2646, 1588, 0x464D4520, 0x10000, size, 3, 1, 0, 0, 0, 0, 1920, 1080, 508, 286)
     return header + rectangle + eof
+
+
+def wmf_holding(emf: bytes, chunk: int = 64, placeable: bool = False) -> bytes:
+    """A WMF that holds emf in META_ESCAPE comment records of chunk bytes each, as Office writes it."""
+    records = []
+    pieces = [emf[start : start + chunk] for start in range(0, len(emf), chunk)]
+    remaining = len(emf)
+    for piece in pieces:
+        remaining -= len(piece)
+        # "WMFC", type 1, version, checksum, flags, record count, this chunk, the bytes to come, the whole EMF
+        comment = struct.pack("<4sIIHIIIII", b"WMFC", 1, 0x10000, 0, 0, len(pieces), len(piece), remaining, len(emf)) + piece
+        comment += b"\0" * (len(comment) % 2)
+        parameters = struct.pack("<HH", 0x000F, len(comment)) + comment
+        records.append(struct.pack("<IH", 3 + len(parameters) // 2, 0x0626) + parameters)
+    records.append(struct.pack("<IH", 3, 0x0000))
+    body = b"".join(records)
+    # META_HEADER: type, header size in words, version, file size in words, objects, largest record, members
+    header = struct.pack("<HHHIHIH", 1, 9, 0x0300, (18 + len(body)) // 2, 0, 0, 0)
+    prefix = struct.pack("<IH4hHI", 0x9AC6CDD7, 0, 0, 0, 100, 60, 1440, 0) + b"\0\0" if placeable else b""
+    return prefix + header + body
