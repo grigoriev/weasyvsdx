@@ -20,11 +20,13 @@ import hashlib
 import html
 import json
 import shutil
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
 from typing import Any
 
+import weasyprint
 from drawings import CORPUS, ROOT, Drawing, drawings
 from imaging import METRIC_DPI, ink_box, raster
 from make_references import export_all
@@ -51,17 +53,25 @@ def corpus() -> list[Drawing]:
     return [drawing for drawing in drawings() if drawing.group != "azure"]
 
 
-def digest(drawing: Drawing) -> str:
-    return hashlib.sha256(drawing.path.read_bytes()).hexdigest()
+def libreoffice_version() -> str:
+    result = subprocess.run(["soffice", "--version"], capture_output=True, text=True, check=False, timeout=120)  # noqa: S607  the soffice of the visual image
+    return result.stdout.strip()
+
+
+def digest(drawing: Drawing, version: str) -> str:
+    """The key of a cached PDF: the drawing and the LibreOffice that exported it."""
+    return hashlib.sha256(version.encode() + b"\0" + drawing.path.read_bytes()).hexdigest()
 
 
 def export_libreoffice(items: list[Drawing]) -> None:
     """The PDF of LibreOffice for each drawing that lacks one: the same page as its PNG reference, in vector.
 
-    Next to each PDF lies the SHA-256 of its drawing: a drawing that changed gets its PDF anew.
+    Next to each PDF lies the SHA-256 of its drawing and of the LibreOffice version: a drawing that changed,
+    or another LibreOffice, gets its PDF anew.
     """
     target = PDFS["libreoffice"]
-    missing = [drawing for drawing in items if not (target / f"{drawing.name}.pdf").exists() or not (target / f"{drawing.name}.sha256").exists() or (target / f"{drawing.name}.sha256").read_text() != digest(drawing)]
+    version = libreoffice_version()
+    missing = [drawing for drawing in items if not (target / f"{drawing.name}.pdf").exists() or not (target / f"{drawing.name}.sha256").exists() or (target / f"{drawing.name}.sha256").read_text() != digest(drawing, version)]
     for drawing in missing:
         (target / f"{drawing.name}.pdf").unlink(missing_ok=True)
     if not missing:
@@ -79,7 +89,7 @@ def export_libreoffice(items: list[Drawing]) -> None:
             pdf = folder / "pdf" / f"{drawing.name}.pdf"
             if pdf.exists():
                 shutil.copyfile(pdf, target / f"{drawing.name}.pdf")
-                (target / f"{drawing.name}.sha256").write_text(digest(drawing))
+                (target / f"{drawing.name}.sha256").write_text(digest(drawing, version))
 
 
 def save(image: Image.Image, key: str, name: str) -> None:
@@ -203,8 +213,8 @@ def main() -> int:
         if drawing.reference.exists() and len(drawn) != len(RENDERERS):
             failed = True
             print(f"{drawing.name}: no panel for {', '.join(key for key in RENDERERS if key not in drawn)}")
-    baseline = CORPUS / "baseline.json"
-    version = json.loads(baseline.read_text()).get("weasyprint", "") if baseline.exists() else ""
+    # The WeasyPrint the panels came from: the bench runs in this same image
+    version = weasyprint.__version__
     measured = mismatches()
     PAGE.write_text(markdown(items, measured, html.escape(version)))
     HTML_PAGE.write_text(html_page(items, sizes, measured, version))
