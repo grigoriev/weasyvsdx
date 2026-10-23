@@ -21,7 +21,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
-from . import images, markers, paths, raw, text
+from . import hidden, images, markers, paths, raw, text
 from .errors import ConversionError
 
 SVG_NS = "http://www.w3.org/2000/svg"
@@ -133,12 +133,14 @@ def convert(data: bytes, tools: Tools, limits: Limits) -> bytes:
 
 
 def redraw(page: ET.Element, job: Job) -> None:
-    """Draw the text and the arrowheads of the page anew from what vsd2raw prints."""
+    """Draw the text and the arrowheads of the page anew from what vsd2raw prints, and drop its hidden shapes."""
     try:
         calls = raw.first_page(job.result().decode("utf-8", errors="replace"))
     except ConversionError as e:
         LOGGER.warning("The text and arrowheads of a Visio drawing stay as vsd2xhtml writes them: %s", e)
         return
+    if not hidden.remove_hidden(page, calls):
+        LOGGER.warning("Hidden shapes of a Visio drawing may show: vsd2raw and vsd2xhtml count other paths")
     if not text.replace_text(page, text.text_objects(calls)):
         LOGGER.warning("The text of a Visio drawing stays as vsd2xhtml writes it: vsd2raw and vsd2xhtml count other text objects")
     if not markers.replace_markers(page, calls):
