@@ -26,8 +26,9 @@ SVG_NS = "http://www.w3.org/2000/svg"
 ENDS = {"start": "startMarker", "end": "endMarker"}
 # The start of each subpath of path data
 SUBPATH = re.compile(r"[Mm]")
-# A command letter, or a number with its sign and exponent; float() rejects what is no number
-PATH_TOKEN = re.compile(r"[A-Za-z]|[-+]?[0-9.]+(?:[eE][-+]?[0-9]+)?")
+# A command letter, or a number with its sign and exponent. A second dot starts the next number, as SVG
+# reads ".5.5" as two numbers
+PATH_TOKEN = re.compile(r"[A-Za-z]|[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?")
 # The numbers each command of path data takes
 ARGUMENTS = {"M": 2, "L": 2, "H": 1, "V": 1, "C": 6, "S": 4, "Q": 4, "T": 2, "A": 7}
 
@@ -87,7 +88,7 @@ def path_box(data: str) -> tuple[float, float, float, float] | None:
             if command in "Mm":
                 start_x, start_y = x, y
     except ValueError:
-        # A number of two dots, as "1.2.3"
+        # A command letter where a number belongs
         return None
     xs, ys = [px for px, _ in found], [py for _, py in found]
     if not xs or max(xs) == min(xs) or max(ys) == min(ys):
