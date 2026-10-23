@@ -213,6 +213,8 @@ def test_a_block_of_no_width_is_as_wide_as_its_text() -> None:
     centered = block(None, "middle")
     assert {name: centered.get(name) for name in ("x", "y", "width", "height")} == {"x": "-928", "y": "-928", "width": "2000", "height": "2000"}
     assert "white-space:pre;" in (html(centered).get("style") or "")
+    # The text of a paragraph with no alignment centers on the point, as the block does
+    assert "text-align:center" in (html(centered).get("style") or "")
     left, right = block("left", "top"), block("end", "bottom")
     assert (left.get("x"), left.get("y")) == ("72", "72")
     assert (right.get("x"), right.get("y")) == ("-1928", "-1928")
@@ -221,3 +223,4 @@ def test_a_block_of_no_width_is_as_wide_as_its_text() -> None:
 def test_a_block_with_a_width_wraps() -> None:
     [text] = text_objects(first_page(page(f"startTextObject ({BLOCK})", "endTextObject")))
     assert "white-space:pre-wrap" in (html(foreign_object(text)).get("style") or "")
+    assert "text-align" not in (html(foreign_object(text)).get("style") or "")

@@ -250,6 +250,8 @@ def foreign_object(text: TextObject) -> ET.Element:
         "justify-content": VERTICAL.get(props.get("draw:textarea-vertical-align", "top"), "flex-start"),
         # A block of no width is as wide as its text in Visio, which never breaks it
         "white-space": "pre" if auto_width else "pre-wrap",
+        # and its text aligns as the block is placed, else a paragraph with no alignment would start at its left
+        **({"text-align": ALIGN.get(paragraph_align(text), "center")} if auto_width else {}),
         "overflow-wrap": "break-word",
     }
     # The XHTML namespace as an attribute, as convert.serialize() writes the SVG one: tostring() would give
