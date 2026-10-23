@@ -161,6 +161,8 @@ of tens of MB take seconds, 17 of the 250 more than one: libvisio writes the bit
   of mixed scales draws unscaled. Fields show the value libvisio formats.
 - A WMF image without an EMF inside is left out, and so is an embedded OLE object whose picture is no EMF.
   Office writes the EMF into each WMF it saves, and into the picture of each OLE object.
+- A shape on a hidden or non-printing layer goes, but its text would stay: libvisio marks the path of
+  such a shape as hidden, not its text.
 - An EMF draws its GDI records only. Part of an icon that Office drew in EMF+ alone, the newer records an EMF
   can carry in its comments, stays out: `emf2svg-conv` does not read EMF+, LibreOffice does.
 
