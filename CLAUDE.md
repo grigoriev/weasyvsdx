@@ -51,7 +51,8 @@ uv build                # wheel and sdist
   document order for the n-th `startTextObject`. Paragraphs and spans become HTML in a flex column.
 - `markers.py`: the k-th `startMarker`/`endMarker` gets the path of the k-th style with that marker, scaled
   by the box of its path, as LibreOffice scales it.
-- `images.py`: each `data:image/emf` image becomes SVG through `emf2svg-conv`.
+- `images.py`: each `data:image/emf` image becomes SVG through `emf2svg-conv`, and the EMF a `data:image/wmf`
+  holds in its MS-WMF comment records (`embedded_emf()`) too.
 - `errors.py`: `ConversionError`.
 
 A count that differs between `vsd2xhtml` and `vsd2raw` leaves the page as `vsd2xhtml` wrote it, with a
@@ -60,7 +61,7 @@ warning: the mapping relies on both walking the drawing in one order.
 ## Testing
 
 - `tests/helpers.py` installs weasyvsdx, renders HTML with WeasyPrint, reads text back with PDFium, and
-  builds a minimal EMF (`emf_rectangle()`).
+  builds a minimal EMF (`emf_rectangle()`) and a WMF that holds one (`wmf_holding()`).
 - Fake tools are shell scripts written into `tmp_path` (`script()` in `test_convert.py`).
 - Coverage is 100% of lines and branches.
 

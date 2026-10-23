@@ -112,7 +112,8 @@ Where the license allows it, install the original fonts instead.
      edge of its block.
    - **Arrowheads**: each marker gets the shape and size of its line end. The generator drew one stock
      arrow for all of them, sized by the width of the line.
-3. EMF images become SVG through `emf2svg-conv`. WeasyPrint cannot read EMF, and left them out.
+3. EMF images become SVG through `emf2svg-conv`, and so does the EMF that Office puts inside a WMF image.
+   WeasyPrint reads neither, and left them out.
 
 The tools parse untrusted input in C, and a broken file can crash them. Each runs in a process of its own,
 in a temporary directory, with a time limit and, on Linux, limits on its memory and its output.
@@ -153,7 +154,8 @@ of tens of MB take seconds, 17 of the 250 more than one: libvisio writes the bit
   to it but not equal. Install them, see "Fonts".
 - Character scaling (the "Scale" of a Visio font) and numbered lists draw as plain text. Fields show the
   value libvisio formats.
-- WMF images and embedded OLE objects are left out: neither WeasyPrint nor emf2svg reads them.
+- A WMF image without an EMF inside, and an embedded OLE object, are left out. Office writes the EMF into
+  each WMF it saves.
 
 ## Development
 
