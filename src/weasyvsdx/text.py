@@ -40,6 +40,10 @@ ANCHOR = {"left": 0.0, "start": 0.0, "justify": 0.0, "center": 0.5, "right": 1.0
 VERTICAL_ANCHOR = {"top": 0.0, "middle": 0.5, "bottom": 1.0}
 VERTICAL = {"top": "flex-start", "middle": "center", "bottom": "flex-end"}
 TEXT_ALIGN = "fo:text-align"
+COLOR = "fo:color"
+LINE_SEPARATORS = str.maketrans({"\u2028": "\n", "\u2029": "\n"})
+# Text darker than this luminance does not read on black
+DARK = 0.5
 ALIGN = {"left": "left", "center": "center", "right": "right", "end": "right", "justify": "justify", "start": "left"}
 
 
@@ -87,7 +91,8 @@ class _Reader:
             if handler is not None:
                 handler(self, name, argument)
             elif name in self.PIECES and self.span is not None:
-                self.span.text.append(self.PIECES[name] or argument)
+                # Visio breaks a line inside a paragraph with U+2028, which HTML does not break at
+                self.span.text.append(self.PIECES[name] or argument.translate(LINE_SEPARATORS))
 
     def open_list(self, name: str, argument: str) -> None:
         level = properties(argument)
@@ -161,6 +166,29 @@ def font(props: Properties) -> dict[str, str]:
     return style
 
 
+def luminance(color: str) -> float:
+    """The relative luminance of a #rrggbb color, 0 for black to 1 for white; 0 for another notation."""
+    if len(color) != 7 or not color.startswith("#"):
+        return 0.0
+    try:
+        red, green, blue = (int(color[index : index + 2], 16) / 255 for index in (1, 3, 5))
+    except ValueError:
+        return 0.0
+    return 0.2126 * red + 0.7152 * green + 0.0722 * blue
+
+
+def text_background(background: str, color: str) -> str:
+    """The text background libvisio gives, white where it gives black behind dark text.
+
+    Visio stores the background as an index into its palette, white being 2. libvisio 0.1.7 takes the RGB
+    bytes next to the index of a VSD, which are 0 for a palette color, and so writes black: the dimensions of
+    a floor plan became black bars. Text that dark on black never reads, so black behind it means white.
+    """
+    if background.lower() == "#000000" and luminance(color) < DARK:
+        return "#ffffff"
+    return background
+
+
 def span_style(span: Span) -> str:
     props = span.properties
     style = font(props)
@@ -168,13 +196,13 @@ def span_style(span: Span) -> str:
         style["font-weight"] = props["fo:font-weight"]
     if "fo:font-style" in props:
         style["font-style"] = props["fo:font-style"]
-    if "fo:color" in props:
-        style["color"] = props["fo:color"]
+    if COLOR in props:
+        style["color"] = props[COLOR]
         opacity = percent(props.get("svg:fill-opacity"), 1.0)
         if opacity < 1:
             style["opacity"] = f"{opacity:g}"
     if "fo:background-color" in props:
-        style["background-color"] = props["fo:background-color"]
+        style["background-color"] = text_background(props["fo:background-color"], props.get(COLOR, "#000000"))
     if props.get("style:text-underline-type", "none") != "none":
         style["text-decoration"] = "underline"
     position = props.get("style:text-position", "")
@@ -298,14 +326,25 @@ def add_paragraphs(block: ET.Element, text: TextObject) -> None:
             ET.SubElement(node, "br")
 
 
-def replace_text(svg: ET.Element, objects: list[TextObject]) -> bool:
-    """Replace each <text> of the page with its foreignObject. False, and nothing changed, when the counts differ."""
+def plain(text: TextObject) -> str:
+    """The characters of a text object."""
+    return "".join("".join(span.text) for paragraph in text.paragraphs for span in paragraph.spans)
+
+
+def replace_text(svg: ET.Element, objects: list[TextObject], hidden: frozenset[int] = frozenset()) -> bool:
+    """Replace each <text> of the page with its foreignObject, or remove it where hidden lists its index.
+
+    False, and nothing changed, when the counts differ.
+    """
     # In document order, the order of the calls: a <text> of the page comes after one in a group before it
     texts = list(svg.iter(f"{{{SVG_NS}}}text"))
     if len(texts) != len(objects):
         return False
     parents = {child: parent for parent in svg.iter() for child in parent}
-    for element, text in zip(texts, objects, strict=True):
+    for index, (element, text) in enumerate(zip(texts, objects, strict=True)):
         parent = parents[element]
-        parent[list(parent).index(element)] = foreign_object(text)
+        if index in hidden:
+            parent.remove(element)
+        else:
+            parent[list(parent).index(element)] = foreign_object(text)
     return True

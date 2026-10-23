@@ -4,8 +4,10 @@ from __future__ import annotations
 
 from xml.etree import ElementTree as ET
 
+import pytest
+
 from weasyvsdx.raw import first_page
-from weasyvsdx.text import SVG_NS, XHTML_NS, TextObject, foreign_object, replace_text, text_objects
+from weasyvsdx.text import SVG_NS, XHTML_NS, TextObject, foreign_object, plain, replace_text, text_background, text_objects
 
 BLOCK = (
     "draw:textarea-vertical-align: middle, fo:padding-bottom: 0.0556in, fo:padding-left: 0.0833in, fo:padding-right: 0.0833in, fo:padding-top: 0.0556in, "
@@ -141,6 +143,15 @@ def test_each_text_becomes_its_foreign_object_in_place() -> None:
     assert svg[1].get("x") == "144"
 
 
+def test_a_hidden_text_goes() -> None:
+    svg = ET.fromstring(f'<svg xmlns="{SVG_NS}"><g><text>a</text></g><text>b</text></svg>')
+    objects = text_objects(first_page(page("startTextObject ()", f"openSpan({SPAN})", "insertText (User)", "closeSpan", "endTextObject", "startTextObject ()", "endTextObject")))
+    assert [plain(item) for item in objects] == ["User", ""]
+    assert replace_text(svg, objects, frozenset({0}))
+    assert list(svg[0]) == []
+    assert svg[1].tag == f"{{{SVG_NS}}}foreignObject"
+
+
 def test_other_counts_leave_the_text_alone() -> None:
     svg = ET.fromstring(f'<svg xmlns="{SVG_NS}"><text>a</text></svg>')
     assert not replace_text(svg, [])
@@ -224,3 +235,26 @@ def test_a_block_with_a_width_wraps() -> None:
     [text] = text_objects(first_page(page(f"startTextObject ({BLOCK})", "endTextObject")))
     assert "white-space:pre-wrap" in (html(foreign_object(text)).get("style") or "")
     assert "text-align" not in (html(foreign_object(text)).get("style") or "")
+
+
+@pytest.mark.parametrize(
+    ("background", "color", "expected"),
+    [
+        # Black behind dark text: the palette white that libvisio reads as black
+        ("#000000", "#000000", "#ffffff"),
+        ("#000000", "#0070c0", "#ffffff"),
+        # Light text on black, and any other background, stay
+        ("#000000", "#ffffff", "#000000"),
+        ("#ffff00", "#000000", "#ffff00"),
+        ("#000000", "red", "#ffffff"),
+        ("#000000", "#zzzzzz", "#ffffff"),
+    ],
+)
+def test_black_behind_dark_text_is_white(background: str, color: str, expected: str) -> None:
+    assert text_background(background, color) == expected
+
+
+def test_a_line_separator_breaks_the_line() -> None:
+    raw = page("startTextObject ()", f"openParagraph ({PARAGRAPH})", f"openSpan({SPAN})", "insertText (Transparency Geometry Width)", "closeSpan", "closeParagraph", "endTextObject")
+    [text] = text_objects(first_page(raw))
+    assert text.paragraphs[0].spans[0].text == ["Transparency\nGeometry\nWidth"]

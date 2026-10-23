@@ -12,7 +12,7 @@ import helpers
 import pytest
 
 from weasyvsdx.errors import ConversionError
-from weasyvsdx.images import SVG_NS, XLINK_HREF, embedded_emf, ole_preview, presentation_emf, replace_emf
+from weasyvsdx.images import SVG_NS, XLINK_HREF, embedded_emf, ole_preview, presentation_emf, replace_emf, upright_bitmaps
 
 XLINK_NS = "http://www.w3.org/1999/xlink"
 
@@ -169,3 +169,44 @@ def test_an_ole_object_of_a_huge_sector_size_stays(tmp_path: Path, caplog: pytes
         assert replace_emf(image, lambda path: b"<svg/>", tmp_path) == 0
     assert image[0].get(XLINK_HREF) == href
     assert "An image of a Visio drawing (OLE object) stays out" in caplog.text
+
+
+def test_a_bitmap_drawn_to_a_negative_height_turns_upright() -> None:
+    rows = [b"\x01\x01\x01\x01", b"\x02\x02\x02\x02", b"\x03\x03\x03\x03"]
+    record = helpers.stretch_dibits(rows, -30)
+    upright = upright_bitmaps(helpers.emf_rectangle() + record)[len(helpers.emf_rectangle()) :]
+    # The destination starts where the flipped one ended and runs down, over the rows in reverse
+    assert struct.unpack_from("<i", upright, 28) == (70,)
+    assert struct.unpack_from("<i", upright, 76) == (30,)
+    assert upright[120:] == b"".join(reversed(rows))
+    # The whole bitmap as source stays the whole bitmap
+    assert struct.unpack_from("<i", upright, 36) == (0,)
+
+
+def test_a_band_of_rows_as_source_stays_that_band() -> None:
+    rows = [b"\x01" * 4, b"\x02" * 4, b"\x03" * 4]
+    record = bytearray(helpers.stretch_dibits(rows, -30))
+    # The first row only: after the reversal it is the last
+    struct.pack_into("<ii", record, 40, 4, 1)
+    struct.pack_into("<i", record, 36, 0)
+    upright = upright_bitmaps(bytes(record))
+    assert struct.unpack_from("<i", upright, 36) == (2,)
+
+
+def test_other_bitmaps_stay() -> None:
+    rows = [b"\x01" * 4, b"\x02" * 4]
+    for record in (
+        helpers.stretch_dibits(rows, 30),
+        helpers.stretch_dibits(rows, -30, compression=1),
+        # More rows than the bits hold
+        helpers.stretch_dibits(rows, -30, width=40),
+    ):
+        assert upright_bitmaps(record) == record
+    # No bits per row, which any count of rows would fit: the height of 2**31 - 1 rows stays unread
+    empty = bytearray(helpers.stretch_dibits(rows, -30, bit_count=0))
+    struct.pack_into("<i", empty, 88, 2**31 - 1)
+    assert upright_bitmaps(bytes(empty)) == bytes(empty)
+    # A record cut short, or of a size past the end, ends the walk
+    whole = helpers.stretch_dibits(rows, -30)
+    assert upright_bitmaps(whole[:60]) == whole[:60]
+    assert upright_bitmaps(struct.pack("<II", 81, 4)) == struct.pack("<II", 81, 4)

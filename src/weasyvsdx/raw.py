@@ -41,7 +41,8 @@ def first_page(raw: str) -> list[Call]:
     """The calls of the first page, each its name and its argument."""
     calls: list[Call] = []
     pages = 0
-    for line in raw.splitlines():
+    # Lines end at a newline only: splitlines() also breaks at the U+2028 that Visio puts inside a text
+    for line in raw.split("\n"):
         call = parse_call(line)
         if call is None:
             continue

@@ -146,7 +146,7 @@ Each drawing of the corpus in three renderings: LibreOffice, its PDF export; lib
 
 ### libvisio-tdf154379-DrawingUnits-type-vsd
 
-[`visio/libvisio/tdf154379-DrawingUnits-type.vsd`](visio/libvisio/tdf154379-DrawingUnits-type.vsd) · mismatch with LibreOffice: libvisio 35.8 %, weasyvsdx 33.5 %
+[`visio/libvisio/tdf154379-DrawingUnits-type.vsd`](visio/libvisio/tdf154379-DrawingUnits-type.vsd) · mismatch with LibreOffice: libvisio 35.8 %, weasyvsdx 33 %
 
 | LibreOffice | libvisio | weasyvsdx |
 |---|---|---|
@@ -226,7 +226,7 @@ Each drawing of the corpus in three renderings: LibreOffice, its PDF export; lib
 
 ### libvisio-Visio11PlanWithDimensions-vsd
 
-[`visio/libvisio/Visio11PlanWithDimensions.vsd`](visio/libvisio/Visio11PlanWithDimensions.vsd) · mismatch with LibreOffice: libvisio 10.9 %, weasyvsdx 10.3 %
+[`visio/libvisio/Visio11PlanWithDimensions.vsd`](visio/libvisio/Visio11PlanWithDimensions.vsd) · mismatch with LibreOffice: libvisio 10.9 %, weasyvsdx 7.9 %
 
 | LibreOffice | libvisio | weasyvsdx |
 |---|---|---|
@@ -258,7 +258,7 @@ Each drawing of the corpus in three renderings: LibreOffice, its PDF export; lib
 
 ### libvisio-Visio5PlanWithDimensions-vsd
 
-[`visio/libvisio/Visio5PlanWithDimensions.vsd`](visio/libvisio/Visio5PlanWithDimensions.vsd) · mismatch with LibreOffice: libvisio 40.2 %, weasyvsdx 40.1 %
+[`visio/libvisio/Visio5PlanWithDimensions.vsd`](visio/libvisio/Visio5PlanWithDimensions.vsd) · mismatch with LibreOffice: libvisio 40.2 %, weasyvsdx 29.4 %
 
 | LibreOffice | libvisio | weasyvsdx |
 |---|---|---|
@@ -274,7 +274,7 @@ Each drawing of the corpus in three renderings: LibreOffice, its PDF export; lib
 
 ### libvisio-Visio6PlanWithDimensions-vsd
 
-[`visio/libvisio/Visio6PlanWithDimensions.vsd`](visio/libvisio/Visio6PlanWithDimensions.vsd) · mismatch with LibreOffice: libvisio 31.3 %, weasyvsdx 29.2 %
+[`visio/libvisio/Visio6PlanWithDimensions.vsd`](visio/libvisio/Visio6PlanWithDimensions.vsd) · mismatch with LibreOffice: libvisio 31.3 %, weasyvsdx 23.8 %
 
 | LibreOffice | libvisio | weasyvsdx |
 |---|---|---|
