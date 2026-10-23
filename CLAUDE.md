@@ -30,6 +30,7 @@ make visual             # visual bench in Docker (stage "visual"), report in too
 make visual-baseline    # write corpus/baseline.json
 make visual-check       # compare with corpus/baseline.json, fails when a drawing got worse
 make references         # export the LibreOffice references again
+make comparison         # write corpus/COMPARISON.md, corpus/comparison.html (GitHub Pages), panels in corpus/render
 uv build                # wheel and sdist
 ```
 
@@ -89,7 +90,8 @@ their icons may not be redistributed.
 - The SVG goes back through WeasyPrint and the URL fetcher of the caller: nothing may fetch on its own.
 - WeasyPrint internals change between majors: `test_the_hooked_loader_keeps_its_shape` must fail when the
   hooked loader changes.
-- A rendering change updates `corpus/baseline.json` and, for a new gap or a fixed one, the README.
+- A rendering change updates `corpus/baseline.json`, the comparison (`make comparison`) and, for a new gap or a
+  fixed one, the README. The comparison holds the corpus of the repository only, never an Azure diagram.
 
 ## CI/CD
 

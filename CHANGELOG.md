@@ -18,3 +18,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - EMF images become SVG through `emf2svg-conv`.
 - The tools run in processes of their own, with a timeout and, on Linux, limits on memory and output.
   A drawing that does not convert renders as a broken image.
+- A comparison page on GitHub Pages shows each drawing of the corpus in LibreOffice, as libvisio writes it,
+  and in weasyvsdx.

@@ -114,6 +114,11 @@ drawings and compares each with its PNG export by LibreOffice 25.2:
 - the 250 Visio diagrams of the Azure Architecture Center, which the bench downloads into a cache: their
   icons may not be copied into this repository, see [`corpus/SOURCES.md`](https://github.com/grigoriev/weasyvsdx/blob/main/corpus/SOURCES.md).
 
+The [comparison page](https://grigoriev.github.io/weasyvsdx/corpus/comparison.html) shows each drawing of the
+corpus in LibreOffice, as libvisio writes it, and in weasyvsdx, side by side, with a swipe between any two;
+[`corpus/COMPARISON.md`](https://github.com/grigoriev/weasyvsdx/blob/main/corpus/COMPARISON.md) holds the same in the repository. The Azure
+diagrams are not on it: their icons may not be redistributed.
+
 All but two convert: libvisio crashes on `recursion-cycle.vsdx` and refuses `tab-short-prefix.vsdx`, two
 of its tests that are broken on purpose. LibreOffice fails on the same two. Geometry, fills, gradients,
 dashes, arrowheads and images match. The text differs most, and LibreOffice is no exact reference for it:
@@ -145,6 +150,7 @@ Tests and the bench run in Docker, since WeasyPrint needs Pango and weasyvsdx th
 make lint     # ruff and mypy, on the host
 make test     # pytest with coverage, in Docker
 make visual   # the visual bench, report in tools/visual/out/report.html
+make comparison # corpus/COMPARISON.md and corpus/comparison.html, the panels in corpus/render
 ```
 
 ## Contributing

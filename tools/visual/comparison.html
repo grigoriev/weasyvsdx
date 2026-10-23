@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>weasyvsdx corpus</title>
+<!-- make comparison writes corpus/comparison.html from the template tools/visual/comparison.html: edit the template, not corpus/comparison.html. -->
+<style>
+:root {
+  --bg: #ffffff; --fg: #1f2328; --muted: #59636e; --line: #d1d9e0; --card: #f6f8fa;
+  --accent: #0969da;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0d1117; --fg: #e6edf3; --muted: #9198a1; --line: #3d444d; --card: #151b23;
+    --accent: #4493f8;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+header { position: sticky; top: 0; z-index: 2; background: var(--bg); border-bottom: 1px solid var(--line); padding: 12px 16px; }
+h1 { font-size: 18px; margin: 0 0 4px; }
+.intro { color: var(--muted); margin: 0 0 10px; max-width: 1100px; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+.controls label { color: var(--muted); }
+select, input { font: inherit; color: var(--fg); background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; }
+input[type=search] { min-width: 200px; }
+.segmented { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin: 0; padding: 0; min-width: 0; }
+.segmented legend, .hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.segmented button { font: inherit; color: var(--fg); background: var(--card); border: 0; padding: 4px 10px; cursor: pointer; }
+.segmented button + button { border-left: 1px solid var(--line); }
+.segmented button[aria-pressed=true] { background: var(--accent); color: #fff; }
+.count { color: var(--muted); }
+main { padding: 16px; display: grid; gap: 16px; }
+article { border: 1px solid var(--line); border-radius: 8px; background: var(--card); padding: 12px; }
+article h2 { font-size: 15px; margin: 0; word-break: break-all; }
+.meta { color: var(--muted); margin: 2px 0 8px; }
+.meta a { color: var(--accent); }
+/* The mismatch of each rendering with LibreOffice, from the bench */
+.mismatch { color: var(--muted); margin: 0 0 10px; font-size: 13px; }
+.mismatch b { color: var(--fg); }
+/* The panel of the reference: LibreOffice, which the mismatch compares against */
+figcaption .ref { color: var(--accent); font-weight: 600; }
+.panels { display: grid; gap: 12px; align-items: start; }
+/* In a row, to compare on one screen: a panel shrinks to its column, a click shows it at full size */
+.panels.all { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 900px) {
+  .panels.all { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+figure { margin: 0; }
+figcaption { color: var(--muted); font-size: 12px; margin-bottom: 4px; }
+/* A block: the width of a panel is a share of its column, which a link shrunk to its content would make circular */
+figure a { display: block; }
+figure a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* A tall drawing fits the screen too: the panels of one drawing stay in view, a click shows the full size */
+/* Every panel by one rule: its size, its column and 70 % of the screen bound it.
+   --w is the width of the drawing, --r its width over its height; the 2 px are the border. */
+figure img { display: block; width: min(calc(var(--w) + 2px), 100%, calc((70vh - 2px) * var(--r) + 2px)); height: auto; background: #fff; border: 1px solid var(--line); cursor: zoom-in; image-rendering: auto; }
+.missing { color: var(--muted); font-style: italic; padding: 12px; border: 1px dashed var(--line); border-radius: 4px; }
+.hint { color: var(--muted); font-size: 12px; }
+#lightbox { width: 100vw; height: 100vh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #0d1117; flex-direction: column; }
+#lightbox[open] { display: flex; }
+#lightbox::backdrop { background: #0d1117; }
+#lightbox .bar { background: #0d1117; border-bottom: 1px solid #3d444d; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; color: #e6edf3; padding: 10px 16px; }
+#lightbox .bar .name { font-weight: 600; word-break: break-all; }
+#lightbox .stage { flex: 1; overflow: auto; display: flex; align-items: flex-start; justify-content: center; padding: 8px 16px 16px; }
+#lightbox .pick { display: inline-flex; gap: 6px; align-items: center; color: #9198a1; }
+#lightbox .pick[hidden] { display: none; }
+#lightbox .close { margin-left: auto; }
+/* Swipe as on GitHub: the right drawing lies over the left one in a box that ends at the line. Only the
+   width of that box changes: the drawings keep their size and are not painted again, so nothing flickers. */
+/* Safari selects a dragged image and tints it blue: the prefixed rules keep it from selecting or dragging */
+.compare { position: relative; flex: none; background: #fff; touch-action: none; user-select: none; -webkit-user-select: none; }
+.compare img { -webkit-user-drag: none; }
+.compare img, .compare svg { display: block; width: 100%; height: 100%; will-change: transform; }
+.compare .over { position: absolute; top: 0; right: 0; bottom: 0; overflow: hidden; background: #fff; }
+.compare .over > * { position: absolute; top: 0; right: 0; }
+.compare .line { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: #0969da; cursor: ew-resize; }
+.compare .line::after { content: "◂ ▸"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #0969da; color: #fff; border-radius: 12px; padding: 2px 8px; font-size: 12px; white-space: nowrap; }
+.compare .line:focus-visible { outline: 2px solid #fff; }
+.compare .tag { position: absolute; top: 6px; background: rgba(13, 17, 23, .75); color: #fff; font-size: 12px; padding: 1px 6px; border-radius: 4px; pointer-events: none; }
+.compare .tag.left { left: 6px; } .compare .tag.right { right: 6px; }
+@media (max-width: 700px) {
+  header { position: static; }
+  .panels.all { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>weasyvsdx corpus</h1>
+  <p class="intro" id="intro"></p>
+  <div class="controls">
+    <label>Group <select id="group"><option value="">all</option></select></label>
+    <input type="search" id="search" placeholder="Filter by name" aria-label="Filter by name">
+    <span class="count" id="count"></span>
+  </div>
+</header>
+<main id="list"></main>
+<dialog id="lightbox" aria-label="Full size">
+  <div class="bar">
+    <span class="name" id="lb-name"></span>
+    <fieldset class="segmented" id="lb-view">
+      <legend>View</legend>
+      <button type="button" data-view="swipe">Swipe</button>
+      <button type="button" data-view="single">Single</button>
+    </fieldset>
+    <span class="pick">Left <fieldset class="segmented" id="lb-left"><legend>Left</legend></fieldset></span>
+    <span class="pick" id="lb-right-pick">Right <fieldset class="segmented" id="lb-right"><legend>Right</legend></fieldset></span>
+    <fieldset class="segmented" id="lb-zoom">
+      <legend>Zoom</legend>
+      <button type="button" data-zoom="1">1×</button>
+      <button type="button" data-zoom="2">2×</button>
+      <button type="button" data-zoom="4">4×</button>
+      <button type="button" data-zoom="fit">Fit</button>
+    </fieldset>
+    <span class="hint">Drag the line or [ ], 1-3 right side, Space swaps, + - zoom, ← → previous and next, Esc closes</span>
+    <span class="segmented close"><button type="button" id="lb-close">Close</button></span>
+  </div>
+  <div class="stage" id="lb-stage"><div class="compare" id="lb-compare"></div></div>
+</dialog>
+<script id="data" type="application/json">/*DATA*/</script>
+<script>
+"use strict";
+const data = JSON.parse(document.getElementById("data").textContent);
+const renderers = data.renderers;
+const groups = data.groups;
+const state = { group: "", search: "" };
+
+function element(tag, attributes, children) {
+  const node = document.createElement(tag);
+  for (const [key, value] of Object.entries(attributes || {})) {
+    if (key === "text") node.textContent = value; else node.setAttribute(key, value);
+  }
+  for (const child of children || []) node.append(child);
+  return node;
+}
+// The size of a panel in a card: the rule of figure img reads it
+function panelSize(node, item, scale) {
+  node.style.setProperty("--w", item.width * scale + "px");
+  node.style.setProperty("--r", String(item.width / item.height));
+}
+// One renderer of item at scale: its panel
+function drawing(item, key, scale, lazy) {
+  const attributes = { src: item.panels[key], alt: item.name + " in " + renderers[key], width: item.width * scale, height: item.height * scale, draggable: "false" };
+  if (lazy) attributes.loading = "lazy";
+  const image = element("img", attributes);
+  if (lazy) panelSize(image, item, scale);
+  return image;
+}
+function panel(item, key) {
+  const path = item.panels[key];
+  const caption = element("figcaption", { text: renderers[key] });
+  if (key === "libreoffice") caption.append(" ", element("span", { class: "ref", text: "reference" }));
+  const children = [caption];
+  if (path) {
+    const image = drawing(item, key, 1, true);
+    // A link: Enter opens the full view, and "open in new tab" still shows the panel
+    const link = element("a", { href: path }, [image]);
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      opener = link;
+      openLightbox(item, key);
+    });
+    children.push(link);
+  } else {
+    children.push(element("div", { class: "missing", text: "no rendering: the drawing does not convert" }));
+  }
+  return element("figure", { class: key }, children);
+}
+function percent(value) {
+  return value === null || value === undefined ? "n/a" : value + " %";
+}
+function card(item) {
+  // The drawing itself, to download: no browser shows Visio
+  const source = element("a", { href: item.source, text: item.source, download: "" });
+  const meta = element("p", { class: "meta" }, [source]);
+  const mismatch = element("p", { class: "mismatch" }, [
+    "Mismatch with LibreOffice: libvisio ", element("b", { text: percent(item.mismatch.libvisio) }),
+    ", weasyvsdx ", element("b", { text: percent(item.mismatch.weasyvsdx) }),
+  ]);
+  const children = [element("h2", { text: item.name }), meta, mismatch];
+  children.push(element("div", { class: "panels all" }, Object.keys(renderers).map((key) => panel(item, key))));
+  return element("article", { id: item.name }, children);
+}
+function visible() {
+  const search = state.search.toLowerCase();
+  return data.items.filter((item) => (!state.group || item.group === state.group)
+    && (!search || item.name.toLowerCase().includes(search)));
+}
+function render() {
+  const items = visible();
+  document.getElementById("list").replaceChildren(...items.map(card));
+  document.getElementById("count").textContent = items.length + " of " + data.items.length;
+}
+
+let current = null;
+let opener = null;
+// The full view: two renderers, swiped at split, or the left one alone
+const view = { mode: "swipe", left: "libreoffice", right: "weasyvsdx", zoom: "fit", split: 0.5 };
+function openLightbox(item, key) {
+  current = item;
+  view.left = "libreoffice";
+  view.right = key === "libreoffice" ? "weasyvsdx" : key;
+  if (!current.panels[view.right]) view.right = "libreoffice";
+  view.split = 0.5;
+  const dialog = document.getElementById("lightbox");
+  if (!dialog.open) dialog.showModal();
+  showLightbox();
+  document.getElementById("lb-close").focus();
+}
+function scaleOf() {
+  if (view.zoom !== "fit") return Number(view.zoom);
+  const stage = document.getElementById("lb-stage");
+  // The padding of the stage: 16 px each side, 8 above and 16 below
+  return Math.min((stage.clientWidth - 32) / current.width, (stage.clientHeight - 24) / current.height);
+}
+function showLightbox() {
+  document.getElementById("lb-name").textContent = current.name;
+  const scale = scaleOf();
+  const compare = document.getElementById("lb-compare");
+  compare.style.width = current.width * scale + "px";
+  compare.style.height = current.height * scale + "px";
+  const children = [drawing(current, view.left, scale, false)];
+  if (view.mode === "swipe") {
+    const right = drawing(current, view.right, scale, false);
+    // The full size, anchored right: the box around it only shows less of it
+    right.style.width = current.width * scale + "px";
+    right.style.height = current.height * scale + "px";
+    const over = element("div", { class: "over" }, [right]);
+    over.style.width = (1 - view.split) * 100 + "%";
+    const line = element("div", { class: "line", tabindex: "0", role: "slider", "aria-label": "Split between " + renderers[view.left] + " and " + renderers[view.right], "aria-valuemin": "0", "aria-valuemax": "100", "aria-valuenow": String(Math.round(view.split * 100)) });
+    line.style.left = view.split * 100 + "%";
+    children.push(over, line, element("span", { class: "tag left", text: renderers[view.left] }), element("span", { class: "tag right", text: renderers[view.right] }));
+  }
+  compare.replaceChildren(...children);
+  document.getElementById("lb-right-pick").hidden = view.mode !== "swipe";
+  for (const button of document.querySelectorAll("#lb-view button")) button.setAttribute("aria-pressed", String(button.dataset.view === view.mode));
+  for (const button of document.querySelectorAll("#lb-zoom button")) button.setAttribute("aria-pressed", String(button.dataset.zoom === view.zoom));
+  for (const side of ["left", "right"]) {
+    for (const button of document.querySelectorAll("#lb-" + side + " button")) {
+      button.setAttribute("aria-pressed", String(button.dataset.key === view[side]));
+      button.disabled = !current.panels[button.dataset.key];
+    }
+  }
+}
+function moveSplit(split) {
+  view.split = Math.min(Math.max(split, 0), 1);
+  const compare = document.getElementById("lb-compare");
+  const over = compare.querySelector(".over");
+  const line = compare.querySelector(".line");
+  if (!over || !line) return;
+  over.style.width = (1 - view.split) * 100 + "%";
+  line.style.left = view.split * 100 + "%";
+  line.setAttribute("aria-valuenow", String(Math.round(view.split * 100)));
+}
+function closeLightbox() {
+  const dialog = document.getElementById("lightbox");
+  if (dialog.open) dialog.close();
+}
+function closed() {
+  current = null;
+  if (opener && opener.isConnected) opener.focus();
+}
+function step(direction) {
+  // Only drawings with panels: one that does not convert has nothing to show
+  const items = visible().filter((item) => item.panels.libreoffice);
+  const index = items.indexOf(current);
+  if (index < 0) return;
+  current = items[(index + direction + items.length) % items.length];
+  // The next drawing may lack a renderer: LibreOffice is there whenever any panel is
+  for (const side of ["left", "right"]) if (!current.panels[view[side]]) view[side] = "libreoffice";
+  showLightbox();
+}
+
+function setup() {
+  document.getElementById("intro").textContent = data.intro;
+  const group = document.getElementById("group");
+  for (const [key, label] of Object.entries(groups)) group.append(element("option", { value: key, text: label }));
+  group.addEventListener("change", () => { state.group = group.value; render(); });
+  const search = document.getElementById("search");
+  search.addEventListener("input", () => { state.search = search.value; render(); });
+  for (const side of ["left", "right"]) {
+    const bar = document.getElementById("lb-" + side);
+    Object.entries(renderers).forEach(([key, label], index) => {
+      const button = element("button", { type: "button", "data-key": key, text: (side === "right" ? index + 1 + " " : "") + label });
+      button.addEventListener("click", () => { view[side] = key; showLightbox(); });
+      bar.append(button);
+    });
+  }
+  for (const button of document.querySelectorAll("#lb-view button")) {
+    button.addEventListener("click", () => { view.mode = button.dataset.view; showLightbox(); });
+  }
+  const compare = document.getElementById("lb-compare");
+  let dragging = false;
+  let pending = null;
+  // At most one move per frame: a pointer reports more often than the screen paints
+  const follow = (event) => {
+    const box = compare.getBoundingClientRect();
+    const split = (event.clientX - box.left) / box.width;
+    if (pending === null) requestAnimationFrame(() => { moveSplit(pending); pending = null; });
+    pending = split;
+  };
+  compare.addEventListener("pointerdown", (event) => {
+    if (view.mode !== "swipe") return;
+    // No selection starts under a drag of the line
+    event.preventDefault();
+    dragging = true;
+    compare.setPointerCapture(event.pointerId);
+    follow(event);
+  });
+  compare.addEventListener("pointermove", (event) => { if (dragging) follow(event); });
+  compare.addEventListener("pointerup", () => { dragging = false; });
+  compare.addEventListener("pointercancel", () => { dragging = false; });
+  window.addEventListener("resize", () => { if (current && view.zoom === "fit") showLightbox(); });
+  for (const button of document.querySelectorAll("#lb-zoom button")) {
+    button.addEventListener("click", () => { view.zoom = button.dataset.zoom; showLightbox(); });
+  }
+  document.getElementById("lb-close").addEventListener("click", closeLightbox);
+  // Esc closes a modal dialog by itself: the close event clears the state either way
+  document.getElementById("lightbox").addEventListener("close", closed);
+  document.getElementById("lightbox").addEventListener("click", (event) => { if (event.target.id === "lb-stage") closeLightbox(); });
+  document.addEventListener("keydown", (event) => {
+    if (!current) return;
+    // A key with Ctrl, Cmd or Alt belongs to the browser: Cmd + still zooms the page
+    if (event.ctrlKey || event.metaKey || event.altKey) return;
+    // A focused field takes every key, a focused button Space and Enter, which press it
+    if (event.target.closest("input, select")) return;
+    if ((event.key === " " || event.key === "Enter") && event.target.closest("button")) return;
+    const keys = Object.keys(renderers);
+    if (event.key === "ArrowRight") step(1);
+    else if (event.key === "ArrowLeft") step(-1);
+    else if (event.key === "+" || event.key === "-") {
+      const steps = ["fit", "1", "2", "4"];
+      const index = steps.indexOf(view.zoom) + (event.key === "+" ? 1 : -1);
+      view.zoom = steps[Math.min(Math.max(index, 0), steps.length - 1)];
+      showLightbox();
+    }
+    else if (event.key === "[" || event.key === "]") moveSplit(view.split + (event.key === "]" ? 0.05 : -0.05));
+    else if (event.key === " ") { [view.left, view.right] = [view.right, view.left]; showLightbox(); }
+    else if (/^[1-3]$/.test(event.key) && current.panels[keys[Number(event.key) - 1]]) { view.right = keys[Number(event.key) - 1]; showLightbox(); }
+    else return;
+    event.preventDefault();
+  });
+  render();
+}
+setup();
+</script>
+</body>
+</html>

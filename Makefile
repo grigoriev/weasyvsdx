@@ -6,7 +6,7 @@ CACHE ?= $(HOME)/.cache/weasyvsdx
 RUN = docker run --rm --volume "$(CURDIR):/src"
 VISUAL = $(RUN) --volume "$(CACHE):/cache" --env WEASYVSDX_CACHE=/cache $(IMAGE):visual uv run --frozen --all-extras
 
-.PHONY: lint test test-image azure visual visual-image visual-baseline visual-check references
+.PHONY: lint test test-image azure visual visual-image visual-baseline visual-check references comparison
 
 lint:
 	uv run ruff check .
@@ -43,3 +43,10 @@ visual-check: visual-image azure
 # corpus/reference/libreoffice, the Azure diagrams into the cache
 references: visual-image azure
 	$(VISUAL) python tools/visual/make_references.py $(ARGS)
+
+# Render the drawings of the repository as weasyvsdx and as the plain SVG of vsd2xhtml, then write the panels
+# into corpus/render, corpus/COMPARISON.md and corpus/comparison.html (GitHub Pages)
+comparison: visual-image
+	$(VISUAL) python tools/visual/bench.py --corpus-only --out tools/visual/out/weasyvsdx
+	$(VISUAL) python tools/visual/bench.py --corpus-only --plain --out tools/visual/out/libvisio
+	$(VISUAL) python tools/visual/comparison.py
