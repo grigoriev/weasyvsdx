@@ -23,6 +23,7 @@ RELATIONSHIP = "{http://schemas.openxmlformats.org/officeDocument/2006/relations
 PACKAGE = "{http://schemas.openxmlformats.org/package/2006/relationships}Relationship"
 MAX_PART = 64 * 1024 * 1024  # bytes of one XML part, unpacked: a zip bomb stops here
 MAX_TOTAL = 256 * 1024 * 1024  # bytes of all parts read, unpacked
+MAX_ALIGNMENT = 1_000_000  # shapes times texts: the largest drawing of the corpus is 196 by 165
 SPACE = re.compile(r"\s+")
 
 # A shape of the page or of a master; the shapes of each master by their ID
@@ -97,6 +98,15 @@ def _hide(shape: ET.Element, master: ET.Element | None) -> bool:
     return False
 
 
+def _master_shape(shape: ET.Element, master: Shapes | None) -> ET.Element | None:
+    """The shape of the master that a shape of the page inherits from: the one it names, else the first."""
+    if not master:
+        return None
+    if shape.get("MasterShape"):
+        return master.get(shape.get("MasterShape", ""))
+    return next(iter(master.values())) if shape.get("Master") else None
+
+
 class _Walker:
     """The texts of the shapes of a page in document order, each with whether Visio hides it."""
 
@@ -108,14 +118,7 @@ class _Walker:
         for shape in shapes.findall(f"{VISIO}Shape"):
             own_master = self.masters.get(shape.get("Master", "")) if shape.get("Master") else master
             # A shape of a master that the page does not list is its own master shape
-            if inherited:
-                master_shape: ET.Element | None = shape
-            elif shape.get("MasterShape") and own_master is not None:
-                master_shape = own_master.get(shape.get("MasterShape", ""))
-            elif shape.get("Master") and own_master:
-                master_shape = next(iter(own_master.values()))
-            else:
-                master_shape = None
+            master_shape = shape if inherited else _master_shape(shape, own_master)
             self.add(shape, master_shape)
             children = shape.find(f"{VISIO}Shapes")
             if children is not None:
@@ -155,6 +158,17 @@ def shape_texts(document: bytes) -> list[tuple[str, bool]] | None:
 
 
 def hidden_indexes(shapes: list[tuple[str, bool]], texts: list[str]) -> frozenset[int]:
-    """The indexes of the texts that match, in an alignment of both lists, a shape that hides the same text."""
-    matcher = difflib.SequenceMatcher(None, [text for text, _ in shapes], [normalized(text) for text in texts], autojunk=False)
+    """The indexes of the texts that match, in an alignment of both lists, a shape that hides the same text.
+
+    The alignment costs up to the product of both lengths where many texts are equal, in the process of the
+    caller: past MAX_ALIGNMENT all text stays. Lists that agree pair by position without it.
+    """
+    if not any(hidden for _, hidden in shapes):
+        return frozenset()
+    normalized_texts = [normalized(text) for text in texts]
+    if [text for text, _ in shapes] == normalized_texts:
+        return frozenset(index for index, (_, hidden) in enumerate(shapes) if hidden)
+    if len(shapes) * len(texts) > MAX_ALIGNMENT:
+        return frozenset()
+    matcher = difflib.SequenceMatcher(None, [text for text, _ in shapes], normalized_texts, autojunk=False)
     return frozenset(index + offset for start, index, size in matcher.get_matching_blocks() for offset in range(size) if shapes[start + offset][1])

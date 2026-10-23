@@ -40,6 +40,7 @@ ANCHOR = {"left": 0.0, "start": 0.0, "justify": 0.0, "center": 0.5, "right": 1.0
 VERTICAL_ANCHOR = {"top": 0.0, "middle": 0.5, "bottom": 1.0}
 VERTICAL = {"top": "flex-start", "middle": "center", "bottom": "flex-end"}
 TEXT_ALIGN = "fo:text-align"
+COLOR = "fo:color"
 LINE_SEPARATORS = str.maketrans({"\u2028": "\n", "\u2029": "\n"})
 # Text darker than this luminance does not read on black
 DARK = 0.5
@@ -195,13 +196,13 @@ def span_style(span: Span) -> str:
         style["font-weight"] = props["fo:font-weight"]
     if "fo:font-style" in props:
         style["font-style"] = props["fo:font-style"]
-    if "fo:color" in props:
-        style["color"] = props["fo:color"]
+    if COLOR in props:
+        style["color"] = props[COLOR]
         opacity = percent(props.get("svg:fill-opacity"), 1.0)
         if opacity < 1:
             style["opacity"] = f"{opacity:g}"
     if "fo:background-color" in props:
-        style["background-color"] = text_background(props["fo:background-color"], props.get("fo:color", "#000000"))
+        style["background-color"] = text_background(props["fo:background-color"], props.get(COLOR, "#000000"))
     if props.get("style:text-underline-type", "none") != "none":
         style["text-decoration"] = "underline"
     position = props.get("style:text-position", "")

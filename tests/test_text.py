@@ -148,7 +148,8 @@ def test_a_hidden_text_goes() -> None:
     objects = text_objects(first_page(page("startTextObject ()", f"openSpan({SPAN})", "insertText (User)", "closeSpan", "endTextObject", "startTextObject ()", "endTextObject")))
     assert [plain(item) for item in objects] == ["User", ""]
     assert replace_text(svg, objects, frozenset({0}))
-    assert list(svg[0]) == [] and svg[1].tag == f"{{{SVG_NS}}}foreignObject"
+    assert list(svg[0]) == []
+    assert svg[1].tag == f"{{{SVG_NS}}}foreignObject"
 
 
 def test_other_counts_leave_the_text_alone() -> None:

@@ -32,18 +32,21 @@ def test_a_hatched_path_gets_its_fill_and_its_lines_clipped_to_it() -> None:
     svg = page(SQUARE, SQUARE)
     assert fill_hatches(svg, calls(SOLID, PATH, HATCH, PATH))
     solid, hatched, lines = svg[1]
-    assert "fill: url" not in (solid.get("style") or "") and "fill: #ffffff" not in (solid.get("style") or "")
+    assert "fill: url" not in (solid.get("style") or "")
+    assert "fill: #ffffff" not in (solid.get("style") or "")
     assert (hatched.get("style") or "").endswith("fill: #ffffff;")
     assert lines.get("stroke") == "#c5e0b3"
     clip = svg[0][0]
     assert lines.get("clip-path") == f"url(#{clip.get('id')})"
-    assert clip[0].get("d") == SQUARE and clip[0].get("clip-rule") == "evenodd"
+    assert clip[0].get("d") == SQUARE
+    assert clip[0].get("clip-rule") == "evenodd"
     # Counterclockwise in ODF, about the center of the shape
     [turned] = list(lines)
     assert turned.get("transform") == "translate(36 36) rotate(-45)"
     # Lines 7.2 points apart, past the half diagonal of 101.8 points each way
     offsets = [float(line.get("y1") or 0) for line in turned]
-    assert len(offsets) == 17 and offsets[9] - offsets[8] == 7.2
+    assert len(offsets) == 17
+    assert offsets[9] - offsets[8] == 7.2
 
 
 def test_the_lines_of_the_hatch_drawn_add_no_path() -> None:
@@ -63,10 +66,13 @@ def test_crossed_hatches_and_defaults() -> None:
     double = hatch_lines(SQUARE, {"draw:style": "double"})
     triple = hatch_lines(SQUARE, {"draw:style": "triple", "draw:rotation": "30"})
     odd = hatch_lines(SQUARE, {"draw:style": "dotted"})
-    assert double is not None and triple is not None and odd is not None
+    assert double is not None
+    assert triple is not None
+    assert odd is not None
     assert [turned.get("transform") for turned in double] == ["translate(36 36) rotate(0)", "translate(36 36) rotate(-90)"]
     assert [turned.get("transform") for turned in triple] == ["translate(36 36) rotate(-30)", "translate(36 36) rotate(-120)", "translate(36 36) rotate(-75)"]
-    assert len(odd) == 1 and double.get("stroke") == "#000000"
+    assert len(odd) == 1
+    assert double.get("stroke") == "#000000"
 
 
 def test_a_tiny_distance_draws_a_bounded_number_of_lines() -> None:

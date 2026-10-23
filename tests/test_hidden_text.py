@@ -111,5 +111,17 @@ def test_only_matching_hidden_texts_go() -> None:
     assert hidden_indexes([], texts) == frozenset()
 
 
+def test_lists_that_agree_pair_by_position() -> None:
+    assert hidden_indexes([("a", False), ("a", True)], ["a", " a "]) == frozenset({1})
+    assert hidden_indexes([("a", False)], ["a"]) == frozenset()
+
+
+def test_an_alignment_past_its_budget_keeps_all_text() -> None:
+    # Many equal texts would cost the product of both lengths
+    shapes = [("a", True)] * 1001
+    texts = ["a"] * 1000 + ["b"]
+    assert hidden_indexes(shapes, texts) == frozenset()
+
+
 def test_normalized_drops_white_space() -> None:
     assert normalized(" a b\n\tc ") == "abc"
