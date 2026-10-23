@@ -134,7 +134,7 @@ def test_vertical_alignment_and_defaults() -> None:
 
 def test_each_text_becomes_its_foreign_object_in_place() -> None:
     svg = ET.fromstring(f'<svg xmlns="{SVG_NS}"><g><path/><text>a</text></g><text>b</text></svg>')
-    objects = text_objects(first_page(page("startTextObject (svg:x: 1in)", "endTextObject", "startTextObject (svg:x: 2in)", "endTextObject")))
+    objects = text_objects(first_page(page("startTextObject (svg:x: 1in, svg:width: 1in, svg:height: 1in)", "endTextObject", "startTextObject (svg:x: 2in, svg:width: 1in, svg:height: 1in)", "endTextObject")))
     assert replace_text(svg, objects)
     assert [child.tag for child in svg[0]] == [f"{{{SVG_NS}}}path", f"{{{SVG_NS}}}foreignObject"]
     assert svg[0][1].get("x") == "72"
@@ -193,3 +193,31 @@ def test_mixed_or_odd_scales_lay_out_unscaled() -> None:
         element = foreign_object(text)
         assert element.get("width") == "144"
         assert element.get("transform") is None
+
+
+def test_a_block_of_no_width_is_as_wide_as_its_text() -> None:
+    def block(align: str | None, vertical: str) -> ET.Element:
+        paragraph = f"openParagraph (fo:text-align: {align})" if align else "openParagraph ()"
+        calls = (
+            f"startTextObject (draw:textarea-vertical-align: {vertical}, svg:x: 1in, svg:y: 1in, svg:width: 0in, svg:height: 0in)",
+            paragraph,
+            f"openSpan({SPAN})",
+            "insertText (Stream Analytics)",
+            "closeSpan",
+            "closeParagraph",
+            "endTextObject",
+        )
+        [text] = text_objects(first_page(page(*calls)))
+        return foreign_object(text)
+
+    centered = block(None, "middle")
+    assert {name: centered.get(name) for name in ("x", "y", "width", "height")} == {"x": "-928", "y": "-928", "width": "2000", "height": "2000"}
+    assert "white-space:pre;" in (html(centered).get("style") or "")
+    left, right = block("left", "top"), block("end", "bottom")
+    assert (left.get("x"), left.get("y")) == ("72", "72")
+    assert (right.get("x"), right.get("y")) == ("-1928", "-1928")
+
+
+def test_a_block_with_a_width_wraps() -> None:
+    [text] = text_objects(first_page(page(f"startTextObject ({BLOCK})", "endTextObject")))
+    assert "white-space:pre-wrap" in (html(foreign_object(text)).get("style") or "")

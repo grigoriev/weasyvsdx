@@ -32,6 +32,12 @@ REPLACEMENTS = {
     "segoe ui semilight": "Selawik Semilight",
     "segoe ui semibold": "Selawik Semibold",
 }
+# A text block of no width or height is sized by its text in Visio (TEXTWIDTH, TEXTHEIGHT), which libvisio
+# cannot evaluate: it gives 0, and SVG draws no foreignObject of no size. Such a block is laid out in this
+# many points instead, placed by its point as its alignment places the text.
+AUTO_SIZE = 2000.0
+ANCHOR = {"left": 0.0, "start": 0.0, "justify": 0.0, "center": 0.5, "right": 1.0, "end": 1.0}
+VERTICAL_ANCHOR = {"top": 0.0, "middle": 0.5, "bottom": 1.0}
 VERTICAL = {"top": "flex-start", "middle": "center", "bottom": "flex-end"}
 ALIGN = {"left": "left", "center": "center", "right": "right", "end": "right", "justify": "justify", "start": "left"}
 
@@ -200,6 +206,11 @@ def paragraph_style(paragraph: Paragraph, fallback: Properties) -> str:
     return css(style)
 
 
+def paragraph_align(text: TextObject) -> str:
+    """The alignment of the first paragraph, which places a block of no width; centered in Visio by default."""
+    return next((paragraph.properties["fo:text-align"] for paragraph in text.paragraphs if "fo:text-align" in paragraph.properties), "center")
+
+
 def text_scale(text: TextObject) -> float:
     """The horizontal scale of the glyphs that all spans with text share, else 1."""
     scales = {percent(span.properties.get("style:text-scale"), 1.0) for paragraph in text.paragraphs for span in paragraph.spans if "".join(span.text)}
@@ -213,14 +224,20 @@ def foreign_object(text: TextObject) -> ET.Element:
     x, y = points(props.get("svg:x")), points(props.get("svg:y"))
     width, height = points(props.get("svg:width")), points(props.get("svg:height"))
     scale = text_scale(text)
+    center_x, center_y = x + width / 2, y + height / 2
+    auto_width, auto_height = width <= 0, height <= 0
     # A scaled font (the Scale of Visio) widens its glyphs: the text is laid out in a block that much
     # narrower, then stretched to the block, so lines break where the wider glyphs make them break
-    element = ET.Element(f"{{{SVG_NS}}}foreignObject", {"x": f"{x:g}", "y": f"{y:g}", "width": f"{width / scale:g}", "height": f"{height:g}", "style": "overflow:visible"})
+    laid_width = AUTO_SIZE if auto_width else width / scale
+    box_x = x - laid_width * ANCHOR.get(paragraph_align(text), 0.5) if auto_width else x
+    box_y = y - AUTO_SIZE * VERTICAL_ANCHOR.get(props.get("draw:textarea-vertical-align", "top"), 0.0) if auto_height else y
+    height = AUTO_SIZE if auto_height else height
+    element = ET.Element(f"{{{SVG_NS}}}foreignObject", {"x": f"{box_x:g}", "y": f"{box_y:g}", "width": f"{laid_width:g}", "height": f"{height:g}", "style": "overflow:visible"})
     transforms = []
     angle = float(props.get("librevenge:rotate", "0") or 0)
     if angle:
         # About the center of the block, as the SVG generator of librevenge turns its <text>
-        transforms.append(f"rotate({angle:g} {x + width / 2:g} {y + height / 2:g})")
+        transforms.append(f"rotate({angle:g} {center_x:g} {center_y:g})")
     if scale != 1:
         transforms.append(f"translate({x:g} 0) scale({scale:g} 1) translate({-x:g} 0)")
     if transforms:
@@ -229,13 +246,14 @@ def foreign_object(text: TextObject) -> ET.Element:
     padding = " ".join(length(points(props.get(f"fo:padding-{side}")) / (scale if side in ("left", "right") else 1)) for side in ("top", "right", "bottom", "left"))
     box = {
         "box-sizing": "border-box",
-        "width": length(width / scale),
+        "width": length(laid_width),
         "height": length(height),
         "padding": padding,
         "display": "flex",
         "flex-direction": "column",
         "justify-content": VERTICAL.get(props.get("draw:textarea-vertical-align", "top"), "flex-start"),
-        "white-space": "pre-wrap",
+        # A block of no width is as wide as its text in Visio, which never breaks it
+        "white-space": "pre" if auto_width else "pre-wrap",
         "overflow-wrap": "break-word",
     }
     # The XHTML namespace as an attribute, as convert.serialize() writes the SVG one: tostring() would give
