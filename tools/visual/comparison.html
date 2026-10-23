@@ -322,6 +322,8 @@ function setup() {
   document.getElementById("lightbox").addEventListener("click", (event) => { if (event.target.id === "lb-stage") closeLightbox(); });
   document.addEventListener("keydown", (event) => {
     if (!current) return;
+    // A key with Ctrl, Cmd or Alt belongs to the browser: Cmd + still zooms the page
+    if (event.ctrlKey || event.metaKey || event.altKey) return;
     // A focused field takes every key, a focused button Space and Enter, which press it
     if (event.target.closest("input, select")) return;
     if ((event.key === " " || event.key === "Enter") && event.target.closest("button")) return;
