@@ -113,6 +113,8 @@ Where the license allows it, install the original fonts instead.
    - **Arrowheads**: each marker gets the shape and size of its line end. The generator drew one stock
      arrow for all of them, sized by the width of the line.
    - **Hidden shapes**: a shape on a hidden or non-printing layer goes. The generator drew it.
+   - **Hidden text**: the text a shape of a VSDX hides (HideText, or a text cleared on the shape) goes. The
+     generator wrote the name of each Azure icon under it.
    - **Hatches**: a fill pattern of Visio draws as the lines of its hatch. The generator filled it black.
    - **Line ends**: a line under an arrowhead ends at its base, as in Visio, not at its tip.
 3. EMF images become SVG through `emf2svg-conv`, and so does the EMF that Office puts inside a WMF image,
@@ -162,6 +164,7 @@ of tens of MB take seconds, 17 of the 250 more than one: libvisio writes the bit
   of mixed scales draws unscaled. Fields show the value libvisio formats.
 - A WMF image without an EMF inside is left out, and so is an embedded OLE object whose picture is no EMF.
   Office writes the EMF into each WMF it saves, and into the picture of each OLE object.
+- Text that a VSD hides stays: only a VSDX holds HideText where weasyvsdx reads it.
 - A shape on a hidden or non-printing layer goes, but its text would stay: libvisio marks the path of
   such a shape as hidden, not its text.
 - An EMF draws its GDI records only. Part of an icon that Office drew in EMF+ alone, the newer records an EMF

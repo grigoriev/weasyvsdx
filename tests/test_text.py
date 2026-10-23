@@ -7,7 +7,7 @@ from xml.etree import ElementTree as ET
 import pytest
 
 from weasyvsdx.raw import first_page
-from weasyvsdx.text import SVG_NS, XHTML_NS, TextObject, foreign_object, replace_text, text_background, text_objects
+from weasyvsdx.text import SVG_NS, XHTML_NS, TextObject, foreign_object, plain, replace_text, text_background, text_objects
 
 BLOCK = (
     "draw:textarea-vertical-align: middle, fo:padding-bottom: 0.0556in, fo:padding-left: 0.0833in, fo:padding-right: 0.0833in, fo:padding-top: 0.0556in, "
@@ -141,6 +141,14 @@ def test_each_text_becomes_its_foreign_object_in_place() -> None:
     assert [child.tag for child in svg[0]] == [f"{{{SVG_NS}}}path", f"{{{SVG_NS}}}foreignObject"]
     assert svg[0][1].get("x") == "72"
     assert svg[1].get("x") == "144"
+
+
+def test_a_hidden_text_goes() -> None:
+    svg = ET.fromstring(f'<svg xmlns="{SVG_NS}"><g><text>a</text></g><text>b</text></svg>')
+    objects = text_objects(first_page(page("startTextObject ()", f"openSpan({SPAN})", "insertText (User)", "closeSpan", "endTextObject", "startTextObject ()", "endTextObject")))
+    assert [plain(item) for item in objects] == ["User", ""]
+    assert replace_text(svg, objects, frozenset({0}))
+    assert list(svg[0]) == [] and svg[1].tag == f"{{{SVG_NS}}}foreignObject"
 
 
 def test_other_counts_leave_the_text_alone() -> None:

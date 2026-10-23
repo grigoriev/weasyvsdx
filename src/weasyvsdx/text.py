@@ -325,14 +325,25 @@ def add_paragraphs(block: ET.Element, text: TextObject) -> None:
             ET.SubElement(node, "br")
 
 
-def replace_text(svg: ET.Element, objects: list[TextObject]) -> bool:
-    """Replace each <text> of the page with its foreignObject. False, and nothing changed, when the counts differ."""
+def plain(text: TextObject) -> str:
+    """The characters of a text object."""
+    return "".join("".join(span.text) for paragraph in text.paragraphs for span in paragraph.spans)
+
+
+def replace_text(svg: ET.Element, objects: list[TextObject], hidden: frozenset[int] = frozenset()) -> bool:
+    """Replace each <text> of the page with its foreignObject, or remove it where hidden lists its index.
+
+    False, and nothing changed, when the counts differ.
+    """
     # In document order, the order of the calls: a <text> of the page comes after one in a group before it
     texts = list(svg.iter(f"{{{SVG_NS}}}text"))
     if len(texts) != len(objects):
         return False
     parents = {child: parent for parent in svg.iter() for child in parent}
-    for element, text in zip(texts, objects, strict=True):
+    for index, (element, text) in enumerate(zip(texts, objects, strict=True)):
         parent = parents[element]
-        parent[list(parent).index(element)] = foreign_object(text)
+        if index in hidden:
+            parent.remove(element)
+        else:
+            parent[list(parent).index(element)] = foreign_object(text)
     return True

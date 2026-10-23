@@ -1,0 +1,99 @@
+"""Text that Visio hides."""
+
+from __future__ import annotations
+
+import io
+import zipfile
+
+import pytest
+
+from weasyvsdx import hidden_text
+from weasyvsdx.hidden_text import hidden_indexes, normalized, shape_texts
+
+NS = "xmlns='http://schemas.microsoft.com/office/visio/2012/main' xmlns:r='http://schemas.openxmlformats.org/officeDocument/2006/relationships'"
+PACKAGE = "xmlns='http://schemas.openxmlformats.org/package/2006/relationships'"
+HIDE = "<Cell N='HideText' V='1'/>"
+SHOW = "<Cell N='HideText' V='0'/>"
+
+
+def vsdx(page: str | None, master: str | None = None, *, foreground: bool = True) -> bytes:
+    """A VSDX of a background page and the page, with one master of ID 2 if given; a page of None has no shapes."""
+    pages = f"<Pages {NS}><Page ID='4' Background='1'><Rel r:id='rId1'/></Page>" + ("<Page ID='0'><Rel r:id='rId2'/></Page>" if foreground else "") + "</Pages>"
+    parts = {
+        "visio/pages/pages.xml": pages,
+        "visio/pages/_rels/pages.xml.rels": f"<Relationships {PACKAGE}><Relationship Id='rId1' Target='page1.xml'/><Relationship Id='rId2' Target='page2.xml'/></Relationships>",
+        "visio/pages/page1.xml": f"<PageContents {NS}><Shapes><Shape ID='1'><Text>Background</Text></Shape></Shapes></PageContents>",
+        "visio/pages/page2.xml": f"<PageContents {NS}>" + (f"<Shapes>{page}</Shapes>" if page is not None else "") + "</PageContents>",
+    }
+    if master is not None:
+        parts["visio/masters/masters.xml"] = f"<Masters {NS}><Master ID='2'><Rel r:id='rId1'/></Master><Master ID='3'/></Masters>"
+        parts["visio/masters/_rels/masters.xml.rels"] = f"<Relationships {PACKAGE}><Relationship Id='rId1' Target='master1.xml'/></Relationships>"
+        parts["visio/masters/master1.xml"] = f"<MasterContents {NS}><Shapes>{master}</Shapes></MasterContents>"
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w") as archive:
+        for name, content in parts.items():
+            archive.writestr(name, content)
+    return buffer.getvalue()
+
+
+def test_the_texts_of_the_shapes_and_whether_they_hide() -> None:
+    page = (
+        f"<Shape ID='1'><Text>Label one</Text></Shape><Shape ID='2'>{HIDE}<Text>Hidden</Text></Shape><Shape ID='3'><Shapes><Shape ID='4'><Text>In a group</Text></Shape></Shapes></Shape><Shape ID='5'/><Shape ID='6'><Text>  </Text></Shape>"
+    )
+    assert shape_texts(vsdx(page)) == [("Labelone", False), ("Hidden", True), ("Inagroup", False)]
+
+
+def test_the_text_and_hide_text_of_a_master() -> None:
+    master = f"<Shape ID='5'>{HIDE}<Text>Virtual Machine</Text><Shapes><Shape ID='6'><Text>Inner</Text></Shape></Shapes></Shape>"
+    page = (
+        # The text of the master, hidden by it
+        "<Shape ID='1' Master='2'/>"
+        # Shown by the shape itself
+        f"<Shape ID='2' Master='2'>{SHOW}</Shape>"
+        # Cleared by an empty text of its own, which libvisio fills from the master
+        f"<Shape ID='3' Master='2'>{SHOW}<Text/></Shape>"
+        # Its own text, and a shape of the master it lists
+        f"<Shape ID='4' Master='2'>{SHOW}<Text>VM 1</Text><Shapes><Shape ID='7' MasterShape='6'/></Shapes></Shape>"
+        # A master that is missing
+        "<Shape ID='8' Master='9'><Text>Own</Text></Shape>"
+    )
+    assert shape_texts(vsdx(page, master)) == [
+        # HideText hides the text of its own shape only
+        ("VirtualMachine", True),
+        ("Inner", False),
+        ("VirtualMachine", False),
+        ("Inner", False),
+        ("VirtualMachine", True),
+        ("Inner", False),
+        ("VM1", False),
+        ("Inner", False),
+        ("Own", False),
+    ]
+
+
+def test_a_drawing_that_does_not_read_keeps_its_text() -> None:
+    assert shape_texts(b"\xd0\xcf\x11\xe0 a VSD") is None
+    broken = io.BytesIO()
+    with zipfile.ZipFile(broken, "w") as archive:
+        archive.writestr("visio/pages/pages.xml", "<not xml")
+    assert shape_texts(broken.getvalue()) is None
+    # A package with only background pages, and a page with no shapes
+    assert shape_texts(vsdx("", foreground=False)) is None
+    assert shape_texts(vsdx(None)) == []
+
+
+def test_a_part_too_large_to_unpack(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(hidden_text, "MAX_PART", 10)
+    assert shape_texts(vsdx("<Shape ID='1'><Text>a</Text></Shape>")) is None
+
+
+def test_only_matching_hidden_texts_go() -> None:
+    shapes = [("User", True), ("APIManagement", True), ("Appenvironment", False), ("User", False), ("Order", True)]
+    # libvisio writes the hidden User, leaves out API Management, and writes a text the XML lacks
+    texts = ["User", "App environment", "User", "Field 1", "Shipment"]
+    assert hidden_indexes(shapes, texts) == frozenset({0})
+    assert hidden_indexes([], texts) == frozenset()
+
+
+def test_normalized_drops_white_space() -> None:
+    assert normalized(" a b\n\tc ") == "abc"

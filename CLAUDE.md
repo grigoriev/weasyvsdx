@@ -59,6 +59,8 @@ uv build                # wheel and sdist
   (`start_with_moveto()`); `shortened()` ends a line at the base of its arrowhead.
 - `hatch.py`: a path whose style has `draw:fill: hatch` gets the lines of its hatch, clipped to it. They are
   `<line>` elements, so the path count that `hidden.py` pairs stays.
+- `hidden_text.py`: reads HideText and cleared texts from the XML of a VSDX (first page and masters) and aligns
+  those texts with the text objects of `vsd2raw` (difflib); a matched hidden one goes in `replace_text()`.
 - `hidden.py`: the n-th drawn path goes when the n-th `drawPath` of `vsd2raw` has `draw:display: none`, a
   shape on a hidden or non-printing layer.
 - `pathdata.py`: path data as tokens, read by hand: the numbers of SVG (`.5.5` is two) make a pattern backtrack.

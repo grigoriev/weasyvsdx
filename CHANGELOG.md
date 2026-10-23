@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Arrowheads take their own shape and size, and a line under one ends at its base, as in Visio. A hollow
   one hides the line under it.
 - A shape on a hidden or non-printing layer is left out, as in Visio.
+- The text a shape of a VSDX hides is left out: the names of the Azure icons no longer show under them.
 - Black behind dark text, which libvisio reads from a palette color, draws white: labels no longer show as
   black bars.
 - A text with a line break of Visio (U+2028) shows, broken at it, instead of going missing.
