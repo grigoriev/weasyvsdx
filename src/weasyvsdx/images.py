@@ -48,7 +48,8 @@ EMF_SIGNATURE = b" EMF"
 
 # The presentation streams of MS-OLEDS: a clipboard format, the target device, then the fields up to the data
 PRESENTATION = "\x02OlePres"
-CLIPBOARD_FORMAT_MARKER = 0xFFFFFFFF
+# Either marker means a standard clipboard format follows (MS-OLEDS ClipboardFormatOrAnsiString)
+CLIPBOARD_FORMAT_MARKERS = frozenset((0xFFFFFFFF, 0xFFFFFFFE))
 # The formats of a metafile: a WMF (CF_METAFILEPICT) or an EMF (CF_ENHMETAFILE)
 METAFILE_FORMATS = frozenset((3, 14))
 
@@ -101,7 +102,7 @@ def presentation_emf(stream: bytes) -> bytes | None:
         return None
     marker, kind, device = struct.unpack_from("<III", stream)
     start = 8 + device + 24
-    if marker != CLIPBOARD_FORMAT_MARKER or kind not in METAFILE_FORMATS or start + 4 > len(stream):
+    if marker not in CLIPBOARD_FORMAT_MARKERS or kind not in METAFILE_FORMATS or start + 4 > len(stream):
         return None
     (size,) = struct.unpack_from("<I", stream, start)
     data = stream[start + 4 : start + 4 + size]

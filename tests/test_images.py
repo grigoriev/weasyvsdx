@@ -126,6 +126,13 @@ def test_a_presentation_cut_short() -> None:
     assert presentation_emf(shown[:30]) is None
 
 
+def test_both_markers_of_a_clipboard_format() -> None:
+    emf = helpers.emf_rectangle()
+    assert presentation_emf(helpers.presentation(emf, marker=0xFFFFFFFE)) == emf
+    # A clipboard format by name, a length in place of the marker, carries no metafile
+    assert presentation_emf(helpers.presentation(emf, marker=8)) is None
+
+
 def test_an_ole_object_that_shows_no_emf() -> None:
     assert ole_preview(helpers.ole_holding({"\x02OlePres000": helpers.presentation(helpers.wmf_holding(b""))})) is None
     assert ole_preview(helpers.ole_holding({"\x01Ole10Native": b"x"})) is None

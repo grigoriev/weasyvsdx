@@ -95,10 +95,10 @@ def wmf_holding(emf: bytes, chunk: int = 64, placeable: bool = False) -> bytes:
     return prefix + header + body
 
 
-def presentation(data: bytes, clipboard_format: int = 14) -> bytes:
+def presentation(data: bytes, clipboard_format: int = 14, marker: int = 0xFFFFFFFF) -> bytes:
     """An MS-OLEDS OLEPresentationStream of the data, with no target device."""
     # Marker, format, target device size, aspect, lindex, advf, reserved, width, height, data size
-    return struct.pack("<IIIIiIIIII", 0xFFFFFFFF, clipboard_format, 4, 1, -1, 0, 0, 100, 60, len(data)) + data
+    return struct.pack("<IIIIiIIIII", marker, clipboard_format, 4, 1, -1, 0, 0, 100, 60, len(data)) + data
 
 
 def ole_holding(streams: dict[str, bytes]) -> bytes:
