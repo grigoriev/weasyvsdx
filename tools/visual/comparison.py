@@ -54,7 +54,8 @@ def corpus() -> list[Drawing]:
 
 
 def libreoffice_version() -> str:
-    result = subprocess.run(["soffice", "--version"], capture_output=True, text=True, check=False, timeout=120)  # noqa: S607  the soffice of the visual image
+    # The soffice of the visual image, on its PATH
+    result = subprocess.run(["soffice", "--version"], capture_output=True, text=True, check=False, timeout=120)
     return result.stdout.strip()
 
 

@@ -38,7 +38,7 @@ import weasyvsdx
 from weasyvsdx.convert import Limits
 from weasyvsdx.convert import run as run_tool
 from weasyvsdx.errors import ConversionError
-from weasyvsdx.raw import CALL, points, properties
+from weasyvsdx.raw import parse_call, points, properties
 
 PANEL = 560  # max panel width in the report, px
 LIBREOFFICE_MAX_PX = 2048  # the long side of a PNG export of LibreOffice, at most
@@ -56,9 +56,9 @@ def page_sizes(drawing: Drawing) -> list[tuple[float, float]]:
         return []
     sizes = []
     for line in output.splitlines():
-        match = CALL.match(line)
-        if match and match.group(1) == "startPage":
-            page = properties(match.group(2) or "")
+        call = parse_call(line)
+        if call and call[0] == "startPage":
+            page = properties(call[1])
             sizes.append((points(page.get("svg:width")) / 72, points(page.get("svg:height")) / 72))
     return sizes
 
@@ -169,24 +169,30 @@ def write_baseline(path: Path, rows: list[dict[str, Any]]) -> None:
     path.write_text(json.dumps(baseline, indent=1, sort_keys=True) + "\n")
 
 
+def moved(old: float | None, new: float | None) -> str | None:
+    """Whether a mismatch got worse or better past TOLERANCE; a rendering lost is worse, one gained better."""
+    if old is None or new is None:
+        if old == new:
+            return None
+        return "better" if new is not None else "worse"
+    if new - old > TOLERANCE:
+        return "worse"
+    if old - new > TOLERANCE:
+        return "better"
+    return None
+
+
 def compare(path: Path, rows: list[dict[str, Any]]) -> list[str]:
     """The drawings whose mismatch moved past TOLERANCE since the baseline, worse first; the regressions."""
     baseline = json.loads(path.read_text())
     before: dict[str, float | None] = baseline["mismatch"]
-    worse: list[str] = []
-    better: list[str] = []
+    moves: dict[str, list[str]] = {"worse": [], "better": []}
     for row in rows:
-        if row["name"] not in before:
-            continue
-        old, new = before[row["name"]], row["mismatch"]
-        if old is None or new is None:
-            if old != new:
-                (better if new is not None else worse).append(f"{row['name']}: {old} -> {new}")
-            continue
-        if new - old > TOLERANCE:
-            worse.append(f"{row['name']}: {old} -> {new}")
-        elif old - new > TOLERANCE:
-            better.append(f"{row['name']}: {old} -> {new}")
+        if row["name"] in before:
+            direction = moved(before[row["name"]], row["mismatch"])
+            if direction:
+                moves[direction].append(f"{row['name']}: {before[row['name']]} -> {row['mismatch']}")
+    worse, better = moves["worse"], moves["better"]
     print(f"against {path.name} (WeasyPrint {baseline.get('weasyprint')} -> {weasyprint.__version__}):")
     for title, lines in (("worse", worse), ("better", better)):
         print(f"  {title}: {len(lines)}")

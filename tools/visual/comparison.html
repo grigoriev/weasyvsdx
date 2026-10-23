@@ -273,6 +273,47 @@ function step(direction) {
   showLightbox();
 }
 
+// Keys the full view leaves alone: a key with Ctrl, Cmd or Alt belongs to the browser (Cmd + still zooms
+// the page), a focused field takes every key, a focused button Space and Enter, which press it
+function ignored(event) {
+  if (event.ctrlKey || event.metaKey || event.altKey) return true;
+  if (event.target.closest("input, select")) return true;
+  return (event.key === " " || event.key === "Enter") && event.target.closest("button") !== null;
+}
+function zoomStep(direction) {
+  const steps = ["fit", "1", "2", "4"];
+  const index = steps.indexOf(view.zoom) + direction;
+  view.zoom = steps[Math.min(Math.max(index, 0), steps.length - 1)];
+  showLightbox();
+}
+function swap() {
+  [view.left, view.right] = [view.right, view.left];
+  showLightbox();
+}
+function pickRight(number) {
+  const key = Object.keys(renderers)[number - 1];
+  if (!current.panels[key]) return false;
+  view.right = key;
+  showLightbox();
+  return true;
+}
+// The shortcuts of the full view; true when the key was one
+const SHORTCUTS = {
+  ArrowRight: () => step(1),
+  ArrowLeft: () => step(-1),
+  "+": () => zoomStep(1),
+  "-": () => zoomStep(-1),
+  "]": () => moveSplit(view.split + 0.05),
+  "[": () => moveSplit(view.split - 0.05),
+  " ": swap,
+};
+function shortcut(key) {
+  if (/^[1-3]$/.test(key)) return pickRight(Number(key));
+  if (!SHORTCUTS[key]) return false;
+  SHORTCUTS[key]();
+  return true;
+}
+
 function setup() {
   document.getElementById("intro").textContent = data.intro;
   const group = document.getElementById("group");
@@ -321,26 +362,8 @@ function setup() {
   document.getElementById("lightbox").addEventListener("close", closed);
   document.getElementById("lightbox").addEventListener("click", (event) => { if (event.target.id === "lb-stage") closeLightbox(); });
   document.addEventListener("keydown", (event) => {
-    if (!current) return;
-    // A key with Ctrl, Cmd or Alt belongs to the browser: Cmd + still zooms the page
-    if (event.ctrlKey || event.metaKey || event.altKey) return;
-    // A focused field takes every key, a focused button Space and Enter, which press it
-    if (event.target.closest("input, select")) return;
-    if ((event.key === " " || event.key === "Enter") && event.target.closest("button")) return;
-    const keys = Object.keys(renderers);
-    if (event.key === "ArrowRight") step(1);
-    else if (event.key === "ArrowLeft") step(-1);
-    else if (event.key === "+" || event.key === "-") {
-      const steps = ["fit", "1", "2", "4"];
-      const index = steps.indexOf(view.zoom) + (event.key === "+" ? 1 : -1);
-      view.zoom = steps[Math.min(Math.max(index, 0), steps.length - 1)];
-      showLightbox();
-    }
-    else if (event.key === "[" || event.key === "]") moveSplit(view.split + (event.key === "]" ? 0.05 : -0.05));
-    else if (event.key === " ") { [view.left, view.right] = [view.right, view.left]; showLightbox(); }
-    else if (/^[1-3]$/.test(event.key) && current.panels[keys[Number(event.key) - 1]]) { view.right = keys[Number(event.key) - 1]; showLightbox(); }
-    else return;
-    event.preventDefault();
+    if (!current || ignored(event)) return;
+    if (shortcut(event.key)) event.preventDefault();
   });
   render();
 }

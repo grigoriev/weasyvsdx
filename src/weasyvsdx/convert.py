@@ -78,8 +78,9 @@ class Job:
         self._output, self._errors = folder / f"{self.name}.out", folder / f"{self.name}.err"
         # ulimit -v counts KiB, ulimit -f blocks of 512 bytes
         limited = ["/bin/sh", "-c", LIMITED, "sh", str(limits.max_memory // 1024), str(limits.max_output // 512), *command]
+        # Fixed tools on a file of the temporary directory: no shell reads the drawing
         with self._output.open("wb") as stdout, self._errors.open("wb") as stderr:
-            self._process = subprocess.Popen(limited, stdin=subprocess.DEVNULL, stdout=stdout, stderr=stderr, cwd=folder)  # noqa: S603  fixed tools, the input a file
+            self._process = subprocess.Popen(limited, stdin=subprocess.DEVNULL, stdout=stdout, stderr=stderr, cwd=folder)
 
     def result(self) -> bytes:
         """What the tool wrote to its output. Raises ConversionError."""
@@ -146,7 +147,8 @@ def redraw(page: ET.Element, job: Job) -> None:
 def first_page(document: bytes) -> ET.Element:
     """The first SVG of the XHTML of vsd2xhtml."""
     try:
-        root = ET.fromstring(document)  # noqa: S314  the output of libvisio, which escapes the text of the drawing
+        # The output of libvisio, which escapes the text of the drawing and declares no entities
+        root = ET.fromstring(document)
     except ET.ParseError as e:
         raise ConversionError(f"{CONVERTER} wrote no well-formed XHTML: {e}") from e
     page = root.find(f".//{{{SVG_NS}}}svg")

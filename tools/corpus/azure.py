@@ -34,7 +34,7 @@ def cache() -> Path:
 def download(url: str) -> bytes:
     if not url.startswith("https://arch-center.azureedge.net/"):
         raise SystemExit(f"not a diagram of the Architecture Center: {url}")
-    with urllib.request.urlopen(url, timeout=TIMEOUT) as response:  # noqa: S310  https only, checked above
+    with urllib.request.urlopen(url, timeout=TIMEOUT) as response:
         data: bytes = response.read()
         return data
 
