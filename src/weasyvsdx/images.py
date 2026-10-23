@@ -16,7 +16,6 @@ same embedded EMF, which converts as well.
 from __future__ import annotations
 
 import base64
-import binascii
 import hashlib
 import io
 import logging
@@ -141,8 +140,9 @@ def _svg_url(href: str, convert: Converter, path: Path) -> str | None:
     try:
         path.write_bytes(_emf(base64.b64decode(href[len(prefix) :], validate=True), kind))
         svg = convert(path)
-    # olefile raises OSError on a broken compound file, and ValueError on a sector size too large to print
-    except (binascii.Error, struct.error, OSError, ValueError, ConversionError) as e:
+    # olefile raises OSError on a broken compound file, and ValueError on a sector size too large to print;
+    # ValueError covers the binascii.Error of a broken base64 too
+    except (struct.error, OSError, ValueError, ConversionError) as e:
         LOGGER.warning("An image of a Visio drawing (%s) stays out: %s", kind, e)
         return None
     finally:
