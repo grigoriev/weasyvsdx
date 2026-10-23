@@ -21,10 +21,13 @@ from collections.abc import Iterator
 from xml.etree import ElementTree as ET
 
 from .pathdata import tokenize
+from .paths import shortened
 from .raw import Call, Properties, percent, points, properties
 
 SVG_NS = "http://www.w3.org/2000/svg"
 ENDS = {"start": "startMarker", "end": "endMarker"}
+# The marker of a path end, in the style the generator writes
+MARKER_URL = {end: re.compile(rf"marker-{end}:\s*url\(#([^)]+)\)") for end in ENDS}
 # The start of each subpath of path data
 SUBPATH = re.compile(r"[Mm]")
 # The numbers each command of path data takes
@@ -102,17 +105,21 @@ def viewbox(value: str | None) -> tuple[float, float, float, float] | None:
     return (x, y, width, height) if width > 0 and height > 0 else None
 
 
-def fill_marker(marker: ET.Element, style: Properties, end: str) -> bool:
-    """Draw the marker of the style into the marker element. False when the style gives no usable marker."""
+def fill_marker(marker: ET.Element, style: Properties, end: str) -> float | None:
+    """Draw the marker of the style into the marker element, and return how far it reaches back along the line.
+
+    None when the style gives no usable marker.
+    """
     box = path_box(style.get(f"draw:marker-{end}-path", "")) or viewbox(style.get(f"draw:marker-{end}-viewbox"))
     width = points(style.get(f"draw:marker-{end}-width"))
     if box is None or width <= 0:
-        return False
+        return None
     x, y, box_width, box_height = box
     scale = width / box_width
     # ODF draws a marker pointing up: its top middle is the end of the line, or its middle where centered.
     # SVG turns the marker to the direction of the path, along x: a start marker points back along it.
-    tip_y = y + box_height / 2 if style.get(f"draw:marker-{end}-center") == "true" else y
+    centered = style.get(f"draw:marker-{end}-center") == "true"
+    tip_y = y + box_height / 2 if centered else y
     angle = 90 if end == "end" else -90
     for name, value in (("markerUnits", "userSpaceOnUse"), ("orient", "auto"), ("overflow", "visible"), ("markerWidth", "1"), ("markerHeight", "1"), ("refX", "0"), ("refY", "0")):
         marker.set(name, value)
@@ -135,7 +142,7 @@ def fill_marker(marker: ET.Element, style: Properties, end: str) -> bool:
     shape.set("stroke", "none")
     # A hollow marker is an outline around a hole, as LibreOffice fills its polygons
     shape.set("fill-rule", "evenodd")
-    return True
+    return box_height * scale / (2 if centered else 1)
 
 
 def replace_markers(svg: ET.Element, calls: list[Call]) -> bool:
@@ -148,6 +155,34 @@ def replace_markers(svg: ET.Element, calls: list[Call]) -> bool:
         if len(elements) != len(styles):
             complete = False
             continue
+        reach = {}
         for marker, style in zip(elements, styles, strict=True):
-            fill_marker(marker, style, end)
+            length = fill_marker(marker, style, end)
+            if length is not None:
+                reach[marker.get("id", "")] = length
+        end_lines(svg, end, reach)
     return complete
+
+
+def end_lines(svg: ET.Element, end: str, reach: dict[str, float]) -> None:
+    """End each line under one of the markers at its base, and keep the tip of the marker where the line ended.
+
+    A marker sits on the end of its path, so the shape moves forward inside the marker by as much as the line
+    is cut back. A marker is shared by the lines of one style: where one of them is too short to cut, none is,
+    and the marker stays.
+    """
+    lines: dict[str, list[tuple[ET.Element, str]]] = {}
+    for path in svg.iter(f"{{{SVG_NS}}}path"):
+        match = MARKER_URL[end].search(path.get("style") or "")
+        if match and match.group(1) in reach:
+            data = path.get("d") or ""
+            lines.setdefault(match.group(1), []).append((path, shortened(data, reach[match.group(1)], end)))
+    markers = {marker.get("id"): marker for marker in svg.iter(f"{{{SVG_NS}}}marker")}
+    for marker_id, cut in lines.items():
+        if any(new == (path.get("d") or "") for path, new in cut):
+            continue
+        for path, new in cut:
+            path.set("d", new)
+        offset = reach[marker_id] if end == "end" else -reach[marker_id]
+        for shape in markers[marker_id]:
+            shape.set("transform", f"translate({offset:g} 0) {shape.get('transform', '')}")

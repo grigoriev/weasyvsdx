@@ -13,9 +13,10 @@ it closes.
 
 from __future__ import annotations
 
+import math
 from xml.etree import ElementTree as ET
 
-from .pathdata import tokenize
+from .pathdata import Token, tokenize
 
 SVG_NS = "http://www.w3.org/2000/svg"
 # The numbers of one segment of each command that ends at a point, its end point the last two
@@ -53,3 +54,52 @@ def moved_to_start(data: str) -> str:
     if following is not None and not following[0].isalpha():
         rest = f" {command}{rest}"
     return f"M{numbers[-2][0]},{numbers[-1][0]}{rest}"
+
+
+def _replace(data: str, tokens: list[Token], changes: dict[int, float]) -> str:
+    """The path data with the numbers at the given token indexes replaced, written as libvisio writes them."""
+    out, last = [], 0
+    for index in sorted(changes):
+        _, start, end = tokens[index]
+        out += [data[last:start], f"{changes[index]:.4f}"]
+        last = end
+    return "".join(out) + data[last:]
+
+
+def shortened(data: str, length: float, end: str) -> str:
+    """The path data with its start or its end, the end of a line under an arrowhead, cut back by length.
+
+    LibreOffice and Visio end a line at the base of its arrowhead: drawn to its point, the line runs on through
+    the arrowhead, and its round cap shows past the tip. The point moves back along the last lineto, or with
+    the control point next to it along a curve. A line too short for it, a closed path and an arc stay.
+    """
+    tokens = tokenize(data)
+    letters = [index for index, (token, _, _) in enumerate(tokens) if token.isalpha()]
+    if length <= 0 or not letters or tokens[letters[-1]][0] in "Zz":
+        return data
+    numbers = [index for index, (token, _, _) in enumerate(tokens) if not token.isalpha()]
+    if len(numbers) < 4 or any(tokens[index][0] not in "MLC" for index in letters):
+        return data
+    if end == "end":
+        point, reference = numbers[-2:], numbers[-4:-2]
+        moved = [point]
+        # A curve moves its last control point with its end, which keeps its tangent
+        if tokens[letters[-1]][0] == "C" and letters[-1] < numbers[-6]:
+            moved.append(reference)
+    else:
+        point, reference = numbers[:2], numbers[2:4]
+        moved = [point]
+        # A curve moves its first control point with its start, which keeps its tangent
+        if len(letters) > 1 and tokens[letters[1]][0] == "C" and letters[1] < reference[0]:
+            moved.append(reference)
+    x, y = (float(tokens[index][0]) for index in point)
+    rx, ry = (float(tokens[index][0]) for index in reference)
+    distance = math.hypot(x - rx, y - ry)
+    if distance <= length:
+        return data
+    dx, dy = (rx - x) / distance * length, (ry - y) / distance * length
+    changes = {}
+    for pair in moved:
+        changes[pair[0]] = float(tokens[pair[0]][0]) + dx
+        changes[pair[1]] = float(tokens[pair[1]][0]) + dy
+    return _replace(data, tokens, changes)

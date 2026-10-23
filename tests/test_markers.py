@@ -132,3 +132,33 @@ def test_a_solid_marker_gets_no_underlay() -> None:
     marker = stock("endMarker1")
     assert fill_marker(marker, properties(END), "end")
     assert len(marker) == 1
+
+
+def test_a_line_under_a_marker_ends_at_its_base() -> None:
+    image = ET.fromstring(
+        f'<svg xmlns="{SVG_NS}"><defs>{STOCK.format("endMarker1")}{STOCK.format("startMarker1")}</defs>'
+        '<path d="M0,0 L100,0" style="marker-end: url(#endMarker1); "/>'
+        '<path d="M0,0 L0,100" style="marker-start: url(#startMarker1); marker-end: url(#endMarker9);"/><path d="M0,0 L1,1"/></svg>'
+    )
+    end = "draw:marker-end-path: m10 0-10 20h20z, draw:marker-end-viewbox: 0 0 20 20, draw:marker-end-width: 0.25in"
+    start = "draw:marker-start-path: m10 0-10 20h20z, draw:marker-start-viewbox: 0 0 20 20, draw:marker-start-width: 0.25in, draw:marker-start-center: true"
+    assert replace_markers(image, page(end, start))
+    lines = list(image.iter(f"{{{SVG_NS}}}path"))[-3:]
+    # 0.25in is 18pt wide and 18pt long; a centered marker reaches back half of it
+    assert [line.get("d") for line in lines] == ["M0,0 L82.0000,0.0000", "M0.0000,9.0000 L0,100", "M0,0 L1,1"]
+    end_marker, start_marker = image.iter(f"{{{SVG_NS}}}marker")
+    assert (end_marker[0].get("transform") or "").startswith("translate(18 0) rotate(90)")
+    assert (start_marker[0].get("transform") or "").startswith("translate(-9 0) rotate(-90)")
+
+
+def test_a_marker_whose_line_is_too_short_stays_with_all_its_lines() -> None:
+    image = ET.fromstring(f'<svg xmlns="{SVG_NS}"><defs>{STOCK.format("endMarker1")}</defs><path d="M0,0 L100,0" style="marker-end: url(#endMarker1)"/><path d="M0,0 L5,0" style="marker-end: url(#endMarker1)"/></svg>')
+    assert replace_markers(image, page("draw:marker-end-path: m10 0-10 20h20z, draw:marker-end-viewbox: 0 0 20 20, draw:marker-end-width: 0.25in"))
+    assert [line.get("d") for line in list(image.iter(f"{{{SVG_NS}}}path"))[-2:]] == ["M0,0 L100,0", "M0,0 L5,0"]
+    assert (next(image.iter(f"{{{SVG_NS}}}marker"))[0].get("transform") or "").startswith("rotate(90)")
+
+
+def test_a_marker_without_a_box_leaves_its_line() -> None:
+    image = ET.fromstring(f'<svg xmlns="{SVG_NS}"><defs>{STOCK.format("endMarker1")}</defs><path d="M0,0 L100,0" style="marker-end: url(#endMarker1)"/></svg>')
+    assert replace_markers(image, page("draw:marker-end-path: m0 0, draw:marker-end-viewbox: 0 0 0 20, draw:marker-end-width: 1in"))
+    assert list(image.iter(f"{{{SVG_NS}}}path"))[-1].get("d") == "M0,0 L100,0"

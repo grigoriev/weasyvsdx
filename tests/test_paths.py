@@ -6,7 +6,7 @@ from xml.etree import ElementTree as ET
 
 import pytest
 
-from weasyvsdx.paths import SVG_NS, moved_to_start, start_with_moveto
+from weasyvsdx.paths import SVG_NS, moved_to_start, shortened, start_with_moveto
 
 
 def test_each_path_without_a_moveto_gets_one() -> None:
@@ -39,3 +39,28 @@ def test_each_path_without_a_moveto_gets_one() -> None:
 )
 def test_the_first_segment_without_a_start(data: str, expected: str) -> None:
     assert moved_to_start(data) == expected
+
+
+@pytest.mark.parametrize(
+    ("data", "end", "expected"),
+    [
+        # Back along the last lineto, by the length
+        ("M0,0 L10,0", "end", "M0,0 L8.0000,0.0000"),
+        ("\nM0.0000,0.0000\nL0.0000,10.0000", "start", "\nM0.0000,2.0000\nL0.0000,10.0000"),
+        # A curve moves its control point next to the end, or to the start, with it
+        ("M0,0 C0,5 10,5 10,0", "end", "M0,0 C0,5 10.0000,7.0000 10.0000,2.0000"),
+        ("M0,0 C0,5 10,5 10,0", "start", "M0.0000,2.0000 C0.0000,7.0000 10,5 10,0"),
+        # Too short, closed, an arc, or no line at all: no change
+        ("M0,0 L1,0", "end", "M0,0 L1,0"),
+        ("M0,0 L10,0 Z", "end", "M0,0 L10,0 Z"),
+        ("M0,0 A5,5 0 0,1 10,0", "end", "M0,0 A5,5 0 0,1 10,0"),
+        ("M0,0", "end", "M0,0"),
+        ("", "end", ""),
+    ],
+)
+def test_a_line_ends_at_the_base_of_its_arrowhead(data: str, end: str, expected: str) -> None:
+    assert shortened(data, 2.0, end) == expected
+
+
+def test_no_length_no_change() -> None:
+    assert shortened("M0,0 L10,0", 0.0, "end") == "M0,0 L10,0"
