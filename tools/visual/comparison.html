@@ -322,8 +322,9 @@ function setup() {
   document.getElementById("lightbox").addEventListener("click", (event) => { if (event.target.id === "lb-stage") closeLightbox(); });
   document.addEventListener("keydown", (event) => {
     if (!current) return;
-    // A focused button takes its own keys: Space and Enter press it
-    if (event.target.closest("button, input, select")) return;
+    // A focused field takes every key, a focused button Space and Enter, which press it
+    if (event.target.closest("input, select")) return;
+    if ((event.key === " " || event.key === "Enter") && event.target.closest("button")) return;
     const keys = Object.keys(renderers);
     if (event.key === "ArrowRight") step(1);
     else if (event.key === "ArrowLeft") step(-1);
