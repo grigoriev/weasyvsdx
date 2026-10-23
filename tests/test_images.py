@@ -190,6 +190,10 @@ def test_other_bitmaps_stay() -> None:
         helpers.stretch_dibits(rows, -30, width=40),
     ):
         assert upright_bitmaps(record) == record
+    # No bits per row, which any count of rows would fit: the height of 2**31 - 1 rows stays unread
+    empty = bytearray(helpers.stretch_dibits(rows, -30, bit_count=0))
+    struct.pack_into("<i", empty, 88, 2**31 - 1)
+    assert upright_bitmaps(bytes(empty)) == bytes(empty)
     # A record cut short, or of a size past the end, ends the walk
     whole = helpers.stretch_dibits(rows, -30)
     assert upright_bitmaps(whole[:60]) == whole[:60]

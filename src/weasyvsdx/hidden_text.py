@@ -137,7 +137,8 @@ def shape_texts(document: bytes) -> list[tuple[str, bool]] | None:
             shapes = _first_page(archive).find(f"{VISIO}Shapes")
             if shapes is not None:
                 walker.walk(shapes, None)
-    except (KeyError, ValueError, OSError, zipfile.BadZipFile, ET.ParseError):
+    # RecursionError: shapes nested deeper than the stack of the walk
+    except (KeyError, ValueError, OSError, RecursionError, zipfile.BadZipFile, ET.ParseError):
         return None
     return walker.texts
 

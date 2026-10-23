@@ -116,7 +116,8 @@ def _flip_rows(data: bytearray, offset: int, size: int) -> None:
     width, rows, _, bit_count, compression = struct.unpack_from("<iiHHI", data, offset + header + 4)
     stride = (abs(width) * bit_count + 31) // 32 * 4
     rows = abs(rows)
-    if compression not in UNCOMPRESSED or stride * rows > bits_size or bits + stride * rows > size:
+    # A stride of 0 would pass the size checks with any count of rows, up to 2**31 of them
+    if stride == 0 or compression not in UNCOMPRESSED or stride * rows > bits_size or bits + stride * rows > size:
         return
     start = offset + bits
     lines = [bytes(data[start + row * stride : start + (row + 1) * stride]) for row in range(rows)]

@@ -82,6 +82,12 @@ def test_a_drawing_that_does_not_read_keeps_its_text() -> None:
     assert shape_texts(vsdx(None)) == []
 
 
+def test_shapes_nested_past_the_stack_keep_the_text() -> None:
+    depth = 5000
+    nested = "<Shape ID='1'><Shapes>" * depth + "<Shape ID='2'><Text>deep</Text></Shape>" + "</Shapes></Shape>" * depth
+    assert shape_texts(vsdx(nested)) is None
+
+
 def test_a_part_too_large_to_unpack(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(hidden_text, "MAX_PART", 10)
     assert shape_texts(vsdx("<Shape ID='1'><Text>a</Text></Shape>")) is None
