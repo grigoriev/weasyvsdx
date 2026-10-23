@@ -40,6 +40,8 @@ ANCHOR = {"left": 0.0, "start": 0.0, "justify": 0.0, "center": 0.5, "right": 1.0
 VERTICAL_ANCHOR = {"top": 0.0, "middle": 0.5, "bottom": 1.0}
 VERTICAL = {"top": "flex-start", "middle": "center", "bottom": "flex-end"}
 TEXT_ALIGN = "fo:text-align"
+# Text darker than this luminance does not read on black
+DARK = 0.5
 ALIGN = {"left": "left", "center": "center", "right": "right", "end": "right", "justify": "justify", "start": "left"}
 
 
@@ -161,6 +163,29 @@ def font(props: Properties) -> dict[str, str]:
     return style
 
 
+def luminance(color: str) -> float:
+    """The relative luminance of a #rrggbb color, 0 for black to 1 for white; 0 for another notation."""
+    if len(color) != 7 or not color.startswith("#"):
+        return 0.0
+    try:
+        red, green, blue = (int(color[index : index + 2], 16) / 255 for index in (1, 3, 5))
+    except ValueError:
+        return 0.0
+    return 0.2126 * red + 0.7152 * green + 0.0722 * blue
+
+
+def text_background(background: str, color: str) -> str:
+    """The text background libvisio gives, white where it gives black behind dark text.
+
+    Visio stores the background as an index into its palette, white being 2. libvisio 0.1.7 takes the RGB
+    bytes next to the index of a VSD, which are 0 for a palette color, and so writes black: the dimensions of
+    a floor plan became black bars. Text that dark on black never reads, so black behind it means white.
+    """
+    if background.lower() == "#000000" and luminance(color) < DARK:
+        return "#ffffff"
+    return background
+
+
 def span_style(span: Span) -> str:
     props = span.properties
     style = font(props)
@@ -174,7 +199,7 @@ def span_style(span: Span) -> str:
         if opacity < 1:
             style["opacity"] = f"{opacity:g}"
     if "fo:background-color" in props:
-        style["background-color"] = props["fo:background-color"]
+        style["background-color"] = text_background(props["fo:background-color"], props.get("fo:color", "#000000"))
     if props.get("style:text-underline-type", "none") != "none":
         style["text-decoration"] = "underline"
     position = props.get("style:text-position", "")
