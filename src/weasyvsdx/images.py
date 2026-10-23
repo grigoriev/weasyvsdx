@@ -87,21 +87,27 @@ def ole_preview(ole: bytes) -> bytes | None:
     with olefile.OleFileIO(io.BytesIO(ole)) as storage:
         streams = sorted("/".join(entry) for entry in storage.listdir() if entry[0].startswith(PRESENTATION))
         for name in streams:
-            stream = storage.openstream(name).read()
-            # The ANSI clipboard format, the size of the target device with its own 4 bytes, the device, then
-            # aspect, lindex, advf, reserved, width, height and the size of the data
-            marker, kind, device = struct.unpack_from("<III", stream)
-            if marker != CLIPBOARD_FORMAT_MARKER or kind not in METAFILE_FORMATS:
-                continue
-            start = 8 + device + 24
-            (size,) = struct.unpack_from("<I", stream, start)
-            data = stream[start + 4 : start + 4 + size]
-            # Office stores an EMF presentation as a WMF that holds the EMF in its comments, as the corpus shows;
-            # an EMF as MS-OLEDS describes it passes as it is
-            emf = data if data[40:44] == EMF_SIGNATURE else embedded_emf(data)
+            emf = presentation_emf(storage.openstream(name).read())
             if emf is not None:
                 return emf
     return None
+
+
+def presentation_emf(stream: bytes) -> bytes | None:
+    """The EMF of a presentation stream, or None when it holds no metafile or is cut short."""
+    # The ANSI clipboard format, the size of the target device with its own 4 bytes, the device, then
+    # aspect, lindex, advf, reserved, width, height and the size of the data
+    if len(stream) < 12:
+        return None
+    marker, kind, device = struct.unpack_from("<III", stream)
+    start = 8 + device + 24
+    if marker != CLIPBOARD_FORMAT_MARKER or kind not in METAFILE_FORMATS or start + 4 > len(stream):
+        return None
+    (size,) = struct.unpack_from("<I", stream, start)
+    data = stream[start + 4 : start + 4 + size]
+    # Office stores an EMF presentation as a WMF that holds the EMF in its comments, as the corpus shows;
+    # an EMF as MS-OLEDS describes it passes as it is
+    return data if data[40:44] == EMF_SIGNATURE else embedded_emf(data)
 
 
 def replace_emf(page: ET.Element, convert: Converter, folder: Path) -> int:

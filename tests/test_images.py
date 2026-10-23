@@ -12,7 +12,7 @@ import helpers
 import pytest
 
 from weasyvsdx.errors import ConversionError
-from weasyvsdx.images import SVG_NS, XLINK_HREF, embedded_emf, ole_preview, replace_emf
+from weasyvsdx.images import SVG_NS, XLINK_HREF, embedded_emf, ole_preview, presentation_emf, replace_emf
 
 XLINK_NS = "http://www.w3.org/1999/xlink"
 
@@ -111,9 +111,19 @@ def test_the_picture_an_ole_object_shows() -> None:
     # A presentation of another clipboard format, a bitmap, goes for the next one
     bitmap = helpers.presentation(b"BM", clipboard_format=2)
     assert ole_preview(helpers.ole_holding({"\x02OlePres000": bitmap, "\x02OlePres001": shown})) == emf
+    # A presentation whose target device runs past its end goes for the next one
+    broken = shown[:8] + struct.pack("<I", 0xFFFF0000) + shown[12:]
+    assert ole_preview(helpers.ole_holding({"\x02OlePres000": broken, "\x02OlePres001": shown})) == emf
     # An EMF as it is, and a WMF of CF_METAFILEPICT that holds one
     assert ole_preview(helpers.ole_holding({"\x02OlePres000": helpers.presentation(emf)})) == emf
     assert ole_preview(helpers.ole_holding({"\x02OlePres000": helpers.presentation(helpers.wmf_holding(emf), clipboard_format=3)})) == emf
+
+
+def test_a_presentation_cut_short() -> None:
+    shown = helpers.presentation(helpers.wmf_holding(helpers.emf_rectangle()))
+    # In its header, and before the size of its data
+    assert presentation_emf(shown[:8]) is None
+    assert presentation_emf(shown[:30]) is None
 
 
 def test_an_ole_object_that_shows_no_emf() -> None:
