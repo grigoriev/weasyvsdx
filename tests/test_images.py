@@ -179,6 +179,18 @@ def test_a_bitmap_drawn_to_a_negative_height_turns_upright() -> None:
     assert struct.unpack_from("<i", upright, 28) == (70,)
     assert struct.unpack_from("<i", upright, 76) == (30,)
     assert upright[120:] == b"".join(reversed(rows))
+    # The whole bitmap as source stays the whole bitmap
+    assert struct.unpack_from("<i", upright, 36) == (0,)
+
+
+def test_a_band_of_rows_as_source_stays_that_band() -> None:
+    rows = [b"\x01" * 4, b"\x02" * 4, b"\x03" * 4]
+    record = bytearray(helpers.stretch_dibits(rows, -30))
+    # The first row only: after the reversal it is the last
+    struct.pack_into("<ii", record, 40, 4, 1)
+    struct.pack_into("<i", record, 36, 0)
+    upright = upright_bitmaps(bytes(record))
+    assert struct.unpack_from("<i", upright, 36) == (2,)
 
 
 def test_other_bitmaps_stay() -> None:

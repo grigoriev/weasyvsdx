@@ -124,6 +124,9 @@ def _flip_rows(data: bytearray, offset: int, size: int) -> None:
     data[start : start + stride * rows] = b"".join(reversed(lines))
     struct.pack_into("<i", data, offset + 28, y + height)
     struct.pack_into("<i", data, offset + 76, -height)
+    # The source rectangle selects the same rows, counted from the other end
+    source_y, source_height = struct.unpack_from("<i", data, offset + 36)[0], struct.unpack_from("<i", data, offset + 44)[0]
+    struct.pack_into("<i", data, offset + 36, rows - source_y - source_height)
 
 
 def ole_preview(ole: bytes) -> bytes | None:

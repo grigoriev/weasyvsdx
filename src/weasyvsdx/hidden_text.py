@@ -22,6 +22,7 @@ VISIO = "{http://schemas.microsoft.com/office/visio/2012/main}"
 RELATIONSHIP = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id"
 PACKAGE = "{http://schemas.openxmlformats.org/package/2006/relationships}Relationship"
 MAX_PART = 64 * 1024 * 1024  # bytes of one XML part, unpacked: a zip bomb stops here
+MAX_TOTAL = 256 * 1024 * 1024  # bytes of all parts read, unpacked
 SPACE = re.compile(r"\s+")
 
 # A shape of the page or of a master; the shapes of each master by their ID
@@ -33,41 +34,50 @@ def normalized(text: str) -> str:
     return SPACE.sub("", text)
 
 
-def _part(archive: zipfile.ZipFile, name: str) -> ET.Element:
-    """One XML part of the package, parsed; KeyError when it is missing, ValueError when it is too large."""
-    if archive.getinfo(name).file_size > MAX_PART:
-        raise ValueError(f"{name} unpacks to more than {MAX_PART} bytes")
-    return ET.fromstring(archive.read(name))
+class _Package:
+    """The XML parts of a VSDX, within a budget of unpacked bytes for all of them; the shapes of a master part read once."""
 
+    def __init__(self, archive: zipfile.ZipFile) -> None:
+        self.archive = archive
+        self.budget = MAX_TOTAL
+        self.shapes: dict[str, Shapes] = {}
 
-def _targets(archive: zipfile.ZipFile, folder: str, part: str) -> dict[str, str]:
-    """The targets of the relationships of a part, by their ID."""
-    relationships = _part(archive, f"{folder}/_rels/{part}.rels")
-    return {item.get("Id", ""): item.get("Target", "") for item in relationships.iter(PACKAGE)}
+    def part(self, name: str) -> ET.Element:
+        """One part, parsed; KeyError when it is missing, ValueError when it or all parts are too large."""
+        size = self.archive.getinfo(name).file_size
+        if size > MAX_PART or size > self.budget:
+            raise ValueError(f"{name} unpacks to more bytes than the budget allows")
+        self.budget -= size
+        return ET.fromstring(self.archive.read(name))
 
+    def targets(self, folder: str, part: str) -> dict[str, str]:
+        """The targets of the relationships of a part, by their ID."""
+        relationships = self.part(f"{folder}/_rels/{part}.rels")
+        return {item.get("Id", ""): item.get("Target", "") for item in relationships.iter(PACKAGE)}
 
-def _masters(archive: zipfile.ZipFile) -> dict[str, Shapes]:
-    """The shapes of each master by the ID of the master."""
-    if "visio/masters/masters.xml" not in archive.namelist():
-        return {}
-    targets = _targets(archive, "visio/masters", "masters.xml")
-    masters = {}
-    for master in _part(archive, "visio/masters/masters.xml").iter(f"{VISIO}Master"):
-        link = master.find(f"{VISIO}Rel")
-        target = targets.get(link.get(RELATIONSHIP, "") if link is not None else "")
-        if target:
-            masters[master.get("ID", "")] = {shape.get("ID", ""): shape for shape in _part(archive, f"visio/masters/{target}").iter(f"{VISIO}Shape")}
-    return masters
+    def masters(self) -> dict[str, Shapes]:
+        """The shapes of each master by the ID of the master; masters that share a part share its shapes."""
+        if "visio/masters/masters.xml" not in self.archive.namelist():
+            return {}
+        targets = self.targets("visio/masters", "masters.xml")
+        masters = {}
+        for master in self.part("visio/masters/masters.xml").iter(f"{VISIO}Master"):
+            link = master.find(f"{VISIO}Rel")
+            target = targets.get(link.get(RELATIONSHIP, "") if link is not None else "")
+            if target:
+                if target not in self.shapes:
+                    self.shapes[target] = {shape.get("ID", ""): shape for shape in self.part(f"visio/masters/{target}").iter(f"{VISIO}Shape")}
+                masters[master.get("ID", "")] = self.shapes[target]
+        return masters
 
-
-def _first_page(archive: zipfile.ZipFile) -> ET.Element:
-    """The first page that is no background page, the page libvisio writes first."""
-    targets = _targets(archive, "visio/pages", "pages.xml")
-    for page in _part(archive, "visio/pages/pages.xml").iter(f"{VISIO}Page"):
-        link = page.find(f"{VISIO}Rel")
-        if page.get("Background") != "1" and link is not None:
-            return _part(archive, f"visio/pages/{targets[link.get(RELATIONSHIP, '')]}")
-    raise KeyError("no foreground page")
+    def first_page(self) -> ET.Element:
+        """The first page that is no background page, the page libvisio writes first."""
+        targets = self.targets("visio/pages", "pages.xml")
+        for page in self.part("visio/pages/pages.xml").iter(f"{VISIO}Page"):
+            link = page.find(f"{VISIO}Rel")
+            if page.get("Background") != "1" and link is not None:
+                return self.part(f"visio/pages/{targets[link.get(RELATIONSHIP, '')]}")
+        raise KeyError("no foreground page")
 
 
 def _text(shape: ET.Element | None) -> str | None:
@@ -133,8 +143,9 @@ def shape_texts(document: bytes) -> list[tuple[str, bool]] | None:
         return None
     try:
         with zipfile.ZipFile(io.BytesIO(document)) as archive:
-            walker = _Walker(_masters(archive))
-            shapes = _first_page(archive).find(f"{VISIO}Shapes")
+            package = _Package(archive)
+            walker = _Walker(package.masters())
+            shapes = package.first_page().find(f"{VISIO}Shapes")
             if shapes is not None:
                 walker.walk(shapes, None)
     # RecursionError: shapes nested deeper than the stack of the walk

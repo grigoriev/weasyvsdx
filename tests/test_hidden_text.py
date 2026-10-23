@@ -16,7 +16,7 @@ HIDE = "<Cell N='HideText' V='1'/>"
 SHOW = "<Cell N='HideText' V='0'/>"
 
 
-def vsdx(page: str | None, master: str | None = None, *, foreground: bool = True) -> bytes:
+def vsdx(page: str | None, master: str | None = None, *, foreground: bool = True, copies: int = 0) -> bytes:
     """A VSDX of a background page and the page, with one master of ID 2 if given; a page of None has no shapes."""
     pages = f"<Pages {NS}><Page ID='4' Background='1'><Rel r:id='rId1'/></Page>" + ("<Page ID='0'><Rel r:id='rId2'/></Page>" if foreground else "") + "</Pages>"
     parts = {
@@ -26,7 +26,7 @@ def vsdx(page: str | None, master: str | None = None, *, foreground: bool = True
         "visio/pages/page2.xml": f"<PageContents {NS}>" + (f"<Shapes>{page}</Shapes>" if page is not None else "") + "</PageContents>",
     }
     if master is not None:
-        parts["visio/masters/masters.xml"] = f"<Masters {NS}><Master ID='2'><Rel r:id='rId1'/></Master><Master ID='3'/></Masters>"
+        parts["visio/masters/masters.xml"] = f"<Masters {NS}><Master ID='2'><Rel r:id='rId1'/></Master><Master ID='3'/>" + "<Master ID='4'><Rel r:id='rId1'/></Master>" * copies + "</Masters>"
         parts["visio/masters/_rels/masters.xml.rels"] = f"<Relationships {PACKAGE}><Relationship Id='rId1' Target='master1.xml'/></Relationships>"
         parts["visio/masters/master1.xml"] = f"<MasterContents {NS}><Shapes>{master}</Shapes></MasterContents>"
     buffer = io.BytesIO()
@@ -86,6 +86,16 @@ def test_shapes_nested_past_the_stack_keep_the_text() -> None:
     depth = 5000
     nested = "<Shape ID='1'><Shapes>" * depth + "<Shape ID='2'><Text>deep</Text></Shape>" + "</Shapes></Shape>" * depth
     assert shape_texts(vsdx(nested)) is None
+
+
+def test_masters_that_share_a_part_read_it_once(monkeypatch: pytest.MonkeyPatch) -> None:
+    master = f"<Shape ID='5'>{HIDE}<Text>Icon</Text></Shape>"
+    many = vsdx("<Shape ID='1' Master='2'/>", master, copies=50)
+    # Room for each part once: a second read of the master would pass the budget
+    with zipfile.ZipFile(io.BytesIO(many)) as archive:
+        total = sum(item.file_size for item in archive.infolist())
+    monkeypatch.setattr(hidden_text, "MAX_TOTAL", total)
+    assert shape_texts(many) == [("Icon", True)]
 
 
 def test_a_part_too_large_to_unpack(monkeypatch: pytest.MonkeyPatch) -> None:
