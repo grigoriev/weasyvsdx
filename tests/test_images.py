@@ -137,3 +137,15 @@ def test_the_picture_of_an_ole_object_becomes_svg(tmp_path: Path, caplog: pytest
     assert [element.get(XLINK_HREF) for element in image][1:] == hrefs[1:]
     assert "An image of a Visio drawing (OLE object) stays out: the OLE object holds no EMF" in caplog.text
     assert len(caplog.records) == 2
+
+
+def test_an_ole_object_of_a_huge_sector_size_stays(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
+    ole = bytearray(helpers.ole_holding({"\x02OlePres000": helpers.presentation(helpers.wmf_holding(helpers.emf_rectangle()))}))
+    # The sector shift of the header: olefile computes 2 ** 65535 and fails to print it as ValueError
+    ole[30:32] = b"\xff\xff"
+    href = "data:object/ole;base64," + base64.b64encode(bytes(ole)).decode()
+    image = page(href)
+    with caplog.at_level(logging.WARNING, logger="weasyvsdx"):
+        assert replace_emf(image, lambda path: b"<svg/>", tmp_path) == 0
+    assert image[0].get(XLINK_HREF) == href
+    assert "An image of a Visio drawing (OLE object) stays out" in caplog.text

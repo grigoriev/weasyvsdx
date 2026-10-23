@@ -138,7 +138,8 @@ def _svg_url(href: str, convert: Converter, path: Path) -> str | None:
     try:
         path.write_bytes(_emf(base64.b64decode(href[len(prefix) :], validate=True), kind))
         svg = convert(path)
-    except (binascii.Error, struct.error, OSError, ConversionError) as e:
+    # olefile raises OSError on a broken compound file, and ValueError on a sector size too large to print
+    except (binascii.Error, struct.error, OSError, ValueError, ConversionError) as e:
         LOGGER.warning("An image of a Visio drawing (%s) stays out: %s", kind, e)
         return None
     finally:
