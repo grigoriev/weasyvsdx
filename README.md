@@ -85,6 +85,20 @@ raises `ConverterNotFoundError` when `vsd2xhtml` is not on the PATH. A later cal
 A drawing that does not convert, or that passes a limit, renders as a broken image: WeasyPrint logs the
 error and leaves it out, and the rest of the document renders.
 
+## Fonts
+
+Visio drawings ask for fonts of Microsoft, Segoe UI and Calibri most. weasyvsdx names a free replacement
+after each, so an installed original still wins:
+
+| Font | Replacement | Debian package |
+|---|---|---|
+| Calibri | Carlito, same metrics | `fonts-crosextra-carlito` |
+| Cambria | Caladea, same metrics | `fonts-crosextra-caladea` |
+| Segoe UI, Light, Semilight, Semibold | Selawik, close, not equal | none: the [release of microsoft/Selawik](https://github.com/microsoft/Selawik/releases) |
+
+Without them, text falls back to the sans-serif font of the system, which breaks lines elsewhere than Visio.
+Where the license allows it, install the original fonts instead.
+
 ## How it works
 
 1. `vsd2xhtml` of libvisio writes each page of the drawing as SVG. weasyvsdx takes the first page, as
@@ -133,9 +147,10 @@ of tens of MB take seconds, 17 of the 250 more than one: libvisio writes the bit
 ## Known gaps
 
 - Only the first page renders. LibreOffice and the converters before it did the same.
-- A font the system lacks falls back to the sans-serif font. Visio drawings ask for Calibri and Segoe UI
-  most: install Carlito, the metric-compatible replacement of Calibri, for text that breaks where Visio
-  breaks it. Segoe UI has none.
+- Visio drawings ask for Calibri and Segoe UI most, fonts of Microsoft. A font the system lacks falls back
+  to its free replacement, else to sans-serif: Calibri to Carlito and Cambria to Caladea, which share their
+  metrics, so text breaks where Visio breaks it; Segoe UI to Selawik, the open fallback of Microsoft, close
+  to it but not equal. Install them, see "Fonts".
 - Character scaling (the "Scale" of a Visio font) and numbered lists draw as plain text. Fields show the
   value libvisio formats.
 - WMF images and embedded OLE objects are left out: neither WeasyPrint nor emf2svg reads them.

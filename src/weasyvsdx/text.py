@@ -19,6 +19,18 @@ from .raw import Call, Properties, percent, points, properties
 
 SVG_NS = "http://www.w3.org/2000/svg"
 XHTML_NS = "http://www.w3.org/1999/xhtml"
+# Free fonts in place of the fonts of Microsoft that Visio drawings ask for most: Carlito and Caladea share
+# the metrics of Calibri and Cambria, so text breaks where Visio breaks it; Selawik is the open fallback
+# Microsoft made for Segoe UI, close to it but not equal. Each comes after the font itself, so an installed
+# original still wins.
+REPLACEMENTS = {
+    "calibri": "Carlito",
+    "cambria": "Caladea",
+    "segoe ui": "Selawik",
+    "segoe ui light": "Selawik Light",
+    "segoe ui semilight": "Selawik Semilight",
+    "segoe ui semibold": "Selawik Semibold",
+}
 VERTICAL = {"top": "flex-start", "middle": "center", "bottom": "flex-end"}
 ALIGN = {"left": "left", "center": "center", "right": "right", "end": "right", "justify": "justify", "start": "left"}
 
@@ -98,9 +110,11 @@ def font(props: Properties) -> dict[str, str]:
     """The font family and size of a span."""
     style = {}
     if "style:font-name" in props:
-        # A font the system lacks falls back to sans-serif, as Visio diagrams mostly use sans-serif fonts
+        # A font the system lacks falls back to its replacement, else to sans-serif, as Visio diagrams
+        # mostly use sans-serif fonts
         family = props["style:font-name"].replace("\\", "").replace('"', "")
-        style["font-family"] = f'"{family}", sans-serif'
+        families = [family, REPLACEMENTS.get(family.lower())]
+        style["font-family"] = ", ".join(f'"{name}"' for name in families if name) + ", sans-serif"
     if "fo:font-size" in props:
         style["font-size"] = length(points(props["fo:font-size"], 12.0))
     return style

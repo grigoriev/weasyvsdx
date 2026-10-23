@@ -105,7 +105,7 @@ def test_the_foreign_object_takes_the_text_block() -> None:
     assert "flex-shrink:0" in (paragraph.get("style") or "")
     span = paragraph[0]
     assert span.text == "test"
-    assert span.get("style") == 'font-family:"Calibri", sans-serif;font-size:12px;color:#000000'
+    assert span.get("style") == 'font-family:"Calibri", "Carlito", sans-serif;font-size:12px;color:#000000'
 
 
 def test_a_turned_text_block_turns_about_its_center() -> None:
@@ -120,7 +120,7 @@ def test_the_style_of_a_span() -> None:
     )
     [text] = text_objects(first_page(page("startTextObject ()", "openParagraph ()", f"openSpan({span})", "insertText (x)", "closeSpan", "openSpan(style:text-position: sub 58%)", "closeSpan", "closeParagraph", "endTextObject")))
     first, second = html(foreign_object(text))[0]
-    assert first.get("style") == ('font-family:"Segoe UI", sans-serif;font-size:9px;font-weight:bold;font-style:italic;color:#ff0000;opacity:0.5;background-color:#ffff00;text-decoration:underline;vertical-align:super')
+    assert first.get("style") == ('font-family:"Segoe UI", "Selawik", sans-serif;font-size:9px;font-weight:bold;font-style:italic;color:#ff0000;opacity:0.5;background-color:#ffff00;text-decoration:underline;vertical-align:super')
     assert second.get("style") == "vertical-align:sub"
 
 
@@ -152,5 +152,13 @@ def test_a_paragraph_takes_the_font_of_its_first_span() -> None:
     [text] = text_objects(first_page(raw))
     empty, full = html(foreign_object(text))
     # The empty paragraph takes the font of the first span of the block
-    assert 'font-family:"Calibri", sans-serif;font-size:6px' in (empty.get("style") or "")
+    assert 'font-family:"Calibri", "Carlito", sans-serif;font-size:6px' in (empty.get("style") or "")
     assert "font-size:6px" in (full.get("style") or "")
+
+
+def test_a_font_of_microsoft_gets_its_free_replacement() -> None:
+    names = ["Segoe UI Semibold", "Cambria", "Arial"]
+    calls = [f"openSpan(style:font-name: {name})" for name in names]
+    [text] = text_objects(first_page(page("startTextObject ()", "openParagraph ()", *[line for call in calls for line in (call, "insertText (a)", "closeSpan")], "closeParagraph", "endTextObject")))
+    styles = [span.get("style") for span in html(foreign_object(text))[0]]
+    assert styles == ['font-family:"Segoe UI Semibold", "Selawik Semibold", sans-serif', 'font-family:"Cambria", "Caladea", sans-serif', 'font-family:"Arial", sans-serif']
