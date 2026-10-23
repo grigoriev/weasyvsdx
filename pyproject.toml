@@ -1,0 +1,109 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "weasyvsdx"
+version = "0.0.0"
+description = "Visio drawings (VSDX, VSD) for WeasyPrint, drawn as vector SVG through libvisio."
+readme = "README.md"
+license = "MIT"
+authors = [
+    { name = "Sergey Grigoriev", email = "grigoriev@fastmail.com" }
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Multimedia :: Graphics :: Graphics Conversion",
+    "Topic :: Printing",
+    "Typing :: Typed",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "weasyprint>=70,<71",
+    # Draws the foreignObject that holds the text of a drawing
+    "weasysvg>=0.3.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==9.1.1",
+    "pytest-cov==7.1.0",
+    "mypy==2.4.0",
+    "ruff==0.17.2",
+    "pypdfium2==5.14.0",
+]
+# The visual regression bench in tools/visual, run in Docker
+visual = [
+    "numpy==2.5.4; python_version >= '3.12'",
+]
+
+[project.urls]
+Homepage = "https://github.com/grigoriev/weasyvsdx"
+Repository = "https://github.com/grigoriev/weasyvsdx"
+Issues = "https://github.com/grigoriev/weasyvsdx/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/weasyvsdx"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/weasyvsdx", "tests", "README.md", "LICENSE", "CHANGELOG.md"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 240
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM"]
+ignore = []
+
+[tool.ruff.lint.isort]
+known-first-party = ["weasyvsdx"]
+
+[tool.uv]
+required-version = ">=0.5.0"
+
+[tool.coverage.run]
+source = ["weasyvsdx"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+follow_imports = "normal"
+show_error_codes = true
+
+# WeasyPrint ships no type information
+[[tool.mypy.overrides]]
+module = ["weasyprint.*", "weasyprint", "pypdfium2.*", "numpy.*"]
+ignore_missing_imports = true

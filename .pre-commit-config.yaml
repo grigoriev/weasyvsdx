@@ -1,0 +1,43 @@
+default_install_hook_types: [pre-commit, commit-msg]
+# The corpus files and license notices stay byte for byte as their sources published them
+exclude: ^corpus/(visio|reference|licenses)/
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-merge-conflict
+      - id: trailing-whitespace
+      - id: check-xml
+      - id: check-json
+      - id: check-toml
+      - id: check-yaml
+      - id: no-commit-to-branch
+      - id: mixed-line-ending
+      - id: end-of-file-fixer
+  - repo: local
+    hooks:
+      # Run mypy checks
+      - id: mypy
+        name: mypy
+        entry: uv run --no-sync mypy src tests tools
+        language: system
+        types: [python]
+        require_serial: true  # Serial processing is required for mypy
+        pass_filenames: false  # Don't pass individual files, use the specified path
+      # Run the formatter
+      - id: ruff-format
+        name: ruff formatter
+        entry: uv run --no-sync ruff format
+        language: system
+        types: [python]
+      # Run the linter
+      - id: ruff-check
+        name: ruff linter
+        entry: uv run --no-sync ruff check
+        language: system
+        types: [python]
+        args: [--fix]
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v4.10.0
+    hooks:
+      - id: commitizen
