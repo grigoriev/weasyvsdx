@@ -16,6 +16,7 @@ comparison.html, the template next to this script with the data put in, on GitHu
 
 from __future__ import annotations
 
+import hashlib
 import html
 import json
 import shutil
@@ -50,12 +51,22 @@ def corpus() -> list[Drawing]:
     return [drawing for drawing in drawings() if drawing.group != "azure"]
 
 
+def digest(drawing: Drawing) -> str:
+    return hashlib.sha256(drawing.path.read_bytes()).hexdigest()
+
+
 def export_libreoffice(items: list[Drawing]) -> None:
-    """The PDF of LibreOffice for each drawing that lacks one: the same page as its PNG reference, in vector."""
-    missing = [drawing for drawing in items if not (PDFS["libreoffice"] / f"{drawing.name}.pdf").exists()]
+    """The PDF of LibreOffice for each drawing that lacks one: the same page as its PNG reference, in vector.
+
+    Next to each PDF lies the SHA-256 of its drawing: a drawing that changed gets its PDF anew.
+    """
+    target = PDFS["libreoffice"]
+    missing = [drawing for drawing in items if not (target / f"{drawing.name}.pdf").exists() or not (target / f"{drawing.name}.sha256").exists() or (target / f"{drawing.name}.sha256").read_text() != digest(drawing)]
+    for drawing in missing:
+        (target / f"{drawing.name}.pdf").unlink(missing_ok=True)
     if not missing:
         return
-    PDFS["libreoffice"].mkdir(parents=True, exist_ok=True)
+    target.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory() as directory:
         folder = Path(directory)
         inputs = []
@@ -67,7 +78,8 @@ def export_libreoffice(items: list[Drawing]) -> None:
         for drawing in missing:
             pdf = folder / "pdf" / f"{drawing.name}.pdf"
             if pdf.exists():
-                shutil.copyfile(pdf, PDFS["libreoffice"] / f"{drawing.name}.pdf")
+                shutil.copyfile(pdf, target / f"{drawing.name}.pdf")
+                (target / f"{drawing.name}.sha256").write_text(digest(drawing))
 
 
 def save(image: Image.Image, key: str, name: str) -> None:
@@ -180,19 +192,25 @@ def main() -> int:
     items = corpus()
     export_libreoffice(items)
     sizes = {}
+    failed = False
     for drawing in items:
         size = panels(drawing)
-        if size is None:
-            print(f"{drawing.name}: no panel")
-        else:
+        if size is not None:
             sizes[drawing.name] = size
+        # A drawing with a reference converts in LibreOffice, so it must have all its panels; one without is
+        # broken on purpose, such as recursion-cycle.vsdx, and has none
+        drawn = [key for key in RENDERERS if (CORPUS / "render" / key / f"{drawing.name}.webp").exists()]
+        if drawing.reference.exists() and len(drawn) != len(RENDERERS):
+            failed = True
+            print(f"{drawing.name}: no panel for {', '.join(key for key in RENDERERS if key not in drawn)}")
     baseline = CORPUS / "baseline.json"
     version = json.loads(baseline.read_text()).get("weasyprint", "") if baseline.exists() else ""
     measured = mismatches()
     PAGE.write_text(markdown(items, measured, html.escape(version)))
     HTML_PAGE.write_text(html_page(items, sizes, measured, version))
     print(f"wrote {PAGE.relative_to(ROOT)} and {HTML_PAGE.relative_to(ROOT)}")
-    return 0
+    # A missing panel would leave the page incomplete
+    return 1 if failed else 0
 
 
 if __name__ == "__main__":

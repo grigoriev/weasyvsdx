@@ -263,7 +263,8 @@ function closed() {
   if (opener && opener.isConnected) opener.focus();
 }
 function step(direction) {
-  const items = visible();
+  // Only drawings with panels: one that does not convert has nothing to show
+  const items = visible().filter((item) => item.panels.libreoffice);
   const index = items.indexOf(current);
   if (index < 0) return;
   current = items[(index + direction + items.length) % items.length];
