@@ -21,6 +21,7 @@ from .raw import Call, Properties, points, properties
 LINES = {"single": (0,), "double": (0, 90), "triple": (0, 90, 45)}
 DEFAULT_DISTANCE = 7.2  # points, 0.1 inch: the distance LibreOffice draws when none is given
 LINE_WIDTH = 0.4  # points, a hairline as LibreOffice draws it
+DISPLAY = "draw:display"
 MAX_LINES = 500  # each way from the center: a hatch of a huge shape at a tiny distance stays drawable
 
 
@@ -32,8 +33,8 @@ def draw_styles(calls: list[Call]) -> list[Properties]:
         if name == "setStyle":
             style = properties(argument)
         elif name == "drawPath" and "svg:d:" in argument:
-            display = properties(argument).get("draw:display")
-            styles.append({**style, "draw:display": display} if display else style)
+            display = properties(argument).get(DISPLAY)
+            styles.append({**style, DISPLAY: display} if display else style)
     return styles
 
 
@@ -71,7 +72,7 @@ def fill_hatches(page: ET.Element, calls: list[Call]) -> bool:
     defs = None
     for (path, parent), style in zip(paths, styles, strict=True):
         # A hidden shape goes with hidden.py, which removes its path but would leave its lines
-        if style.get("draw:fill") != "hatch" or style.get("draw:display") == "none":
+        if style.get("draw:fill") != "hatch" or style.get(DISPLAY) == "none":
             continue
         fill = style.get("draw:fill-color", "#ffffff") if style.get("draw:fill-hatch-solid") == "true" else "none"
         path.set("style", f"{path.get('style', '').rstrip()} fill: {fill};".strip())
