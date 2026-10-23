@@ -1,0 +1,207 @@
+[
+ {
+  "name": "libreoffice-Visio2013drawing",
+  "source": "libreoffice/Visio2013drawing.vsdx",
+  "group": "libreoffice"
+ },
+ {
+  "name": "libvisio-bgcolor",
+  "source": "libvisio/bgcolor.vsdx",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-bitmaps-vsd",
+  "source": "libvisio/bitmaps.vsd",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-bitmaps2-vsd",
+  "source": "libvisio/bitmaps2.vsd",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-blue-box",
+  "source": "libvisio/blue-box.vsdx",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-color-boxes",
+  "source": "libvisio/color-boxes.vsdx",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-dwg-vsd",
+  "source": "libvisio/dwg.vsd",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-dwg",
+  "source": "libvisio/dwg.vsdx",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-fdo86664",
+  "source": "libvisio/fdo86664.vsdx",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-fdo86729-ms1252-vsd",
+  "source": "libvisio/fdo86729-ms1252.vsd",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-fdo86729-utf8-vsd",
+  "source": "libvisio/fdo86729-utf8.vsd",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-no-bgcolor-vsd",
+  "source": "libvisio/no-bgcolor.vsd",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-office_varient4",
+  "source": "libvisio/office_varient4.vsdx",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-qs-box",
+  "source": "libvisio/qs-box.vsdx",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-recursion-cycle",
+  "source": "libvisio/recursion-cycle.vsdx",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-tab-short-prefix",
+  "source": "libvisio/tab-short-prefix.vsdx",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-tdf136564-WhiteTextBackground",
+  "source": "libvisio/tdf136564-WhiteTextBackground.vsdx",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-tdf154379-DrawingUnits-type-vsd",
+  "source": "libvisio/tdf154379-DrawingUnits-type.vsd",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-tdf154379-QuickStyleFillMatrix",
+  "source": "libvisio/tdf154379-QuickStyleFillMatrix.vsdx",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-tdf76829-datetime-format-vsd",
+  "source": "libvisio/tdf76829-datetime-format.vsd",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-tdf76829-numeric-format-vsd",
+  "source": "libvisio/tdf76829-numeric-format.vsd",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-testfile1",
+  "source": "libvisio/testfile1.vsdx",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-testfile3",
+  "source": "libvisio/testfile3.vsdx",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-testfile4",
+  "source": "libvisio/testfile4.vsdx",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-testfile5",
+  "source": "libvisio/testfile5.vsdx",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-testfile6",
+  "source": "libvisio/testfile6.vsdx",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-Visio11FormatLine-vsd",
+  "source": "libvisio/Visio11FormatLine.vsd",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-Visio11PlanWithDimensions-vsd",
+  "source": "libvisio/Visio11PlanWithDimensions.vsd",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-Visio11TextFieldsWithAngle-vsd",
+  "source": "libvisio/Visio11TextFieldsWithAngle.vsd",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-Visio11TextFieldsWithCurrency-vsd",
+  "source": "libvisio/Visio11TextFieldsWithCurrency.vsd",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-Visio11TextFieldsWithUnits-vsd",
+  "source": "libvisio/Visio11TextFieldsWithUnits.vsd",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-Visio5PlanWithDimensions-vsd",
+  "source": "libvisio/Visio5PlanWithDimensions.vsd",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-Visio5TextFieldsWithUnits-vsd",
+  "source": "libvisio/Visio5TextFieldsWithUnits.vsd",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-Visio6PlanWithDimensions-vsd",
+  "source": "libvisio/Visio6PlanWithDimensions.vsd",
+  "group": "libvisio"
+ },
+ {
+  "name": "libvisio-Visio6TextFieldsWithUnits-vsd",
+  "source": "libvisio/Visio6TextFieldsWithUnits.vsd",
+  "group": "libvisio"
+ },
+ {
+  "name": "poi-60489",
+  "source": "poi/60489.vsdx",
+  "group": "poi"
+ },
+ {
+  "name": "poi-60973",
+  "source": "poi/60973.vsdx",
+  "group": "poi"
+ },
+ {
+  "name": "poi-github260",
+  "source": "poi/github260.vsdx",
+  "group": "poi"
+ },
+ {
+  "name": "poi-SimpleMacro-vsdm",
+  "source": "poi/SimpleMacro.vsdm",
+  "group": "poi"
+ },
+ {
+  "name": "poi-test",
+  "source": "poi/test.vsdx",
+  "group": "poi"
+ },
+ {
+  "name": "poi-test_text_extraction",
+  "source": "poi/test_text_extraction.vsdx",
+  "group": "poi"
+ }
+]

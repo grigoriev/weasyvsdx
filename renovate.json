@@ -1,0 +1,18 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "github>grigoriev/renovate-config"
+  ],
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "description": "weasyvsdx supports one WeasyPrint major: an upgrade moves the pin and needs a look at the hooked image loader",
+      "matchPackageNames": ["weasyprint"],
+      "rangeStrategy": "replace",
+      "automerge": false,
+      "prBodyNotes": ["Run make test and make visual-check: test_the_hooked_loader_keeps_its_shape fails when the hooked loader changed."]
+    }
+  ]
+}

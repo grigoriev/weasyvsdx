@@ -1,0 +1,4 @@
+# The drawings of the corpus, their references and their licenses stay byte for byte as published
+corpus/visio/** -text
+corpus/reference/** -text
+corpus/licenses/** -text

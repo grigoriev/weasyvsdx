@@ -1,0 +1,110 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/claude-code) when working with this repository.
+
+## Project Overview
+
+weasyvsdx is a plugin for WeasyPrint 70.x that draws Microsoft Visio drawings (VSDX, VSD) as vector SVG.
+One `weasyvsdx.install()` call hooks the image loader of WeasyPrint for the whole process. The tools of
+libvisio (`vsd2xhtml`, `vsd2raw`, Debian package `libvisio-tools`) and `emf2svg-conv` (package `emf2svg`)
+do the parsing, each in a process of its own. weasysvg draws the text, which weasyvsdx writes as HTML in a
+`<foreignObject>`.
+
+## Tech Stack
+
+- **Python**: 3.11+, CPython only (the target services run 3.14)
+- **Package Manager**: uv
+- **Build Backend**: hatchling, `src/` layout
+- **Linting/Formatting**: ruff, line length 240
+- **Type Checking**: mypy (strict mode); WeasyPrint has no types, so its objects are `Any`
+- **Testing**: pytest with pytest-cov, in Docker (WeasyPrint needs Pango, the tests the tools of libvisio)
+
+## Common Commands
+
+```bash
+uv sync --all-extras    # install dependencies
+make lint               # ruff check, ruff format --check, mypy src tests tools
+make test               # pytest with coverage in Docker (Dockerfile.test, stage "test")
+make azure              # download the Azure diagrams of corpus/azure.json into the cache
+make visual             # visual bench in Docker (stage "visual"), report in tools/visual/out/report.html
+make visual-baseline    # write corpus/baseline.json
+make visual-check       # compare with corpus/baseline.json, fails when a drawing got worse
+make references         # export the LibreOffice references again
+uv build                # wheel and sdist
+```
+
+## Architecture
+
+`src/weasyvsdx/`:
+
+- `__init__.py`: `install()` finds the tools, installs weasysvg for the text where needed, and hooks
+  WeasyPrint through `fetch.install()`.
+- `fetch.py`: replaces `weasyprint.document.original_get_image_from_uri`, the name `Document` binds the
+  image loader under. The wrapper puts `VisioFetcher` in front of the URL fetcher of the caller: a response
+  with a Visio media type, or a Visio suffix where the type says nothing, comes back as SVG.
+- `convert.py`: runs the tools (`Job`: a process with `ulimit -v` and `-f` through `/bin/sh`, and a
+  timeout), `vsd2xhtml` and `vsd2raw` at the same time, takes the first page of the XHTML and serializes it
+  with the SVG namespace as the default one.
+- `raw.py`: the output of `vsd2raw`, one call per line: the calls of the first page and their properties.
+- `text.py`: each `<text>` of the page becomes a `<foreignObject>` of its text block, the n-th `<text>` in
+  document order for the n-th `startTextObject`. Paragraphs and spans become HTML in a flex column.
+- `markers.py`: the k-th `startMarker`/`endMarker` gets the path of the k-th style with that marker, scaled
+  by the box of its path, as LibreOffice scales it.
+- `images.py`: each `data:image/emf` image becomes SVG through `emf2svg-conv`.
+- `errors.py`: `ConversionError`.
+
+A count that differs between `vsd2xhtml` and `vsd2raw` leaves the page as `vsd2xhtml` wrote it, with a
+warning: the mapping relies on both walking the drawing in one order.
+
+## Testing
+
+- `tests/helpers.py` installs weasyvsdx, renders HTML with WeasyPrint, reads text back with PDFium, and
+  builds a minimal EMF (`emf_rectangle()`).
+- Fake tools are shell scripts written into `tmp_path` (`script()` in `test_convert.py`).
+- Coverage is 100% of lines and branches.
+
+## Visual regression bench
+
+`tools/visual/bench.py` renders the corpus and the cached Azure diagrams, compares with the LibreOffice
+references and writes a report. LibreOffice Draw has one page size per document, the largest page: the
+bench places the first page at its top left, at 96 dpi, shrunk as LibreOffice shrinks to 2048 px.
+
+**Never judge a rendering with poppler.** Use PDFium (`tools/visual/imaging.py`), and check a disputed
+case in Quartz (macOS Preview). LibreOffice is no exact reference for text: it picks its own fonts.
+
+Every corpus file needs a cleared license and an entry in `corpus/SOURCES.md`. The Azure diagrams and
+their references stay in the cache (`WEASYVSDX_CACHE`, `~/.cache/weasyvsdx`), never in the repository:
+their icons may not be redistributed.
+
+## Code Style
+
+- Strict mypy typing; WeasyPrint objects are `Any`.
+- Comments say why, with the behavior of Visio or LibreOffice they follow.
+- No em-dashes, American spelling.
+
+## Review focus
+
+- Untrusted drawings: every tool runs through `Job` with the limits, in the temporary directory. No tool
+  reads anything but its input file. A failed tool must stop the other (`cancel()`), also on an exception.
+- The SVG goes back through WeasyPrint and the URL fetcher of the caller: nothing may fetch on its own.
+- WeasyPrint internals change between majors: `test_the_hooked_loader_keeps_its_shape` must fail when the
+  hooked loader changes.
+- A rendering change updates `corpus/baseline.json` and, for a new gap or a fixed one, the README.
+
+## CI/CD
+
+- **CI** (`ci.yml`): actionlint and zizmor; tests on Python 3.11 to 3.14 with Pango, libvisio-tools,
+  emf2svg and fonts from apt; SonarCloud; build.
+- **Scorecard** (`scorecard.yml`): OpenSSF Scorecard, weekly and on push to main.
+- **Release** (`release.yml`): on `v*` tags, tests, one build with signed provenance, then PyPI
+  through Trusted Publishing (`pypi` environment), then a GitHub release with the wheel, the sdist
+  and the provenance bundle.
+- Every action is pinned by SHA, `${{ }}` values reach `run:` through `env:`, checkouts use
+  `persist-credentials: false`.
+
+## Release Process
+
+1. Add each change under `## [Unreleased]` in `CHANGELOG.md`, in the pull request that makes it.
+2. Run the **Bump Version & Release** workflow with `patch`, `minor` or `major`. It writes the
+   version to `pyproject.toml` and `uv.lock`, cuts the changelog, commits, tags `vX.Y.Z` and pushes.
+3. The tag triggers `release.yml`, which publishes to PyPI and creates the GitHub release.
