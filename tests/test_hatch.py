@@ -4,6 +4,9 @@ from __future__ import annotations
 
 from xml.etree import ElementTree as ET
 
+import pytest
+
+from weasyvsdx import hatch
 from weasyvsdx.hatch import MAX_LINES, draw_styles, fill_hatches, hatch_lines
 from weasyvsdx.hidden import SVG_NS, remove_hidden
 from weasyvsdx.raw import first_page
@@ -87,6 +90,15 @@ def test_a_tiny_distance_draws_a_bounded_number_of_lines() -> None:
     lines = hatch_lines("M0,0 L7200,0 L7200,7200 Z", {"draw:distance": "0.0001in"})
     assert lines is not None
     assert len(lines[0]) == 2 * MAX_LINES + 1
+
+
+def test_a_page_draws_a_bounded_number_of_lines(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Each square takes 17 lines: the second passes a budget of 20 and keeps its fill only
+    monkeypatch.setattr(hatch, "MAX_PAGE_LINES", 20)
+    svg = page(SQUARE, SQUARE)
+    assert fill_hatches(svg, calls(HATCH, PATH, PATH))
+    assert [child.tag.split("}")[1] for child in svg[1]] == ["path", "g", "path"]
+    assert (svg[1][2].get("style") or "").endswith("fill: #ffffff;")
 
 
 def test_a_path_without_area_gets_no_lines() -> None:

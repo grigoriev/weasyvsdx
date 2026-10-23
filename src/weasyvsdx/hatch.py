@@ -22,6 +22,7 @@ LINES = {"single": (0,), "double": (0, 90), "triple": (0, 90, 45)}
 DEFAULT_DISTANCE = 7.2  # points, 0.1 inch: the distance LibreOffice draws when none is given
 LINE_WIDTH = 0.4  # points, a hairline as LibreOffice draws it
 DISPLAY = "draw:display"
+MAX_PAGE_LINES = 100_000  # all hatch lines of a page: many hatched shapes at a tiny distance stay bounded
 MAX_LINES = 500  # each way from the center: a hatch of a huge shape at a tiny distance stays drawable
 
 
@@ -70,6 +71,7 @@ def fill_hatches(page: ET.Element, calls: list[Call]) -> bool:
     if len(paths) != len(styles):
         return False
     defs = None
+    used = 0
     for (path, parent), style in zip(paths, styles, strict=True):
         # A hidden shape goes with hidden.py, which removes its path but would leave its lines
         if style.get("draw:fill") != "hatch" or style.get(DISPLAY) == "none":
@@ -77,8 +79,11 @@ def fill_hatches(page: ET.Element, calls: list[Call]) -> bool:
         fill = style.get("draw:fill-color", "#ffffff") if style.get("draw:fill-hatch-solid") == "true" else "none"
         path.set("style", f"{path.get('style', '').rstrip()} fill: {fill};".strip())
         lines = hatch_lines(path.get("d") or "", style)
-        if lines is None:
+        # Past the budget of the page a shape keeps its fill without lines
+        count = sum(len(turned) for turned in lines) if lines is not None else 0
+        if lines is None or used + count > MAX_PAGE_LINES:
             continue
+        used += count
         if defs is None:
             defs = ET.Element(f"{{{SVG_NS}}}defs")
             page.insert(0, defs)
