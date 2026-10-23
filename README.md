@@ -154,7 +154,6 @@ of tens of MB take seconds, 17 of the 250 more than one: libvisio writes the bit
 - Character scaling (the "Scale" of a Visio font) and numbered lists draw as plain text. Fields show the
   value libvisio formats.
 - WMF images and embedded OLE objects are left out: neither WeasyPrint nor emf2svg reads them.
-- A line under a hollow arrowhead shows through it, where LibreOffice shortens the line.
 
 ## Development
 

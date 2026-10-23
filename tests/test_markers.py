@@ -109,3 +109,21 @@ def test_a_path_wider_than_its_viewbox_takes_the_width_of_its_style() -> None:
 )
 def test_the_box_of_path_data(data: str, box: tuple[float, float, float, float] | None) -> None:
     assert path_box(data) == box
+
+
+def test_a_hollow_marker_hides_the_line_under_it() -> None:
+    marker = stock("endMarker1")
+    ring = "M10 20c-5 0-10-5-10-10s5-10 10-10 10 5 10 10-5 10-10 10zM10 18c-4 0-8-4-8-8s4-8 8-8 8 4 8 8-4 8-8 8z"
+    assert fill_marker(marker, properties(f"draw:marker-end-path: {ring}, draw:marker-end-viewbox: 0 0 20 20, draw:marker-end-width: 1in"), "end")
+    under, shape = marker
+    assert under.get("fill") == "#ffffff"
+    assert under.get("fill-rule") is None
+    assert under.get("d") == shape.get("d") == ring
+    assert under.get("transform") == shape.get("transform")
+    assert shape.get("fill-rule") == "evenodd"
+
+
+def test_a_solid_marker_gets_no_underlay() -> None:
+    marker = stock("endMarker1")
+    assert fill_marker(marker, properties(END), "end")
+    assert len(marker) == 1

@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   libvisio draws the first page.
 - The text of a drawing wraps and aligns as in Visio: each text block is HTML in a `<foreignObject>`, from
   the output of `vsd2raw`, with its padding, vertical alignment, rotation, paragraphs, bullets and fonts.
-- Arrowheads take their own shape and size.
+- Arrowheads take their own shape and size. A hollow one hides the line under it, as in Visio.
 - EMF images become SVG through `emf2svg-conv`.
 - The tools run in processes of their own, with a timeout and, on Linux, limits on memory and output.
   A drawing that does not convert renders as a broken image.
