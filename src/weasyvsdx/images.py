@@ -50,7 +50,8 @@ EMF_SIGNATURE = b" EMF"
 # The presentation streams of MS-OLEDS: a clipboard format, the target device, then the fields up to the data
 PRESENTATION = "\x02OlePres"
 CLIPBOARD_FORMAT_MARKER = 0xFFFFFFFF
-CF_ENHMETAFILE = 14
+# The formats of a metafile: a WMF (CF_METAFILEPICT) or an EMF (CF_ENHMETAFILE)
+METAFILE_FORMATS = frozenset((3, 14))
 
 # Takes the path of an EMF file, returns its SVG; raises ConversionError
 Converter = Callable[[Path], bytes]
@@ -91,12 +92,14 @@ def ole_preview(ole: bytes) -> bytes | None:
             # The ANSI clipboard format, the size of the target device with its own 4 bytes, the device, then
             # aspect, lindex, advf, reserved, width, height and the size of the data
             marker, kind, device = struct.unpack_from("<III", stream)
-            if marker != CLIPBOARD_FORMAT_MARKER or kind != CF_ENHMETAFILE:
+            if marker != CLIPBOARD_FORMAT_MARKER or kind not in METAFILE_FORMATS:
                 continue
             start = 8 + device + 24
             (size,) = struct.unpack_from("<I", stream, start)
-            # An EMF presentation is stored as a WMF that holds the EMF in its comments
-            emf = embedded_emf(stream[start + 4 : start + 4 + size])
+            data = stream[start + 4 : start + 4 + size]
+            # Office stores an EMF presentation as a WMF that holds the EMF in its comments, as the corpus shows;
+            # an EMF as MS-OLEDS describes it passes as it is
+            emf = data if data[40:44] == EMF_SIGNATURE else embedded_emf(data)
             if emf is not None:
                 return emf
     return None

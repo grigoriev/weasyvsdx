@@ -111,6 +111,9 @@ def test_the_picture_an_ole_object_shows() -> None:
     # A presentation of another clipboard format, a bitmap, goes for the next one
     bitmap = helpers.presentation(b"BM", clipboard_format=2)
     assert ole_preview(helpers.ole_holding({"\x02OlePres000": bitmap, "\x02OlePres001": shown})) == emf
+    # An EMF as it is, and a WMF of CF_METAFILEPICT that holds one
+    assert ole_preview(helpers.ole_holding({"\x02OlePres000": helpers.presentation(emf)})) == emf
+    assert ole_preview(helpers.ole_holding({"\x02OlePres000": helpers.presentation(helpers.wmf_holding(emf), clipboard_format=3)})) == emf
 
 
 def test_an_ole_object_that_shows_no_emf() -> None:
