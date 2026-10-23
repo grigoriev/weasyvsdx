@@ -28,6 +28,8 @@ classifiers = [
 ]
 requires-python = ">=3.11"
 dependencies = [
+    # Reads the OLE objects of a drawing for the picture they show
+    "olefile>=0.47",
     "weasyprint>=70,<71",
     # Draws the foreignObject that holds the text of a drawing
     "weasysvg>=0.3.1",
@@ -105,5 +107,5 @@ show_error_codes = true
 
 # WeasyPrint ships no type information
 [[tool.mypy.overrides]]
-module = ["weasyprint.*", "weasyprint", "pypdfium2.*", "numpy.*"]
+module = ["weasyprint.*", "weasyprint", "pypdfium2.*", "numpy.*", "olefile"]
 ignore_missing_imports = true

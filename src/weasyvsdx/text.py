@@ -32,7 +32,14 @@ REPLACEMENTS = {
     "segoe ui semilight": "Selawik Semilight",
     "segoe ui semibold": "Selawik Semibold",
 }
+# A text block of no width or height is sized by its text in Visio (TEXTWIDTH, TEXTHEIGHT), which libvisio
+# cannot evaluate: it gives 0, and SVG draws no foreignObject of no size. Such a block is laid out in this
+# many points instead, placed by its point as its alignment places the text.
+AUTO_SIZE = 2000.0
+ANCHOR = {"left": 0.0, "start": 0.0, "justify": 0.0, "center": 0.5, "right": 1.0, "end": 1.0}
+VERTICAL_ANCHOR = {"top": 0.0, "middle": 0.5, "bottom": 1.0}
 VERTICAL = {"top": "flex-start", "middle": "center", "bottom": "flex-end"}
+TEXT_ALIGN = "fo:text-align"
 ALIGN = {"left": "left", "center": "center", "right": "right", "end": "right", "justify": "justify", "start": "left"}
 
 
@@ -186,8 +193,8 @@ def paragraph_style(paragraph: Paragraph, fallback: Properties) -> str:
     # Each line holds a strut of the font of its paragraph: with the 16px of HTML, small text would get
     # lines far apart
     style.update(font(paragraph.spans[0].properties if paragraph.spans else fallback))
-    if "fo:text-align" in props:
-        style["text-align"] = ALIGN.get(props["fo:text-align"], "left")
+    if TEXT_ALIGN in props:
+        style["text-align"] = ALIGN.get(props[TEXT_ALIGN], "left")
     style["line-height"] = f"{percent(props.get('fo:line-height'), 1.2):g}"
     margins = [points(props.get(f"fo:margin-{side}")) for side in ("top", "right", "bottom", "left")]
     if any(margins):
@@ -198,6 +205,11 @@ def paragraph_style(paragraph: Paragraph, fallback: Properties) -> str:
     if "style:tab-stop-distance" in props:
         style["tab-size"] = length(points(props["style:tab-stop-distance"]))
     return css(style)
+
+
+def paragraph_align(text: TextObject) -> str:
+    """The alignment of the first paragraph, which places a block of no width; centered in Visio by default."""
+    return next((paragraph.properties[TEXT_ALIGN] for paragraph in text.paragraphs if TEXT_ALIGN in paragraph.properties), "center")
 
 
 def text_scale(text: TextObject) -> float:
@@ -213,14 +225,15 @@ def foreign_object(text: TextObject) -> ET.Element:
     x, y = points(props.get("svg:x")), points(props.get("svg:y"))
     width, height = points(props.get("svg:width")), points(props.get("svg:height"))
     scale = text_scale(text)
-    # A scaled font (the Scale of Visio) widens its glyphs: the text is laid out in a block that much
-    # narrower, then stretched to the block, so lines break where the wider glyphs make them break
-    element = ET.Element(f"{{{SVG_NS}}}foreignObject", {"x": f"{x:g}", "y": f"{y:g}", "width": f"{width / scale:g}", "height": f"{height:g}", "style": "overflow:visible"})
+    center_x, center_y = x + width / 2, y + height / 2
+    auto_width = width <= 0
+    box_x, box_y, laid_width, height = layout_box(text, scale)
+    element = ET.Element(f"{{{SVG_NS}}}foreignObject", {"x": f"{box_x:g}", "y": f"{box_y:g}", "width": f"{laid_width:g}", "height": f"{height:g}", "style": "overflow:visible"})
     transforms = []
     angle = float(props.get("librevenge:rotate", "0") or 0)
     if angle:
         # About the center of the block, as the SVG generator of librevenge turns its <text>
-        transforms.append(f"rotate({angle:g} {x + width / 2:g} {y + height / 2:g})")
+        transforms.append(f"rotate({angle:g} {center_x:g} {center_y:g})")
     if scale != 1:
         transforms.append(f"translate({x:g} 0) scale({scale:g} 1) translate({-x:g} 0)")
     if transforms:
@@ -229,18 +242,48 @@ def foreign_object(text: TextObject) -> ET.Element:
     padding = " ".join(length(points(props.get(f"fo:padding-{side}")) / (scale if side in ("left", "right") else 1)) for side in ("top", "right", "bottom", "left"))
     box = {
         "box-sizing": "border-box",
-        "width": length(width / scale),
+        "width": length(laid_width),
         "height": length(height),
         "padding": padding,
         "display": "flex",
         "flex-direction": "column",
         "justify-content": VERTICAL.get(props.get("draw:textarea-vertical-align", "top"), "flex-start"),
-        "white-space": "pre-wrap",
+        # A block of no width is as wide as its text in Visio, which never breaks it
+        "white-space": "pre" if auto_width else "pre-wrap",
+        # and its text aligns as the block is placed, else a paragraph with no alignment would start at its left
+        **({"text-align": ALIGN.get(paragraph_align(text), "center")} if auto_width else {}),
         "overflow-wrap": "break-word",
     }
     # The XHTML namespace as an attribute, as convert.serialize() writes the SVG one: tostring() would give
     # the qualified tags a prefix of its own
     block = ET.SubElement(element, "div", {"xmlns": XHTML_NS, "style": css(box)})
+    add_paragraphs(block, text)
+    return element
+
+
+def layout_box(text: TextObject, scale: float) -> tuple[float, float, float, float]:
+    """The x, y, width and height of the block the text is laid out in.
+
+    A scaled font (the Scale of Visio) widens its glyphs: the text is laid out in a block that much narrower,
+    then stretched to the block, so lines break where the wider glyphs make them break. A block of no width or
+    no height is laid out in a large one, placed by the alignment of its text.
+    """
+    props = text.properties
+    x, y = points(props.get("svg:x")), points(props.get("svg:y"))
+    width, height = points(props.get("svg:width")), points(props.get("svg:height"))
+    if width <= 0:
+        width = AUTO_SIZE
+        x -= width * ANCHOR.get(paragraph_align(text), 0.5)
+    else:
+        width /= scale
+    if height <= 0:
+        height = AUTO_SIZE
+        y -= height * VERTICAL_ANCHOR.get(props.get("draw:textarea-vertical-align", "top"), 0.0)
+    return x, y, width, height
+
+
+def add_paragraphs(block: ET.Element, text: TextObject) -> None:
+    """Add the paragraphs of the text to the block, with their bullets and spans."""
     first = next((paragraph.spans[0].properties for paragraph in text.paragraphs if paragraph.spans), {})
     for paragraph in text.paragraphs:
         node = ET.SubElement(block, "p", {"style": paragraph_style(paragraph, first)})
@@ -253,7 +296,6 @@ def foreign_object(text: TextObject) -> ET.Element:
         if not any("".join(span.text) for span in paragraph.spans) and paragraph.bullet is None:
             # An empty paragraph keeps its line, as in Visio
             ET.SubElement(node, "br")
-    return element
 
 
 def replace_text(svg: ET.Element, objects: list[TextObject]) -> bool:

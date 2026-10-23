@@ -218,7 +218,7 @@ Each drawing of the corpus in three renderings: LibreOffice, its PDF export; lib
 
 ### libvisio-Visio11FormatLine-vsd
 
-[`visio/libvisio/Visio11FormatLine.vsd`](visio/libvisio/Visio11FormatLine.vsd) · mismatch with LibreOffice: libvisio 74.8 %, weasyvsdx 55.8 %
+[`visio/libvisio/Visio11FormatLine.vsd`](visio/libvisio/Visio11FormatLine.vsd) · mismatch with LibreOffice: libvisio 74.8 %, weasyvsdx 54.7 %
 
 | LibreOffice | libvisio | weasyvsdx |
 |---|---|---|
@@ -300,7 +300,7 @@ Each drawing of the corpus in three renderings: LibreOffice, its PDF export; lib
 
 ### poi-60973
 
-[`visio/poi/60973.vsdx`](visio/poi/60973.vsdx) · mismatch with LibreOffice: libvisio 53.7 %, weasyvsdx 35.9 %
+[`visio/poi/60973.vsdx`](visio/poi/60973.vsdx) · mismatch with LibreOffice: libvisio 53.7 %, weasyvsdx 35.5 %
 
 | LibreOffice | libvisio | weasyvsdx |
 |---|---|---|
