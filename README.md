@@ -113,6 +113,7 @@ Where the license allows it, install the original fonts instead.
    - **Arrowheads**: each marker gets the shape and size of its line end. The generator drew one stock
      arrow for all of them, sized by the width of the line.
    - **Hidden shapes**: a shape on a hidden or non-printing layer goes. The generator drew it.
+   - **Hatches**: a fill pattern of Visio draws as the lines of its hatch. The generator filled it black.
    - **Line ends**: a line under an arrowhead ends at its base, as in Visio, not at its tip.
 3. EMF images become SVG through `emf2svg-conv`, and so does the EMF that Office puts inside a WMF image,
    and the picture an embedded OLE object shows.

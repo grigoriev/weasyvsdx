@@ -56,6 +56,8 @@ uv build                # wheel and sdist
   MS-OLEDS presentation stream (`ole_preview()`, read with olefile).
 - `paths.py`: a path without a leading moveto loses its first segment, whose end becomes the start
   (`start_with_moveto()`); `shortened()` ends a line at the base of its arrowhead.
+- `hatch.py`: a path whose style has `draw:fill: hatch` gets the lines of its hatch, clipped to it. They are
+  `<line>` elements, so the path count that `hidden.py` pairs stays.
 - `hidden.py`: the n-th drawn path goes when the n-th `drawPath` of `vsd2raw` has `draw:display: none`, a
   shape on a hidden or non-printing layer.
 - `pathdata.py`: path data as tokens, read by hand: the numbers of SVG (`.5.5` is two) make a pattern backtrack.
