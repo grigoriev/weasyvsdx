@@ -127,3 +127,14 @@ def _directory_entry(name: str, kind: int, *, right: int = 0xFFFFFFFF, child: in
     """A directory entry of 128 bytes: the name, its type, black, its siblings and child, its sectors."""
     encoded = (name + "\0").encode("utf-16-le")
     return encoded.ljust(64, b"\0") + struct.pack("<HBBIII16sIQQIQ", len(encoded), kind, 1, 0xFFFFFFFF, right, child, b"", 0, 0, 0, start, size)
+
+
+def stretch_dibits(rows: list[bytes], height: int, *, bit_count: int = 8, compression: int = 0, width: int = 4) -> bytes:
+    """An EMR_STRETCHDIBITS record of a bottom-up bitmap of the rows, drawn at y 100 to the destination height."""
+    bits = b"".join(rows)
+    # BITMAPINFOHEADER: size, width, height, planes, bit count, compression, image size, resolution, colors
+    info = struct.pack("<IiiHHIIiiII", 40, width, len(rows), 1, bit_count, compression, len(bits), 0, 0, 0, 0)
+    size = 80 + len(info) + len(bits)
+    # Type, size, bounds, x and y, source x, y, width and height, header and bits, usage, operation, width, height
+    record = struct.pack("<II4iiiiiiiIIIIIIii", 81, size, 0, 0, 0, 0, 2, 100, 0, 0, width, len(rows), 80, len(info), 80 + len(info), len(bits), 0, 0xCC0020, 50, height)
+    return record + info + bits

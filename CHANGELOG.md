@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A shape on a hidden or non-printing layer is left out, as in Visio.
 - Black behind dark text, which libvisio reads from a palette color, draws white: labels no longer show as
   black bars.
+- A bitmap inside an EMF that Office draws flipped no longer shows mirrored.
 - A fill pattern draws as hatch lines, on the fill color where it has one, instead of black.
 - A text block of no width or height is as wide and as high as its text and never wraps, as in Visio.
 - A path that libvisio writes without a leading moveto starts at the end of its first segment, not at the

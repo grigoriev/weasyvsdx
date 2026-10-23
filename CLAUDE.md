@@ -53,7 +53,8 @@ uv build                # wheel and sdist
   by the box of its path, as LibreOffice scales it.
 - `images.py`: each `data:image/emf` image becomes SVG through `emf2svg-conv`, and the EMF a `data:image/wmf`
   holds in its MS-WMF comment records (`embedded_emf()`) too. A `data:object/ole` shows the EMF of its
-  MS-OLEDS presentation stream (`ole_preview()`, read with olefile).
+  MS-OLEDS presentation stream (`ole_preview()`, read with olefile). `upright_bitmaps()` turns a bitmap drawn
+  to a negative height upright first: emf2svg-conv mirrors it.
 - `paths.py`: a path without a leading moveto loses its first segment, whose end becomes the start
   (`start_with_moveto()`); `shortened()` ends a line at the base of its arrowhead.
 - `hatch.py`: a path whose style has `draw:fill: hatch` gets the lines of its hatch, clipped to it. They are

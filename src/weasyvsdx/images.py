@@ -53,6 +53,11 @@ CLIPBOARD_FORMAT_MARKERS = frozenset((0xFFFFFFFF, 0xFFFFFFFE))
 # The formats of a metafile: a WMF (CF_METAFILEPICT) or an EMF (CF_ENHMETAFILE)
 METAFILE_FORMATS = frozenset((3, 14))
 
+# EMR_STRETCHDIBITS: its destination y at 28, the offsets and sizes of its header and bits at 48, its
+# destination height at 76; in the BITMAPINFOHEADER the width, height, bit count and compression
+EMR_STRETCHDIBITS = 81
+UNCOMPRESSED = frozenset((0, 3))  # BI_RGB, BI_BITFIELDS
+
 # Takes the path of an EMF file, returns its SVG; raises ConversionError
 Converter = Callable[[Path], bytes]
 
@@ -80,6 +85,44 @@ def embedded_emf(wmf: bytes) -> bytes | None:
     emf = b"".join(chunks)
     # An EMF starts with its header record, the signature " EMF" at byte 40
     return emf if emf[40:44] == EMF_SIGNATURE else None
+
+
+def upright_bitmaps(emf: bytes) -> bytes:
+    """The EMF with each bitmap drawn to a negative height turned into one drawn upside down to a positive height.
+
+    Office draws the bitmap of a picture with a negative destination height, which flips it, onto a bottom-up
+    bitmap. emf2svg-conv mirrors such a bitmap left to right instead. Reversing its rows and the sign of the
+    height draws the same picture, which emf2svg-conv converts right.
+    """
+    data = bytearray(emf)
+    offset = 0
+    while offset + 8 <= len(data):
+        kind, size = struct.unpack_from("<II", data, offset)
+        if size < 8 or offset + size > len(data):
+            break
+        if kind == EMR_STRETCHDIBITS and size >= 80:
+            _flip_rows(data, offset, size)
+        offset += size
+    return bytes(data)
+
+
+def _flip_rows(data: bytearray, offset: int, size: int) -> None:
+    """Draw the bitmap of one EMR_STRETCHDIBITS record at offset upright to a positive height, if it is flipped."""
+    (y,) = struct.unpack_from("<i", data, offset + 28)
+    header, header_size, bits, bits_size = struct.unpack_from("<4I", data, offset + 48)
+    (height,) = struct.unpack_from("<i", data, offset + 76)
+    if height >= 0 or header_size < 20 or header + 20 > size:
+        return
+    width, rows, _, bit_count, compression = struct.unpack_from("<iiHHI", data, offset + header + 4)
+    stride = (abs(width) * bit_count + 31) // 32 * 4
+    rows = abs(rows)
+    if compression not in UNCOMPRESSED or stride * rows > bits_size or bits + stride * rows > size:
+        return
+    start = offset + bits
+    lines = [bytes(data[start + row * stride : start + (row + 1) * stride]) for row in range(rows)]
+    data[start : start + stride * rows] = b"".join(reversed(lines))
+    struct.pack_into("<i", data, offset + 28, y + height)
+    struct.pack_into("<i", data, offset + 76, -height)
 
 
 def ole_preview(ole: bytes) -> bytes | None:
@@ -145,7 +188,7 @@ def _svg_url(href: str, convert: Converter, path: Path) -> str | None:
     prefix = next(prefix for prefix in (EMF_PREFIX, WMF_PREFIX, OLE_PREFIX) if href.startswith(prefix))
     kind = {EMF_PREFIX: "EMF", WMF_PREFIX: "WMF", OLE_PREFIX: "OLE object"}[prefix]
     try:
-        path.write_bytes(_emf(base64.b64decode(href[len(prefix) :], validate=True), kind))
+        path.write_bytes(upright_bitmaps(_emf(base64.b64decode(href[len(prefix) :], validate=True), kind)))
         svg = convert(path)
     # olefile raises OSError on a broken compound file, and ValueError on a sector size too large to print;
     # ValueError covers the binascii.Error of a broken base64 too
