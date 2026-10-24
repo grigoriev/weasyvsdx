@@ -189,8 +189,8 @@ of tens of MB take seconds, 17 of the 250 more than one: libvisio writes the bit
 ## Known gaps
 
 - Some parts of Azure icons are missing. libvisio 0.1.7 does not take the geometry of a part of a master
-  group from the master. LibreOffice leaves them out too. A gradient of a shape whose ID a background page
-  shares stays black, as do the gradients of a VSD and the rarer kinds, FillGradientDir 8 to 13.
+  group from the master. LibreOffice leaves them out too. A gradient of a shape whose ID another shape that
+  libvisio draws shares stays black, as do the gradients of a VSD and the rarer kinds, FillGradientDir 8 to 13.
 - Only the first page renders. LibreOffice and the converters before it did the same.
 - Visio drawings ask for Calibri and Segoe UI most, fonts of Microsoft. A font the system lacks falls back
   to its free replacement, else to sans-serif: Calibri to Carlito and Cambria to Caladea, which share their
