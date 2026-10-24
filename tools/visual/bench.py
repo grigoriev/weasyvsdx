@@ -198,7 +198,8 @@ figure{margin:0}figcaption{color:var(--muted);font-size:12px}img{background:#fff
 
 
 def report(rows: list[dict[str, Any]], out: Path) -> None:
-    rows = sorted(rows, key=lambda row: -(row["mismatch"] if row["mismatch"] is not None else 101))
+    # The worst first: by the mismatch against Visio where there is one, else against LibreOffice
+    rows = sorted(rows, key=lambda row: -next((row[key] for key in ("visio", "mismatch") if row.get(key) is not None), 101))
     labels = ("LibreOffice", "weasyvsdx", "Visio")
     sections = []
     for row in rows:
