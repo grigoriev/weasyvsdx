@@ -296,6 +296,15 @@ def test_a_page_that_does_not_pair_or_a_drawing_that_does_not_read() -> None:
     assert add_missing(page(0), calls(), b"\xd0\xcf\x11\xe0 a VSD") == 0
 
 
+def test_the_box_of_a_shape_or_none(monkeypatch: pytest.MonkeyPatch) -> None:
+    found = shapes(GROUP, MASTER)
+    assert geometry.shape_box(found["2"]) == (0.0, 0.0, 1.0, 1.0)
+    # The group of the page has no geometry
+    assert geometry.shape_box(found["1"]) is None
+    monkeypatch.setattr(geometry, "MAX_SEGMENTS", 0)
+    assert geometry.shape_box(found["2"]) is None
+
+
 def test_the_segments_of_a_page_stay_bounded(monkeypatch: pytest.MonkeyPatch) -> None:
     # Room for the section, five rows, ten cells and five commands of shape 2, counted as they are read and built: shape 3 stops the page
     monkeypatch.setattr(geometry, "MAX_SEGMENTS", 21)

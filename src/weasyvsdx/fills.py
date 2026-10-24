@@ -13,9 +13,9 @@ as in hidden.py, and its shape is the one gradients.path_shapes() names. A color
 
 libvisio draws the background pages first, and names their shapes by IDs that the page may use too. Their
 paths come before the first path of a shape or a group the background pages lack, or of a shape that comes
-earlier in their order than the shape before it, and take the colors of the background pages. A page whose
-first shape has the ID of the last shape of its background, outside any group, takes the colors of the
-background for that shape. A shape whose ID two shapes of one page share, a VSD and a VSDX that does
+earlier in their order than the shape before it, and take the colors of the background pages. Where a shape
+of the page and of its background have one ID, the path goes with the one whose outline its box is nearer
+to. A shape whose ID two shapes of one page share, a VSD and a VSDX that does
 not read keep what libvisio wrote.
 """
 
@@ -23,15 +23,17 @@ from __future__ import annotations
 
 import re
 from collections.abc import Iterable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from xml.etree import ElementTree as ET
 
-from . import gradients
+from . import geometry, gradients
 from .hidden import drawn_paths
+from .markers import path_box
 from .package import Package, Placed, cell, page_shapes, read
 from .raw import Call, properties
 
 FILL_COLOR = re.compile(r"draw:fill-color: #[0-9A-Fa-f]{6}")
+PT_PER_INCH = 72.0
 LINE_COLOR = re.compile(r"draw:color: #[0-9A-Fa-f]{6}")
 # The fill of a shape that takes it from the theme, with the quick style color 100: Visio draws most of them
 # white, 300 of 330 in its SVG of the bench, and so does libvisio 0.1.7; 0.1.11 fills them with an accent of
@@ -41,6 +43,8 @@ THEMED_FILL = "#ffffff"
 WHITE_QUICK_STYLE = "100"
 
 
+# A box on the page in inches, y up: left, bottom, right, top
+Box = tuple[float, float, float, float]
 # The colors of a fill: its foreground, the color of a solid fill and of the lines of a pattern, and its background
 Colors = tuple[str | None, str | None]
 
@@ -54,6 +58,8 @@ class Fills:
     background: dict[str, Colors]
     background_order: dict[str, int]
     groups: frozenset[str]
+    # The boxes of the shapes whose ID the page and its background share, on the background and on the page
+    boxes: dict[str, tuple[Box | None, Box | None]] = field(default_factory=dict)
 
 
 def _color(value: str | None, colors: dict[str, str], quick_style: str | None) -> str | None:
@@ -88,7 +94,11 @@ def _fills(package: Package) -> Fills:
     for placed in background:
         order.setdefault(placed.shape.get("ID", ""), len(order))
     groups = frozenset(group.shape.get("ID", "") for placed in background for group in placed.groups)
-    return Fills(_colors(page_shapes(package), styles, colors), _colors(background, styles, colors), order, groups)
+    shapes = list(page_shapes(package))
+    # libvisio names a shape of the page and of its background alike: their outlines tell their paths apart
+    by_id = {placed.shape.get("ID", ""): placed for placed in background}
+    boxes = {placed.shape.get("ID", ""): (geometry.shape_box(by_id[placed.shape.get("ID", "")]), geometry.shape_box(placed)) for placed in shapes if placed.shape.get("ID", "") in by_id}
+    return Fills(_colors(shapes, styles, colors), _colors(background, styles, colors), order, groups, boxes)
 
 
 def shape_fills(document: bytes) -> Fills | None:
@@ -109,6 +119,8 @@ def recolor(page: ET.Element, calls: list[Call], fills: Fills) -> list[Call] | N
         return None
     on_background = bool(fills.background_order)
     place = 0
+    viewbox = (page.get("viewBox") or "").split()
+    page_height = float(viewbox[3]) / PT_PER_INCH if len(viewbox) == 4 else 0.0
     result: list[Call] = []
     layers: list[str] = []
     style = ""
@@ -130,6 +142,13 @@ def recolor(page: ET.Element, calls: list[Call], fills: Fills) -> list[Call] | N
         if on_background and (fills.background_order.get(shape, -1) < place or (group is not None and group not in fills.groups)):
             on_background = False
         place = fills.background_order.get(shape, place)
+        if on_background and shape in fills.boxes:
+            side = _side(path.get("d") or "", fills.boxes[shape], page_height)
+            if side is None:
+                # Neither outline tells: the path keeps what libvisio drew
+                result.append((name, argument))
+                continue
+            on_background = side
         recolored = _recolored(style, (fills.background if on_background else fills.page).get(shape, (None, None)))
         if recolored is None:
             result.append((name, argument))
@@ -139,6 +158,23 @@ def recolor(page: ET.Element, calls: list[Call], fills: Fills) -> list[Call] | N
         if properties(style).get("draw:fill") == "solid" and color:
             path.set("style", f"{path.get('style', '').rstrip()} fill: {color};".strip())
     return result
+
+
+def _side(data: str, boxes: tuple[Box | None, Box | None], page_height: float) -> bool | None:
+    """Whether a path is the shape of the background rather than the shape of the page of its ID: the one whose
+    box its own box is nearer to. None where a box is missing."""
+    box = path_box(data)
+    background, page = boxes
+    if box is None or background is None or page is None:
+        return None
+    x, y, width, height = box
+    # Points, y down, as inches, y up
+    own = (x / PT_PER_INCH, page_height - (y + height) / PT_PER_INCH, (x + width) / PT_PER_INCH, page_height - y / PT_PER_INCH)
+    return _distance(own, background) <= _distance(own, page)
+
+
+def _distance(first: Box, second: Box) -> float:
+    return sum(abs(a - b) for a, b in zip(first, second, strict=True))
 
 
 def _recolored(style: str, colors: Colors) -> str | None:

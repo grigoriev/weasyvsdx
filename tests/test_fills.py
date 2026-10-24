@@ -6,7 +6,7 @@ from xml.etree import ElementTree as ET
 
 from helpers import vsdx
 
-from weasyvsdx.fills import Fills, recolor, shape_fills
+from weasyvsdx.fills import Box, Fills, recolor, shape_fills
 from weasyvsdx.hidden import SVG_NS
 from weasyvsdx.raw import first_page
 
@@ -24,9 +24,11 @@ def calls(*lines: str) -> list[tuple[str, str]]:
     return first_page("startPage()\n" + "\n".join(lines) + "\nendPage\n")
 
 
-def page(count: int) -> ET.Element:
-    paths = "".join('<path d="M0,0" style="fill-rule: evenodd; fill: #83992a; "/>' for _ in range(count))
-    return ET.fromstring(f'<svg xmlns="{SVG_NS}"><g>{paths}</g></svg>')
+def page(count: int, data: tuple[str, ...] = ()) -> ET.Element:
+    """A page of 10 by 10 inches with paths of the data given, and of a point for the rest."""
+    data = data + ("M0,0",) * (count - len(data))
+    paths = "".join(f'<path d="{d}" style="fill-rule: evenodd; fill: #83992a; "/>' for d in data)
+    return ET.fromstring(f'<svg xmlns="{SVG_NS}" viewBox="0 0 720 720"><g>{paths}</g></svg>')
 
 
 def fills(page: dict[str, tuple[str | None, str | None]], background: dict[str, tuple[str | None, str | None]] | None = None, groups: frozenset[str] = frozenset()) -> Fills:
@@ -111,6 +113,30 @@ def test_the_background_ends_where_its_shapes_start_over() -> None:
     result = recolor(svg, calls(*lines), fills({"1": ("#0000ff", None)}, {"1": ("#ffffff", None), "2": ("#ffff00", None)}))
     assert result is not None
     assert [(element.get("style") or "").split("fill: ")[-1] for element in svg.iter(f"{{{SVG_NS}}}path")] == ["#ffffff;", "#ffffff;", "#ffff00;", "#0000ff;"]
+
+
+def test_a_shape_of_the_page_and_of_its_background_of_one_id_goes_by_its_outline() -> None:
+    # The background rectangle 1 fills the page, the shape 1 of the page is an inch square at its top left
+    whole, square, line = "M0,0 L720,0 L720,720 L0,720 Z", "M0,0 L72,0 L72,72 L0,72 Z", "M0,0 L72,0"
+    boxes: dict[str, tuple[Box | None, Box | None]] = {"1": ((0.0, 0.0, 10.0, 10.0), (0.0, 9.0, 1.0, 10.0))}
+    colors = Fills({"1": ("#0000ff", None)}, {"1": ("#ffffff", None)}, {"1": 0}, frozenset(), boxes)
+    svg = page(3, (whole, line, square))
+    assert recolor(svg, calls(THEME, path("1"), path("1"), path("1")), colors) is not None
+    # The line has no box to tell: it keeps what libvisio drew
+    assert [(element.get("style") or "").split("fill: ")[-1] for element in svg.iter(f"{{{SVG_NS}}}path")] == ["#ffffff;", "#83992a; ", "#0000ff;"]
+    # Without the outline of either shape, both keep it
+    svg = page(1, (whole,))
+    assert recolor(svg, calls(THEME, path("1")), Fills({"1": ("#0000ff", None)}, {"1": ("#ffffff", None)}, {"1": 0}, frozenset(), {"1": (None, None)})) is not None
+    assert svg[0][0].get("style") == "fill-rule: evenodd; fill: #83992a; "
+
+
+def test_the_boxes_of_the_shapes_of_one_id() -> None:
+    square = "<Cell N='Width' V='1'/><Cell N='Height' V='1'/><Cell N='PinX' V='0.5'/><Cell N='PinY' V='0.5'/><Cell N='LocPinX' V='0.5'/><Cell N='LocPinY' V='0.5'/>"
+    geometry = "<Section N='Geometry' IX='0'><Row T='RelMoveTo' IX='1'><Cell N='X' V='0'/><Cell N='Y' V='0'/></Row><Row T='RelLineTo' IX='2'><Cell N='X' V='1'/><Cell N='Y' V='1'/></Row></Section>"
+    found = shape_fills(vsdx(f"<Shape ID='1'>{square}{geometry}</Shape>", backed=True))
+    assert found is not None
+    # The shape 1 of the background of the helper has no geometry
+    assert found.boxes == {"1": (None, (0.0, 0.0, 1.0, 1.0))}
 
 
 def test_a_group_of_the_background_stays_on_the_background() -> None:
