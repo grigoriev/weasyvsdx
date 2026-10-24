@@ -16,6 +16,8 @@ from weasyvsdx.pathdata import tokenize
         ("C1e2,-2.5E-1 +3. 4", ["C", "1e2", "-2.5E-1", "+3.", "4"]),
         # A sign or a dot alone, and an exponent without digits, are no numbers
         ("L - . 5e", ["L", "5", "e"]),
+        # The flags of an arc are one digit each, and may touch the numbers after them
+        ("A10 10 0 0120 20a1 1 0 11.5.5 1 1 0 002 2", ["A", "10", "10", "0", "0", "1", "20", "20", "a", "1", "1", "0", "1", "1", ".5", ".5", "1", "1", "0", "0", "0", "2", "2"]),
         ("", []),
     ],
 )

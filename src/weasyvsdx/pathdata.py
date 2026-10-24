@@ -7,6 +7,10 @@ second dot starts the next one) backtracks on long runs of digits.
 from __future__ import annotations
 
 Token = tuple[str, int, int]
+ARC = ("A", "a")
+# The numbers of one arc segment: radii, rotation, the large arc and sweep flags, the end point
+ARC_ARGUMENTS = 7
+ARC_FLAGS = (3, 4)
 
 
 def _digits(data: str, index: int) -> int:
@@ -42,19 +46,31 @@ def _number(data: str, start: int) -> int:
     return start if end == index else _exponent(data, end)
 
 
+def _end(data: str, index: int, flag: bool) -> int:
+    """The end of the number at index, one digit where a flag of an arc stands; index where there is none."""
+    char = data[index]
+    if flag and char in "01":
+        return index + 1
+    return _number(data, index) if char.isdigit() or char in "+-." else index
+
+
 def tokenize(data: str) -> list[Token]:
     """The command letters and numbers of path data, each with its start and end; anything else is skipped."""
     tokens: list[Token] = []
     index = 0
+    # The numbers since the last command letter: the flags of an arc are one digit each, "0120" is 0, 1, 20
+    command, count = "", 0
     while index < len(data):
         char = data[index]
         if char.isascii() and char.isalpha():
             tokens.append((char, index, index + 1))
+            command, count = char, 0
             index += 1
             continue
-        end = _number(data, index) if char.isdigit() or char in "+-." else index
+        end = _end(data, index, flag=command in ARC and count % ARC_ARGUMENTS in ARC_FLAGS)
         if end > index:
             tokens.append((data[index:end], index, end))
+            count += 1
             index = end
         else:
             index += 1
