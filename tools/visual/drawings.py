@@ -2,7 +2,8 @@
 
 corpus/index.json lists the corpus files, corpus/azure.json the Azure diagrams, which make azure downloads
 into WEASYVSDX_CACHE. Each drawing has a LibreOffice reference: in corpus/reference/libreoffice for a corpus
-file, in the cache for an Azure diagram, whose icons may not be copied into the repository.
+file, in the cache for an Azure diagram, whose icons may not be copied into the repository. Most Azure
+diagrams also have the SVG that Visio exported for their article, in the cache too.
 """
 
 from __future__ import annotations
@@ -24,6 +25,7 @@ class Drawing:
     group: str
     path: Path
     reference: Path
+    visio: Path | None = None
 
     @property
     def media_type(self) -> str:
@@ -34,11 +36,19 @@ def cache() -> Path:
     return Path(os.environ.get("WEASYVSDX_CACHE") or Path.home() / ".cache" / "weasyvsdx")
 
 
+def visio(name: str) -> Path | None:
+    """The SVG that Visio exported of the Azure diagram, where the cache holds one."""
+    path = cache() / "reference" / "visio" / f"{name}.svg"
+    return path if path.exists() else None
+
+
 def drawings(only: str = "") -> list[Drawing]:
     """Every drawing whose name contains only. An Azure diagram missing from the cache is left out."""
     items = [Drawing(item["name"], item["group"], CORPUS / "visio" / item["source"], CORPUS / "reference" / "libreoffice" / f"{item['name']}.png") for item in json.loads((CORPUS / "index.json").read_text())]
     azure = cache() / "azure"
     items += [
-        Drawing(item["name"], "azure", azure / f"{item['name']}.vsdx", cache() / "reference" / "libreoffice" / f"{item['name']}.png") for item in json.loads((CORPUS / "azure.json").read_text()) if (azure / f"{item['name']}.vsdx").exists()
+        Drawing(item["name"], "azure", azure / f"{item['name']}.vsdx", cache() / "reference" / "libreoffice" / f"{item['name']}.png", visio(item["name"]))
+        for item in json.loads((CORPUS / "azure.json").read_text())
+        if (azure / f"{item['name']}.vsdx").exists()
     ]
     return [drawing for drawing in items if only in drawing.name]
