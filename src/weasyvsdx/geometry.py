@@ -536,19 +536,25 @@ def add_missing(page: ET.Element, calls: list[Call], document: bytes) -> int | N
 
 def _add(page: ET.Element, package: Package, last: dict[str, tuple[ET.Element, ET.Element]], hidden: set[str], page_height: float) -> int:
     painter = _Painter(package, page_height)
-    anchor: tuple[ET.Element, ET.Element] | None = None
+    # The path of the last shape drawn so far, and the parent and index after which the next path goes
+    drawn: tuple[ET.Element, ET.Element] | None = None
+    position: tuple[ET.Element, int] | None = None
     defs = None
     added = 0
     for placed, missing in _candidates(package, set(last), hidden):
         shape_id = placed.shape.get("ID", "")
         if shape_id in last:
-            anchor = last[shape_id]
+            drawn, position = last[shape_id], None
         if not missing or painter.segments > MAX_SEGMENTS:
             continue
         for path, gradient in painter.paths(placed):
             if gradient is not None:
+                had = defs is not None
                 defs = _gradient(page, defs, path, gradient)
-            anchor = _insert(page, anchor, path)
+                # New definitions go first in the page, before the place of the next path
+                if not had and position is not None and position[0] is page:
+                    position = (page, position[1] + 1)
+            position = _insert(page, drawn, position, path)
             added += 1
     return added
 
@@ -564,11 +570,21 @@ def _gradient(page: ET.Element, defs: ET.Element | None, path: ET.Element, gradi
     return defs
 
 
-def _insert(page: ET.Element, anchor: tuple[ET.Element, ET.Element] | None, path: ET.Element) -> tuple[ET.Element, ET.Element]:
-    """Insert a path after the anchor, or before all paths of the page after its definitions; the new anchor."""
-    if anchor is None:
-        page.insert(sum(1 for child in page if child.tag == f"{{{SVG_NS}}}defs"), path)
-        return path, page
-    parent = anchor[1]
-    parent.insert(list(parent).index(anchor[0]) + 1, path)
-    return path, parent
+def _insert(page: ET.Element, drawn: tuple[ET.Element, ET.Element] | None, position: tuple[ET.Element, int] | None, path: ET.Element) -> tuple[ET.Element, int]:
+    """Insert a path where the last one went, else after the path drawn last, else before all paths of the page after its
+    definitions; the place of the path.
+
+    The path drawn last is looked for once for each run of paths after it: a search for each would cost the square.
+    """
+    if position is None:
+        position = _after(page, drawn)
+    parent, index = position
+    parent.insert(index + 1, path)
+    return parent, index + 1
+
+
+def _after(page: ET.Element, drawn: tuple[ET.Element, ET.Element] | None) -> tuple[ET.Element, int]:
+    """The parent and index of the path drawn last, or of the last definitions of the page: the next path goes after it."""
+    if drawn is None:
+        return page, sum(1 for child in page if child.tag == f"{{{SVG_NS}}}defs") - 1
+    return drawn[1], list(drawn[1]).index(drawn[0])

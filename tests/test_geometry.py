@@ -233,6 +233,17 @@ def test_a_missing_shape_with_a_gradient_and_a_dashed_line() -> None:
     assert (line.get("style") or "").endswith("stroke-dasharray: 5.0400, 3.6000;")
 
 
+def test_definitions_added_after_a_path_keep_the_order() -> None:
+    gradient = "<Cell N='FillGradientEnabled' V='1'/><Section N='FillGradient'><Row IX='0'><Cell N='GradientStopColor' V='#00ff00'/></Row></Section>"
+    master = f"<Shape ID='5' Type='Group'>{SIZE}<Shapes><Shape ID='6'>{SIZE}{RED}{SQUARE}</Shape><Shape ID='7'>{SIZE}{RED}{gradient}{SQUARE}</Shape></Shapes></Shape>"
+    svg = page(0)
+    assert add_missing(svg, calls(), vsdx(GROUP, master)) == 4
+    # The definitions go first; the paths keep the order of their shapes, before the paths of the page
+    assert [element.tag.split("}")[1] for element in svg] == ["defs", "path", "path", "path", "path", "g"]
+    assert "url(#" not in (svg[1].get("style") or "")
+    assert "url(#weasyvsdx-master-gradient-0)" in (svg[3].get("style") or "")
+
+
 def test_an_open_or_unfilled_outline_has_no_fill_and_a_theme_color_draws_nothing() -> None:
     open_line = "<Section N='Geometry' IX='0'><Row T='RelMoveTo' IX='1'><Cell N='X' V='0'/><Cell N='Y' V='0'/></Row><Row T='RelLineTo' IX='2'><Cell N='X' V='1'/><Cell N='Y' V='1'/></Row></Section>"
     themed = "<Cell N='FillForegnd' V='Themed'/><Cell N='LineColor' V='Themed'/>"
