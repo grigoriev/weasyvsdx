@@ -148,6 +148,20 @@ def test_a_nurbs_runs_from_the_current_point_to_its_end() -> None:
     assert outline_of(row("MoveTo", 1, X="0", Y="0"), row("NURBSTo", 2, X="1", Y="1", E="=NURBS(1, 2)"))[1:] == [("L", ((1.0, 1.0),))]
 
 
+@pytest.mark.parametrize("formula", ["NURBS(1, 1e999, 1, 1, 1, 0, 0, 1)", "NURBS(1, 2, 1, 1, 1, 0, 0, 1e999)"])
+def test_a_nurbs_of_numbers_out_of_range_is_a_line(formula: str) -> None:
+    assert outline_of(row("MoveTo", 1, X="0", Y="0"), row("NURBSTo", 2, X="1", Y="1", E=f"={formula}"))[1:] == [("L", ((1.0, 1.0),))]
+
+
+def test_a_nurbs_stays_bounded() -> None:
+    many = ", ".join("0.5, 0.5, 0, 1" for _ in range(geometry.MAX_NURBS_POINTS))
+    assert outline_of(row("MoveTo", 1, X="0", Y="0"), row("NURBSTo", 2, X="1", Y="1", E=f"=NURBS(1, 2, 1, 1, {many})"))[1:] == [("L", ((1.0, 1.0),))]
+    # A degree past the most is the most: twelve points of degree 99 make three spans of degree 9
+    twelve = ", ".join(f"{index / 12}, 0, 0, 1" for index in range(1, 11))
+    high = outline_of(row("MoveTo", 1, X="0", Y="0"), row("NURBSTo", 2, X="1", Y="0", A="0", C="0", E=f"=NURBS(1, 99, 1, 1, {twelve})"))
+    assert len(high) == 1 + 3 * geometry.NURBS_SEGMENTS
+
+
 def test_a_shape_takes_its_place_on_the_page_through_its_groups() -> None:
     turned = "<Cell N='Width' V='1'/><Cell N='Height' V='1'/><Cell N='PinX' V='5'/><Cell N='PinY' V='5'/><Cell N='LocPinX' V='0'/><Cell N='LocPinY' V='0'/>"
     page = f"<Shape ID='1'>{turned}<Cell N='Angle' V='1.5707963267949'/><Shapes><Shape ID='2'>{SIZE}{SQUARE}</Shape></Shapes></Shape><Shape ID='3'>{SIZE}<Cell N='FlipX' V='1'/><Cell N='FlipY' V='1'/>{SQUARE}</Shape>"
@@ -195,7 +209,8 @@ def test_a_missing_shape_fills_and_strokes_with_its_cells() -> None:
     styles = [element.get("style") or "" for element in added]
     # Shape 2: its fill, then its line; shape 3: its line only, without fill
     assert styles[0].startswith("fill-rule: evenodd; fill: #ff0000; fill-opacity: 1;")
-    assert styles[1].startswith("fill: none; stroke: #0000ff;") and "stroke-width: 0.7200;" in styles[1]
+    assert styles[1].startswith("fill: none; stroke: #0000ff;")
+    assert "stroke-width: 0.7200;" in styles[1]
     assert styles[2].startswith("fill: none; stroke: #0000ff;")
     assert added[0].get("d") == "M0.0000,720.0000 L72.0000,720.0000 L72.0000,648.0000 L0.0000,648.0000 L0.0000,720.0000"
     # After the path of the group, before which they come, and passed by when the paths of the page pair with the calls

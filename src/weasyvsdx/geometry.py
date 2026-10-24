@@ -14,6 +14,7 @@ libvisio drew, one on a hidden layer and one whose ID another shape shares keep 
 
 from __future__ import annotations
 
+import bisect
 import math
 import re
 from collections.abc import Iterator
@@ -28,6 +29,9 @@ from .raw import Call, properties
 PT_PER_INCH = 72.0
 ARC_SEGMENTS = 24  # line segments of a full turn of an arc
 NURBS_SEGMENTS = 8  # line segments of each span of a NURBS
+# The points and the degree of one NURBS: a hostile drawing would cost the square of either, in the process of WeasyPrint
+MAX_NURBS_POINTS = 1000
+MAX_DEGREE = 9
 MAX_SEGMENTS = 100_000  # line segments of all shapes of a page: a drawing of huge arcs stays bounded
 INHERITED = "inherited"  # an attribute that marks a cell of a merged section that comes from the master
 # The dashes of each LinePattern, in line widths, as the SVG of Visio draws them. Each family of seven shares
@@ -230,7 +234,8 @@ class _Outline:
 def _numbers(formula: str) -> list[float]:
     """The numbers of a NURBS or POLYLINE formula; none for a formula that refers to other cells."""
     literal = LITERAL.fullmatch(formula)
-    return [float(match) for match in NUMBER.findall(literal.group(1))] if literal else []
+    numbers = [float(match) for match in NUMBER.findall(literal.group(1))] if literal else []
+    return numbers if all(math.isfinite(value) for value in numbers) else []
 
 
 def _toward(start: Point, end: Point, share: float) -> Point:
@@ -299,13 +304,15 @@ def _elliptical_arc(start: Point, control: Point, end: Point, angle: float, rati
 def _nurbs(points: list[Point], knots: list[float], weights: list[float], degree: int) -> list[Point]:
     """A rational B-spline as points after its first, the knot vector filled at its end as libvisio does."""
     count = len(points)
-    degree = min(degree, count - 1)
+    if count > MAX_NURBS_POINTS:
+        return points[-1:]
+    degree = min(degree, MAX_DEGREE, count - 1)
     knots = knots[: count + degree + 1]
     while len(knots) < count + degree + 1:
         knots.append(knots[-1])
     weights = (weights + [1.0] * count)[:count]
     low, high = knots[degree], knots[count]
-    if not high > low:
+    if high <= low:
         return points[1:]
     samples = []
     spans = max(count - degree, 1) * NURBS_SEGMENTS
@@ -316,9 +323,8 @@ def _nurbs(points: list[Point], knots: list[float], weights: list[float], degree
 
 def _de_boor(t: float, points: list[Point], knots: list[float], weights: list[float], degree: int) -> Point:
     """The point of a rational B-spline at t."""
-    span = degree
-    while span < len(points) - 1 and t >= knots[span + 1]:
-        span += 1
+    # The last knot at or before t, among those a span of the curve starts at
+    span = min(max(bisect.bisect_right(knots, t, degree, len(points)) - 1, degree), len(points) - 1)
     # Homogeneous points: x w, y w, w
     work = [(points[i][0] * weights[i], points[i][1] * weights[i], weights[i]) for i in range(span - degree, span + 1)]
     for level in range(1, degree + 1):
@@ -341,17 +347,22 @@ def _merged(own: ET.Element | None, inherited: ET.Element | None) -> ET.Element:
         for element in source.findall(f"{VISIO}Cell"):
             _set(merged, element, source is inherited)
         for row in source.findall(f"{VISIO}Row"):
-            index = row.get("IX", "")
-            if row.get("Del") == "1":
-                rows.pop(index, None)
-                continue
-            target = rows.setdefault(index, ET.Element(f"{VISIO}Row", {"IX": index}))
-            if row.get("T"):
-                target.set("T", row.get("T", ""))
-            for element in row.findall(f"{VISIO}Cell"):
-                _set(target, element, source is inherited)
+            _merge_row(rows, row, source is inherited)
     merged.extend(rows.values())
     return merged
+
+
+def _merge_row(rows: dict[str, ET.Element], row: ET.Element, inherited: bool) -> None:
+    """Set a row over the row of its index, or delete it."""
+    index = row.get("IX", "")
+    if row.get("Del") == "1":
+        rows.pop(index, None)
+        return
+    target = rows.setdefault(index, ET.Element(f"{VISIO}Row", {"IX": index}))
+    if row.get("T"):
+        target.set("T", row.get("T", ""))
+    for element in row.findall(f"{VISIO}Cell"):
+        _set(target, element, inherited)
 
 
 def _set(target: ET.Element, element: ET.Element, inherited: bool) -> None:
@@ -439,29 +450,40 @@ class _Painter:
         gradient = gradients.gradient_of(fill_chain, self.colors, gradients.turn_of(placed)) if cell(fill_chain, "FillPattern") != "0" else None
         fill = _paint(fill_chain, "FillForegnd", "FillPattern", "FillForegndTrans", self.colors)
         line = _paint(line_chain, "LineColor", "LinePattern", "LineColorTrans", self.colors)
-        filled, lined = [], []
-        for section in sections:
-            commands = outline(placed, [section], master)
-            if cell([section], "NoFill") != "1" and _closed(commands):
-                filled.extend(commands)
-            if cell([section], "NoLine") != "1":
-                lined.extend(commands)
+        filled, lined = _split(placed, sections, master)
         result = []
         if filled and (fill is not None or gradient is not None):
             style = f"fill-rule: evenodd; fill: {fill[0] if fill else 'none'}; fill-opacity: {fill[1] if fill else 1:g}; stroke: none;"
             result.append((self.path(filled, style), gradient))
         if lined and line is not None:
-            width = number(cell(line_chain, "LineWeight"), 0.01) * PT_PER_INCH
-            dashes = DASHES.get(cell(line_chain, "LinePattern") or "")
-            # A dash of no length is a dot: the round cap draws it
-            dasharray = f" stroke-dasharray: {', '.join(f'{dash * width:.4f}' for dash in dashes)};" if dashes else ""
-            style = f"fill: none; stroke: {line[0]}; stroke-opacity: {line[1]:g}; stroke-width: {width:.4f}; stroke-linecap: round; stroke-linejoin: round;{dasharray}"
-            result.append((self.path(lined, style), None))
+            result.append((self.path(lined, _line_style(line_chain, line)), None))
         return result
 
     def path(self, commands: list[Command], style: str) -> ET.Element:
         self.segments += len(commands)
         return ET.Element(f"{{{SVG_NS}}}path", {"class": MASTER_CLASS, "d": path_data(commands, self.page_height), "style": style})
+
+
+def _split(placed: Placed, sections: list[ET.Element], master: ET.Element | None) -> tuple[list[Command], list[Command]]:
+    """The commands of the sections that fill, closed ones without NoFill, and of those that stroke, without NoLine."""
+    filled: list[Command] = []
+    lined: list[Command] = []
+    for section in sections:
+        commands = outline(placed, [section], master)
+        if cell([section], "NoFill") != "1" and _closed(commands):
+            filled.extend(commands)
+        if cell([section], "NoLine") != "1":
+            lined.extend(commands)
+    return filled, lined
+
+
+def _line_style(chain: list[ET.Element], line: tuple[str, float]) -> str:
+    """The style of a line: its color, opacity, width and dashes."""
+    width = number(cell(chain, "LineWeight"), 0.01) * PT_PER_INCH
+    dashes = DASHES.get(cell(chain, "LinePattern") or "")
+    # A dash of no length is a dot: the round cap draws it
+    dasharray = f" stroke-dasharray: {', '.join(f'{dash * width:.4f}' for dash in dashes)};" if dashes else ""
+    return f"fill: none; stroke: {line[0]}; stroke-opacity: {line[1]:g}; stroke-width: {width:.4f}; stroke-linecap: round; stroke-linejoin: round;{dasharray}"
 
 
 def _candidates(package: Package, drawn: set[str], hidden: set[str]) -> Iterator[tuple[Placed, bool]]:
