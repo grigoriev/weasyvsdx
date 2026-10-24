@@ -105,10 +105,12 @@ def _color(value: str | None, colors: dict[str, str]) -> str | None:
 
 
 def _number(value: str | None, default: float) -> float:
+    """A number of a cell; the default for none, a formula of the theme, an infinity or not a number."""
     try:
-        return float(value) if value else default
+        number = float(value) if value else default
     except ValueError:
         return default
+    return number if math.isfinite(number) else default
 
 
 def _gradient(chain: list[ET.Element], colors: dict[str, str]) -> Gradient | None:

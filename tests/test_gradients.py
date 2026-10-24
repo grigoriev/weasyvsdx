@@ -106,6 +106,14 @@ def test_a_shape_of_an_id_on_the_background_page_keeps_its_fill() -> None:
     assert list(shape_gradients(vsdx(shapes, backed=True)) or {}) == ["2"]
 
 
+@pytest.mark.parametrize("value", ["1e309", "-inf", "nan"])
+def test_a_number_out_of_range_takes_the_default(value: str) -> None:
+    stops = f"<Row IX='0'><Cell N='GradientStopColor' V='#000000'/><Cell N='GradientStopPosition' V='{value}'/><Cell N='GradientStopColorTrans' V='{value}'/></Row>"
+    gradients = shape_gradients(vsdx(f"<Shape ID='1'>{ON}<Cell N='FillGradientAngle' V='{value}'/><Section N='FillGradient'>{stops}</Section></Shape>")) or {}
+    assert gradients["1"] == Gradient("", 0.0, ((0.0, "#000000", 1.0),))
+    gradient_element("g", gradients["1"])
+
+
 def test_another_drawing_has_no_gradients() -> None:
     assert shape_gradients(b"\xd0\xcf\x11\xe0 a VSD") is None
 
