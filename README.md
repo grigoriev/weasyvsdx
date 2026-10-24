@@ -144,6 +144,9 @@ Where the license allows it, install the original fonts instead.
    - **Hatches**: a fill pattern of Visio draws as the lines of its hatch. The generator filled it black.
    - **Gradients**: a shape of a VSDX that fills with a gradient of Visio 2013 or later gets it, linear or
      radial, from the XML of the page, its masters and styles. libvisio reads none, and filled it black.
+   - **Shapes of master groups**: a shape of a VSDX that inherits its geometry from a master group is drawn
+     from the XML of the master, with its fill, line, dashes and gradient. libvisio drew nothing for it, and
+     parts of the Azure icons went missing.
    - **Line ends**: a line under an arrowhead ends at its base, as in Visio, not at its tip.
 3. EMF images become SVG through `emf2svg-conv`, and so does the EMF that Office puts inside a WMF image,
    and the picture an embedded OLE object shows.
@@ -179,8 +182,8 @@ some drawings LibreOffice is wrong where weasyvsdx is right, for example it fill
 
 LibreOffice reads the drawings through libvisio, as weasyvsdx does, and shares its errors. So the bench
 also compares 206 Azure diagrams with the SVG that Visio exported for their article. The median mismatch
-is 26.3% against Visio, 48.3% against LibreOffice: weasyvsdx draws the gradients of the Azure icons, which
-LibreOffice fills black. Much of the rest is the icons of Azure, see "Known gaps".
+is 25.0% against Visio, 49.5% against LibreOffice: weasyvsdx draws the gradients and the master
+shapes of the Azure icons, which LibreOffice fills black or leaves out. Much of the rest is the icons of Azure, see "Known gaps".
 
 The median Azure diagram converts in 0.08 s, and 9 in 10 in less than 0.5 s. Drawings that embed bitmaps
 of tens of MB take seconds, 17 of the 250 more than one: libvisio writes the bitmaps out as base64. One,
@@ -188,9 +191,9 @@ of tens of MB take seconds, 17 of the 250 more than one: libvisio writes the bit
 
 ## Known gaps
 
-- Some parts of Azure icons are missing. libvisio 0.1.7 does not take the geometry of a part of a master
-  group from the master. LibreOffice leaves them out too. A gradient of a shape whose ID another shape that
-  libvisio draws shares stays black, as do the gradients of a VSD and the rarer kinds, FillGradientDir 8 to 13.
+- A shape whose ID another shape that libvisio draws shares keeps what libvisio drew: no gradient, and no
+  geometry from its master. So do the shapes of a VSD, gradients of the rarer kinds (FillGradientDir 8 to
+  13) and colors of the theme of a drawing.
 - Only the first page renders. LibreOffice and the converters before it did the same.
 - Visio drawings ask for Calibri and Segoe UI most, fonts of Microsoft. A font the system lacks falls back
   to its free replacement, else to sans-serif: Calibri to Carlito and Cambria to Caladea, which share their

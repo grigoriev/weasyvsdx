@@ -64,9 +64,14 @@ uv build                # wheel and sdist
   its master shape and the groups around it.
 - `gradients.py`: the gradient of each shape of a VSDX (FillGradientEnabled, the FillGradient stops,
   FillGradientDir and FillGradientAngle, through master and style chain), by its ID. A path gets it by the
-  `draw:id` of its `drawPath`, or of the `startLayer` around it. The gradient turns and flips with the shape
+  `draw:id` of its `drawPath`, or of the innermost named `startLayer` around it (`path_shapes()`). The gradient turns and flips with the shape
   and its groups (`Turn`), unless RotateGradientWithShape is 0. An ID that occurs twice, on a background page
   or as a shape of a master the page does not list, goes.
+- `geometry.py`: a shape of a master group that the page lists without geometry, and libvisio leaves out,
+  gets a path from the geometry rows of its master (merged row by row with its own, master values scaled to
+  its size), placed through the pins, angles and flips of its groups. Arcs and NURBS become lines. Fill, line,
+  `LinePattern` dashes (`DASHES`) and gradient come from its cells. The paths carry `MASTER_CLASS`, which
+  `drawn_paths()` passes by, and go in first, after the last path of the shapes before them.
 - `hidden_text.py`: reads HideText and cleared texts from the XML of a VSDX (first page and masters) and aligns
   those texts with the text objects of `vsd2raw` (difflib); a matched hidden one goes in `replace_text()`.
 - `hidden.py`: the n-th drawn path goes when the n-th `drawPath` of `vsd2raw` has `draw:display: none`, a

@@ -27,6 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A fill pattern draws as hatch lines, on the fill color where it has one, instead of black.
 - A shape of a VSDX that fills with a gradient of Visio 2013 or later gets it, linear or radial, instead of
   black: the icons of Azure show in color.
+- A shape of a VSDX that inherits its geometry from a master group draws, from the XML of the master:
+  libvisio drew nothing for it, and parts of the Azure icons went missing.
 - A text block of no width or height is as wide and as high as its text and never wraps, as in Visio.
 - A path that libvisio writes without a leading moveto starts at the end of its first segment, not at the
   corner of the page.
