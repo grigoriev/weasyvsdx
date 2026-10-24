@@ -86,17 +86,21 @@ class Package:
         """The first page that is no background page, the page libvisio writes first."""
         return self._content(self._first_entry())
 
-    def background_ids(self) -> set[str]:
-        """The IDs of the shapes of the background pages of the first page, which libvisio draws before it."""
+    def background_pages(self) -> list[ET.Element]:
+        """The background pages of the first page, its own first, which libvisio draws before it."""
         entries = {page.get("ID", ""): page for page in self.part("visio/pages/pages.xml").iter(f"{VISIO}Page")}
-        ids: set[str] = set()
+        pages = []
         seen = set()
         back = self._first_entry().get("BackPage")
         while back in entries and back not in seen:
             seen.add(back)
-            ids.update(shape.get("ID", "") for shape in self._content(entries[back]).iter(f"{VISIO}Shape"))
+            pages.append(self._content(entries[back]))
             back = entries[back].get("BackPage")
-        return ids
+        return pages
+
+    def background_ids(self) -> set[str]:
+        """The IDs of the shapes of the background pages of the first page."""
+        return {shape.get("ID", "") for page in self.background_pages() for shape in page.iter(f"{VISIO}Shape")}
 
     def hidden_layers(self) -> set[str]:
         """The indexes of the layers of the first page that do not show or do not print."""
@@ -177,14 +181,14 @@ class _Walk:
                 yield from self.shapes(master_children, master, groups, inherited=True)
 
 
-def page_shapes(package: Package) -> Iterator[Placed]:
-    """Each shape of the first page in document order.
+def page_shapes(package: Package, page: ET.Element | None = None) -> Iterator[Placed]:
+    """Each shape of a page, the first one by default, in document order.
 
     A group of a master whose shapes the page does not list stands for the shapes of the master, which
     libvisio draws: each comes as its own master shape.
     """
     masters = package.masters()
-    shapes = package.first_page().find(f"{VISIO}Shapes")
+    shapes = (page if page is not None else package.first_page()).find(f"{VISIO}Shapes")
     if shapes is not None:
         yield from _Walk(masters).shapes(shapes, None, ())
 
