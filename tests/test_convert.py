@@ -139,39 +139,44 @@ def test_the_text_stays_when_the_tools_count_other_objects(tmp_path: Path, caplo
 def test_a_drawing_past_the_input_limit_never_reaches_the_converter(tmp_path: Path) -> None:
     marker = tmp_path / "ran"
     tools = Tools(script(tmp_path, f"touch {marker}"))
+    limits = Limits(max_input=10)
     with pytest.raises(ConversionError, match=r"more than 10 bytes"):
-        convert(b"x" * 11, tools, Limits(max_input=10))
+        convert(b"x" * 11, tools, limits)
     assert not marker.exists()
 
 
 def test_a_slow_converter_stops_at_the_timeout(tmp_path: Path) -> None:
     start = time.monotonic()
     tools = Tools(script(tmp_path, "sleep 10"))
+    limits = Limits(timeout=0.5)
     with pytest.raises(ConversionError, match=r"took more than 0.5 s"):
-        convert(b"x", tools, Limits(timeout=0.5))
+        convert(b"x", tools, limits)
     assert time.monotonic() - start < 5
 
 
 def test_the_converter_is_killed_past_the_output_limit(tmp_path: Path) -> None:
     # ulimit -f: the process gets SIGXFSZ when its output passes the limit
     tools = Tools(script(tmp_path, "head -c 100000 /dev/zero"))
+    limits = Limits(max_output=4096)
     with pytest.raises(ConversionError, match=r"exit code"):
-        convert(b"x", tools, Limits(max_output=4096))
+        convert(b"x", tools, limits)
 
 
 def test_output_past_the_limit_fails_where_ulimit_does_not_hold(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     # As on macOS, where ulimit -f fails and the limit is checked after the run
     monkeypatch.setattr(convert_module, "LIMITED", 'shift 2; exec "$@"')
     tools = Tools(script(tmp_path, "head -c 100000 /dev/zero"))
+    limits = Limits(max_output=4096)
     with pytest.raises(ConversionError, match=r"wrote more than 4096 bytes"):
-        convert(b"x", tools, Limits(max_output=4096))
+        convert(b"x", tools, limits)
 
 
 def test_the_converter_runs_with_the_memory_limit() -> None:
     # Too little address space to load libvisio at all
     drawing = helpers.drawing("poi/test.vsdx")
+    limits = Limits(max_memory=1024 * 1024)
     with pytest.raises(ConversionError, match=r"exit code"):
-        convert(drawing, PLAIN, Limits(max_memory=1024 * 1024))
+        convert(drawing, PLAIN, limits)
 
 
 def test_the_converter_reads_the_drawing_from_a_file_of_its_own(tmp_path: Path) -> None:
