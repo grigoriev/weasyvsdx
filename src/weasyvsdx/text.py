@@ -158,7 +158,8 @@ def font(props: Properties) -> dict[str, str]:
     if "style:font-name" in props:
         # A font the system lacks falls back to its replacement, else to sans-serif, as Visio diagrams
         # mostly use sans-serif fonts
-        family = props["style:font-name"].replace("\\", "").replace('"', "")
+        # Quotes, backslashes and control characters out: each could end the CSS string the name stands in
+        family = "".join(char for char in props["style:font-name"] if char not in '"\\' and char.isprintable())
         families = [family, REPLACEMENTS.get(family.lower())]
         style["font-family"] = ", ".join(f'"{name}"' for name in families if name) + ", sans-serif"
     if "fo:font-size" in props:
