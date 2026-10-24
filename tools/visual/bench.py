@@ -249,32 +249,32 @@ def moved(old: float | None, new: float | None) -> str | None:
 
 
 def add_moves(moves: dict[str, list[str]], key: str, suffix: str, before: dict[str, float | None], rows: list[dict[str, Any]]) -> None:
-    """Add the drawings whose value of key moved past TOLERANCE to moves, by direction."""
-    # A drawing whose SVG of Visio is not in the cache has no Visio value, which is no regression
-    missing = [row for row in rows if key == "visio" and row["name"] in before and not row["visio_svg"]]
-    if missing:
-        print(f"{len(missing)} SVG of Visio not in the cache, run tools/corpus/azure.py fetch")
+    """Add the drawings whose value of key moved past TOLERANCE to moves, by direction, and those it cannot compare."""
     for row in rows:
-        if row["name"] in before and row not in missing:
-            direction = moved(before[row["name"]], row.get(key))
-            if direction:
-                moves[direction].append(f"{row['name']}{suffix}: {before[row['name']]} -> {row.get(key)}")
+        if row["name"] not in before:
+            continue
+        # A drawing whose SVG of Visio is not in the cache is not compared, which is no regression and no pass
+        if key == "visio" and not row["visio_svg"]:
+            moves["unchecked"].append(f"{row['name']}{suffix}: the SVG of Visio is not in the cache, run tools/corpus/azure.py fetch")
+            continue
+        direction = moved(before[row["name"]], row.get(key))
+        if direction:
+            moves[direction].append(f"{row['name']}{suffix}: {before[row['name']]} -> {row.get(key)}")
 
 
 def compare(path: Path, rows: list[dict[str, Any]]) -> list[str]:
-    """The drawings whose mismatch moved past TOLERANCE since the baseline, worse first; the regressions."""
+    """The drawings whose mismatch moved past TOLERANCE since the baseline, worse first; the regressions and those not compared."""
     baseline = json.loads(path.read_text())
-    moves: dict[str, list[str]] = {"worse": [], "better": []}
+    moves: dict[str, list[str]] = {"worse": [], "better": [], "unchecked": []}
     # Against LibreOffice, then against Visio, which an older baseline lacks
     for key, suffix in (("mismatch", ""), ("visio", " (Visio)")):
         add_moves(moves, key, suffix, baseline.get(key, {}), rows)
-    worse, better = moves["worse"], moves["better"]
     print(f"against {path.name} (WeasyPrint {baseline.get('weasyprint')} -> {weasyprint.__version__}):")
-    for title, lines in (("worse", worse), ("better", better)):
+    for title, lines in moves.items():
         print(f"  {title}: {len(lines)}")
         for line in lines:
             print(f"    {line}")
-    return worse
+    return moves["worse"] + moves["unchecked"]
 
 
 def render(drawing: Drawing, out: Path, handler: Warnings) -> dict[str, Any]:
