@@ -308,7 +308,7 @@ Each drawing of the corpus in three renderings: LibreOffice, its PDF export; lib
 
 ### poi-github260
 
-[`visio/poi/github260.vsdx`](visio/poi/github260.vsdx) · mismatch with LibreOffice: libvisio 27.8 %, weasyvsdx 17.1 %
+[`visio/poi/github260.vsdx`](visio/poi/github260.vsdx) · mismatch with LibreOffice: libvisio 27.8 %, weasyvsdx 19.9 %
 
 | LibreOffice | libvisio | weasyvsdx |
 |---|---|---|

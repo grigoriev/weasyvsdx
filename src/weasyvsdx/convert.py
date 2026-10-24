@@ -22,7 +22,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
-from . import gradients, hatch, hidden, hidden_text, images, markers, paths, raw, text
+from . import geometry, gradients, hatch, hidden, hidden_text, images, markers, paths, raw, text
 from .errors import ConversionError
 
 SVG_NS = "http://www.w3.org/2000/svg"
@@ -173,6 +173,9 @@ def redraw(page: ET.Element, job: Job, document: bytes) -> None:
     except ConversionError as e:
         LOGGER.warning("The text and arrowheads of a Visio drawing stay as vsd2xhtml writes them: %s", e)
         return
+    # First: the steps after it pair the paths of the page with the drawPath calls, and pass by the paths it adds
+    if geometry.add_missing(page, calls, document) is None:
+        LOGGER.warning("Parts of shapes of master groups of a Visio drawing may be missing: vsd2raw and vsd2xhtml count other paths")
     # Before hidden shapes go: both pair the paths of the page with the drawPath calls
     if not hatch.fill_hatches(page, calls):
         LOGGER.warning("Hatched shapes of a Visio drawing may fill black: vsd2raw and vsd2xhtml count other paths")
