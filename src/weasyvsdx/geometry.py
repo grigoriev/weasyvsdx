@@ -347,46 +347,49 @@ def _de_boor(t: float, points: list[Point], knots: list[float], weights: list[fl
     return (x / w, y / w) if w else points[-1]
 
 
-def _merged(own: ET.Element | None, inherited: ET.Element | None) -> ET.Element:
-    """A section of the shape over the same section of its master: its cells and rows by index, each cell from the shape where it sets it."""
-    merged = ET.Element(f"{VISIO}Section")
-    rows: dict[str, ET.Element] = {}
+# A cell of a merged section, with whether it comes from the master; a row: its type and its cells by name
+Cells = dict[str, tuple[ET.Element, bool]]
+
+
+def _merged(own: ET.Element | None, inherited: ET.Element | None, budget: Budget) -> ET.Element:
+    """A section of the shape over the same section of its master: its cells and rows by index, each cell from the shape where it sets it.
+
+    Each row read takes from the budget of the page, and the cells go by name, so a hostile section costs its size.
+    """
+    cells: Cells = {}
+    rows: dict[str, tuple[str, Cells]] = {}
     for source in (inherited, own):
         if source is None:
             continue
-        for element in source.findall(f"{VISIO}Cell"):
-            _set(merged, element, source is inherited)
+        from_master = source is inherited
+        cells.update({element.get("N", ""): (element, from_master) for element in source.findall(f"{VISIO}Cell")})
         for row in source.findall(f"{VISIO}Row"):
-            _merge_row(rows, row, source is inherited)
-    merged.extend(rows.values())
+            budget.take()
+            index = row.get("IX", "")
+            if row.get("Del") == "1":
+                rows.pop(index, None)
+                continue
+            kind, row_cells = rows.get(index, ("", {}))
+            row_cells.update({element.get("N", ""): (element, from_master) for element in row.findall(f"{VISIO}Cell")})
+            rows[index] = (row.get("T") or kind, row_cells)
+    merged = ET.Element(f"{VISIO}Section")
+    _copy(merged, cells)
+    for index, (kind, row_cells) in rows.items():
+        _copy(ET.SubElement(merged, f"{VISIO}Row", {"IX": index, "T": kind}), row_cells)
     return merged
 
 
-def _merge_row(rows: dict[str, ET.Element], row: ET.Element, inherited: bool) -> None:
-    """Set a row over the row of its index, or delete it."""
-    index = row.get("IX", "")
-    if row.get("Del") == "1":
-        rows.pop(index, None)
-        return
-    target = rows.setdefault(index, ET.Element(f"{VISIO}Row", {"IX": index}))
-    if row.get("T"):
-        target.set("T", row.get("T", ""))
-    for element in row.findall(f"{VISIO}Cell"):
-        _set(target, element, inherited)
+def _copy(target: ET.Element, cells: Cells) -> None:
+    """Copies of cells on target, each marked where it comes from the master."""
+    for element, from_master in cells.values():
+        copied = ET.SubElement(target, element.tag, dict(element.attrib))
+        if from_master:
+            copied.set(INHERITED, "1")
 
 
-def _set(target: ET.Element, element: ET.Element, inherited: bool) -> None:
-    """Set a copy of a cell on target, over the cell of that name it has, marked where it comes from the master."""
-    for existing in target.findall(f"{VISIO}Cell"):
-        if existing.get("N") == element.get("N"):
-            target.remove(existing)
-    copied = ET.SubElement(target, element.tag, dict(element.attrib))
-    if inherited:
-        copied.set(INHERITED, "1")
-
-
-def _sections(placed: Placed) -> tuple[list[ET.Element], ET.Element | None]:
+def _sections(placed: Placed, budget: Budget | None = None) -> tuple[list[ET.Element], ET.Element | None]:
     """The geometry sections of a shape that show, and its master shape where it inherits from one, None for none."""
+    budget = budget if budget is not None else Budget(MAX_SEGMENTS)
     master = placed.master_shape if placed.master_shape is not placed.shape else None
 
     def by_index(source: ET.Element | None) -> dict[str, ET.Element]:
@@ -398,7 +401,7 @@ def _sections(placed: Placed) -> tuple[list[ET.Element], ET.Element | None]:
         section = own.get(index)
         if section is not None and section.get("Del") == "1":
             continue
-        merged = _merged(section, inherited.get(index))
+        merged = _merged(section, inherited.get(index), budget)
         if cell([merged], "NoShow") != "1":
             sections.append(merged)
     return sections, master
@@ -454,7 +457,7 @@ class _Painter:
 
     def paths(self, placed: Placed) -> list[tuple[ET.Element, gradients.Gradient | None]]:
         """The fill path, then the line path, of a shape, each with its gradient."""
-        sections, master = _sections(placed)
+        sections, master = _sections(placed, self.budget)
         fill_chain = gradients.chain_of(placed.shape, placed.master_shape, self.styles)
         line_chain = gradients.chain_of(placed.shape, placed.master_shape, self.styles, "LineStyle")
         gradient = gradients.gradient_of(fill_chain, self.colors, gradients.turn_of(placed)) if cell(fill_chain, "FillPattern") != "0" else None
