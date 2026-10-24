@@ -100,7 +100,9 @@ def add_visio(checkout: Path) -> int:
         entry.pop("visio", None)
         if entry["url"] in svgs:
             path = svgs[entry["url"]]
-            entry["visio"] = {"url": f"{DOCS}{commit}/{path}", "sha256": hashlib.sha256((checkout / path).read_bytes()).hexdigest()}
+            # The bytes of the commit the URL names, not those of the working tree, which may differ
+            committed = subprocess.run(["git", "-C", str(checkout), "show", f"{commit}:{path}"], capture_output=True, check=True).stdout
+            entry["visio"] = {"url": f"{DOCS}{commit}/{path}", "sha256": hashlib.sha256(committed).hexdigest()}
     LIST.write_text(json.dumps(entries, indent=1) + "\n")
     print(f"{sum(1 for entry in entries if 'visio' in entry)} of {len(entries)} diagrams have an SVG of Visio")
     return 0
