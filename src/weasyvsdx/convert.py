@@ -48,6 +48,10 @@ class Limits:
     max_output: int = 256 * MIB
     max_memory: int = 2048 * MIB
 
+    def with_timeout(self, timeout: float) -> Limits:
+        """The same limits with another timeout."""
+        return replace(self, timeout=timeout)
+
 
 @dataclass(frozen=True)
 class Tools:
@@ -139,7 +143,7 @@ def emf_converter(emf: str, folder: Path, limits: Limits) -> images.Converter:
         remaining = deadline - time.monotonic()
         if remaining <= 0:
             raise ConversionError(f"the EMF images took more than {limits.timeout} s")
-        return run([emf, "-i", str(path), "-o", "/dev/stdout"], folder, replace(limits, timeout=remaining))
+        return run([emf, "-i", str(path), "-o", "/dev/stdout"], folder, limits.with_timeout(remaining))
 
     return to_svg
 
