@@ -354,7 +354,8 @@ Cells = dict[str, tuple[ET.Element, bool]]
 def _merged(own: ET.Element | None, inherited: ET.Element | None, budget: Budget) -> ET.Element:
     """A section of the shape over the same section of its master: its cells and rows by index, each cell from the shape where it sets it.
 
-    Each row read takes from the budget of the page, and the cells go by name, so a hostile section costs its size.
+    Each row and cell read takes from the budget of the page, and the cells go by name, so a hostile section costs
+    its size, within the budget.
     """
     cells: Cells = {}
     rows: dict[str, tuple[str, Cells]] = {}
@@ -362,7 +363,7 @@ def _merged(own: ET.Element | None, inherited: ET.Element | None, budget: Budget
         if source is None:
             continue
         from_master = source is inherited
-        cells.update({element.get("N", ""): (element, from_master) for element in source.findall(f"{VISIO}Cell")})
+        cells.update(_named(source, from_master, budget))
         for row in source.findall(f"{VISIO}Row"):
             budget.take()
             index = row.get("IX", "")
@@ -370,13 +371,22 @@ def _merged(own: ET.Element | None, inherited: ET.Element | None, budget: Budget
                 rows.pop(index, None)
                 continue
             kind, row_cells = rows.get(index, ("", {}))
-            row_cells.update({element.get("N", ""): (element, from_master) for element in row.findall(f"{VISIO}Cell")})
+            row_cells.update(_named(row, from_master, budget))
             rows[index] = (row.get("T") or kind, row_cells)
     merged = ET.Element(f"{VISIO}Section")
     _copy(merged, cells)
     for index, (kind, row_cells) in rows.items():
         _copy(ET.SubElement(merged, f"{VISIO}Row", {"IX": index, "T": kind}), row_cells)
     return merged
+
+
+def _named(source: ET.Element, from_master: bool, budget: Budget) -> Cells:
+    """The cells of a section or row by name, each taking from the budget."""
+    named: Cells = {}
+    for element in source.findall(f"{VISIO}Cell"):
+        budget.take()
+        named[element.get("N", "")] = (element, from_master)
+    return named
 
 
 def _copy(target: ET.Element, cells: Cells) -> None:
