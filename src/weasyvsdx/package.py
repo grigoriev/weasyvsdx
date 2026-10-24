@@ -11,12 +11,14 @@ import io
 import zipfile
 import zlib
 from collections.abc import Callable, Iterator
+from dataclasses import dataclass
 from typing import TypeVar
 from xml.etree import ElementTree as ET
 
 VISIO = "{http://schemas.microsoft.com/office/visio/2012/main}"
 RELATIONSHIP = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id"
 PACKAGE = "{http://schemas.openxmlformats.org/package/2006/relationships}Relationship"
+DOCUMENT = "visio/document.xml"
 MAX_PART = 64 * 1024 * 1024  # bytes of one XML part, unpacked: a zip bomb stops here
 MAX_TOTAL = 256 * 1024 * 1024  # bytes of all parts read, unpacked
 # zipfile raises EOFError on a cut entry, zlib.error on a broken one, NotImplementedError on an unknown
@@ -35,6 +37,7 @@ class Package:
         self.archive = archive
         self.budget = MAX_TOTAL
         self.shapes: dict[str, Shapes] = {}
+        self.document: ET.Element | None = None
 
     def part(self, name: str) -> ET.Element:
         """One part, parsed; KeyError when it is missing, ValueError when it or all parts are too large."""
@@ -66,15 +69,17 @@ class Package:
 
     def styles(self) -> dict[str, ET.Element]:
         """The style sheets of the document by their ID."""
-        if "visio/document.xml" not in self.archive.namelist():
-            return {}
-        return {style.get("ID", ""): style for style in self.part("visio/document.xml").iter(f"{VISIO}StyleSheet")}
+        return {style.get("ID", ""): style for style in self._document().iter(f"{VISIO}StyleSheet")}
 
     def colors(self) -> dict[str, str]:
         """The colors the document adds to the palette of Visio, by their index."""
-        if "visio/document.xml" not in self.archive.namelist():
-            return {}
-        return {color.get("IX", ""): color.get("RGB", "") for color in self.part("visio/document.xml").iter(f"{VISIO}ColorEntry")}
+        return {color.get("IX", ""): color.get("RGB", "") for color in self._document().iter(f"{VISIO}ColorEntry")}
+
+    def _document(self) -> ET.Element:
+        """document.xml, read once; an empty element when the package has none."""
+        if self.document is None:
+            self.document = self.part(DOCUMENT) if DOCUMENT in self.archive.namelist() else ET.Element("none")
+        return self.document
 
     def first_page(self) -> ET.Element:
         """The first page that is no background page, the page libvisio writes first."""
@@ -125,28 +130,48 @@ def master_shape(shape: ET.Element, master: Shapes | None) -> ET.Element | None:
     return next(iter(master.values())) if shape.get("Master") else None
 
 
-def page_shapes(package: Package) -> Iterator[tuple[ET.Element, ET.Element | None]]:
-    """Each shape of the first page in document order, with the shape of a master it inherits from.
+@dataclass(frozen=True)
+class Placed:
+    """A shape of the first page, the shape of a master it inherits from, and the groups around it, outermost first."""
+
+    shape: ET.Element
+    master_shape: ET.Element | None
+    groups: tuple[Placed, ...] = ()
+
+
+class _Walk:
+    """The shapes below a list of shapes, in document order."""
+
+    def __init__(self, masters: dict[str, Shapes]) -> None:
+        self.masters = masters
+
+    def shapes(self, shapes: ET.Element, master: Shapes | None, groups: tuple[Placed, ...], inherited: bool = False) -> Iterator[Placed]:
+        for shape in shapes.findall(f"{VISIO}Shape"):
+            own_master = self.masters.get(shape.get("Master", "")) if shape.get("Master") else master
+            # A shape of a master that the page does not list is its own master shape
+            placed = Placed(shape, shape if inherited else master_shape(shape, own_master), groups)
+            yield placed
+            yield from self.children(placed, own_master)
+
+    def children(self, placed: Placed, master: Shapes | None) -> Iterator[Placed]:
+        """The shapes of a group: those the page lists, else those of its master shape, which libvisio draws."""
+        groups = (*placed.groups, placed)
+        children = placed.shape.find(f"{VISIO}Shapes")
+        if children is not None:
+            yield from self.shapes(children, master, groups)
+        elif placed.master_shape is not None and placed.master_shape is not placed.shape:
+            master_children = placed.master_shape.find(f"{VISIO}Shapes")
+            if master_children is not None:
+                yield from self.shapes(master_children, master, groups, inherited=True)
+
+
+def page_shapes(package: Package) -> Iterator[Placed]:
+    """Each shape of the first page in document order.
 
     A group of a master whose shapes the page does not list stands for the shapes of the master, which
     libvisio draws: each comes as its own master shape.
     """
     masters = package.masters()
     shapes = package.first_page().find(f"{VISIO}Shapes")
-
-    def walk(shapes: ET.Element, master: Shapes | None, inherited: bool = False) -> Iterator[tuple[ET.Element, ET.Element | None]]:
-        for shape in shapes.findall(f"{VISIO}Shape"):
-            own_master = masters.get(shape.get("Master", "")) if shape.get("Master") else master
-            # A shape of a master that the page does not list is its own master shape
-            inherits = shape if inherited else master_shape(shape, own_master)
-            yield shape, inherits
-            children = shape.find(f"{VISIO}Shapes")
-            if children is not None:
-                yield from walk(children, own_master)
-                continue
-            master_children = inherits.find(f"{VISIO}Shapes") if inherits is not None and inherits is not shape else None
-            if master_children is not None:
-                yield from walk(master_children, own_master, inherited=True)
-
     if shapes is not None:
-        yield from walk(shapes, None)
+        yield from _Walk(masters).shapes(shapes, None, ())

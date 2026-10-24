@@ -57,7 +57,7 @@ def _hidden_text(shape: ET.Element, master_shape: ET.Element | None) -> tuple[st
 
 
 def _texts(package: Package) -> list[tuple[str, bool]]:
-    return [text for shape, master_shape in page_shapes(package) if (text := _hidden_text(shape, master_shape)) is not None]
+    return [text for placed in page_shapes(package) if (text := _hidden_text(placed.shape, placed.master_shape)) is not None]
 
 
 def shape_texts(document: bytes) -> list[tuple[str, bool]] | None:

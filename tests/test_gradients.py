@@ -71,7 +71,8 @@ def test_a_radial_gradient_from_a_corner_an_edge_or_the_center(direction: str, a
     gradients = shape_gradients(vsdx(f"<Shape ID='1'>{ON}<Cell N='FillGradientDir' V='{direction}'/>{STOPS}</Shape>")) or {}
     element = gradient_element("g", gradients["1"])
     assert element.tag == f"{{{SVG_NS}}}radialGradient"
-    assert (element.get("cx"), element.get("cy"), element.get("r")) == attributes
+    center = (element.get("cx"), element.get("cy"), element.get("r"))
+    assert center == attributes
 
 
 def test_the_colors_of_the_palette_and_of_the_document() -> None:
@@ -119,6 +120,35 @@ def test_a_number_out_of_range_takes_the_default(value: str) -> None:
     gradients = shape_gradients(vsdx(f"<Shape ID='1'>{ON}<Cell N='FillGradientAngle' V='{value}'/><Section N='FillGradient'>{stops}</Section></Shape>")) or {}
     assert gradients["1"] == Gradient("", 0.0, ((0.0, "#000000", 1.0),))
     gradient_element("g", gradients["1"])
+
+
+def test_the_gradient_turns_and_flips_with_its_shape_and_its_groups() -> None:
+    turned = "<Cell N='Angle' V='1.570796326794897'/>"
+    master = f"<Shape ID='5'>{ON}{STOPS}</Shape>"
+    page = (
+        # A quarter turn counterclockwise: the gradient runs up, not right
+        f"<Shape ID='1' Master='2'>{turned}</Shape>"
+        # Inside a group of a quarter turn and flipped across: down
+        f"<Shape ID='2'>{turned}<Cell N='FlipX' V='1'/><Shapes><Shape ID='3' Master='2'/></Shapes></Shape>"
+        # Flipped both ways: left
+        f"<Shape ID='4' Master='2'><Cell N='FlipX' V='1'/><Cell N='FlipY' V='1'/></Shape>"
+        # Flipped upside down, a radial gradient from the top left corner starts at the bottom left
+        f"<Shape ID='6' Master='2'><Cell N='FlipY' V='1'/><Cell N='FillGradientDir' V='7'/></Shape>"
+        # A fill that keeps its gradient straight
+        f"<Shape ID='7' Master='2'>{turned}<Cell N='RotateGradientWithShape' V='0'/></Shape>"
+    )
+    gradients = shape_gradients(vsdx(page, master)) or {}
+    ends = {shape: tuple(float(gradient_element("g", gradients[shape]).get(key) or "") for key in ("x1", "y1", "x2", "y2")) for shape in ("1", "3", "4", "7")}
+    assert ends == {"1": (0.5, 1.0, 0.5, 0.0), "3": (0.5, 0.0, 0.5, 1.0), "4": (1.0, 0.5, 0.0, 0.5), "7": (0.0, 0.5, 1.0, 0.5)}
+    radial = gradient_element("g", gradients["6"])
+    assert (radial.get("cx"), radial.get("cy")) == ("0", "1")
+
+
+def test_an_id_that_a_shape_of_a_master_shares_with_the_page_keeps_its_fill() -> None:
+    # The page does not list the shapes of the group: libvisio draws shape 1 of the master, and the page has a shape 1
+    master = f"<Shape ID='5' Type='Group'><Shapes><Shape ID='1'>{ON}{STOPS}</Shape><Shape ID='8'>{ON}{STOPS}</Shape></Shapes></Shape>"
+    page = f"<Shape ID='1'>{ON}{STOPS}</Shape><Shape ID='2' Master='2'/>"
+    assert list(shape_gradients(vsdx(page, master)) or {}) == ["8"]
 
 
 def test_another_drawing_has_no_gradients() -> None:
