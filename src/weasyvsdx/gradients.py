@@ -21,7 +21,7 @@ from xml.etree import ElementTree as ET
 
 from .hatch import draw_styles
 from .hidden import SVG_NS, drawn_paths
-from .package import VISIO, Package, Placed, page_shapes, read
+from .package import VISIO, Package, Placed, cell, number, page_shapes, read
 from .raw import Call, properties
 
 # The 24 colors of Visio that a color index below 24 names
@@ -68,17 +68,17 @@ def _then(outer: Turn, inner: Turn) -> Turn:
 
 def _own_turn(chain: list[ET.Element]) -> Turn:
     """The turn of a shape in its group: its flips, then its angle."""
-    flip_x, flip_y = _cell(chain, "FlipX") == "1", _cell(chain, "FlipY") == "1"
+    flip_x, flip_y = cell(chain, "FlipX") == "1", cell(chain, "FlipY") == "1"
     # A flip of y is a flip of x and a half turn
     flip = (180.0 if flip_y else 0.0, flip_x != flip_y)
-    return _then((_degrees(_cell(chain, "Angle")), False), flip)
+    return _then((_degrees(cell(chain, "Angle")), False), flip)
 
 
-def _turn(placed: Placed) -> Turn:
+def turn_of(placed: Placed) -> Turn:
     """The turn of a shape on the page: its own, inside those of the groups around it."""
     turn = STRAIGHT
     for each in (*placed.groups, placed):
-        turn = _then(turn, _own_turn(_chain(each.shape, each.master_shape, {})))
+        turn = _then(turn, _own_turn(chain_of(each.shape, each.master_shape, {})))
     return turn
 
 
@@ -91,22 +91,14 @@ def _turned(x: float, y: float, turn: Turn) -> tuple[float, float]:
     return x * math.cos(angle) + y * math.sin(angle), -x * math.sin(angle) + y * math.cos(angle)
 
 
-def _chain(shape: ET.Element, master_shape: ET.Element | None, styles: dict[str, ET.Element]) -> list[ET.Element]:
-    """Where a cell of the shape comes from, first to last: the shape, its master shape, its fill style and the styles that style inherits."""
+def chain_of(shape: ET.Element, master_shape: ET.Element | None, styles: dict[str, ET.Element], kind: str = "FillStyle") -> list[ET.Element]:
+    """Where a cell of the shape comes from, first to last: the shape, its master shape, its style of kind and the styles that style inherits."""
     chain = [shape] if master_shape is None or master_shape is shape else [shape, master_shape]
-    style_id = shape.get("FillStyle") or (master_shape.get("FillStyle") if master_shape is not None else None)
+    style_id = shape.get(kind) or (master_shape.get(kind) if master_shape is not None else None)
     while style_id in styles and styles[style_id] not in chain:
         chain.append(styles[style_id])
-        style_id = styles[style_id].get("FillStyle")
+        style_id = styles[style_id].get(kind)
     return chain
-
-
-def _cell(chain: list[ET.Element], name: str) -> str | None:
-    for source in chain:
-        for cell in source.findall(f"{VISIO}Cell"):
-            if cell.get("N") == name:
-                return cell.get("V")
-    return None
 
 
 def _rows(chain: list[ET.Element], name: str) -> list[dict[str, str]]:
@@ -132,7 +124,7 @@ def _apply(rows: dict[str, dict[str, str]], section: ET.Element) -> None:
             rows.setdefault(index, {}).update({cell.get("N", ""): cell.get("V", "") for cell in row.findall(f"{VISIO}Cell")})
 
 
-def _color(value: str | None, colors: dict[str, str]) -> str | None:
+def color_of(value: str | None, colors: dict[str, str]) -> str | None:
     """A color of a cell as #rrggbb: written out, or the index of a color of the palette; None for a color of the theme."""
     if not value:
         return None
@@ -145,40 +137,31 @@ def _color(value: str | None, colors: dict[str, str]) -> str | None:
     return None
 
 
-def _number(value: str | None, default: float) -> float:
-    """A number of a cell; the default for none, a formula of the theme, an infinity or not a number."""
-    try:
-        number = float(value) if value else default
-    except ValueError:
-        return default
-    return number if math.isfinite(number) else default
-
-
 def _degrees(value: str | None) -> float:
     """An angle of a cell, in radians, as degrees within a half turn either way: a huge one would overflow."""
-    return math.degrees(math.remainder(_number(value, 0.0), math.tau))
+    return math.degrees(math.remainder(number(value, 0.0), math.tau))
 
 
-def _gradient(chain: list[ET.Element], colors: dict[str, str], turn: Turn = STRAIGHT) -> Gradient | None:
+def gradient_of(chain: list[ET.Element], colors: dict[str, str], turn: Turn = STRAIGHT) -> Gradient | None:
     """The gradient a shape fills with; None when it fills without one or with one this module does not draw."""
-    if _cell(chain, "FillGradientEnabled") != "1":
+    if cell(chain, "FillGradientEnabled") != "1":
         return None
-    direction = _cell(chain, "FillGradientDir") or ""
+    direction = cell(chain, "FillGradientDir") or ""
     if direction not in LINEAR and direction not in RADIAL:
         return None
     stops = []
     for row in _rows(chain, "FillGradient"):
-        color = _color(row.get("GradientStopColor"), colors)
+        color = color_of(row.get("GradientStopColor"), colors)
         if color is None:
             return None
-        offset = min(max(_number(row.get("GradientStopPosition"), 0.0), 0.0), 1.0)
-        opacity = 1.0 - min(max(_number(row.get("GradientStopColorTrans"), 0.0), 0.0), 1.0)
+        offset = min(max(number(row.get("GradientStopPosition"), 0.0), 0.0), 1.0)
+        opacity = 1.0 - min(max(number(row.get("GradientStopColorTrans"), 0.0), 0.0), 1.0)
         stops.append((offset, color, opacity))
     if not stops:
         return None
     # Unless the fill keeps the gradient straight on the page
-    turn = STRAIGHT if _cell(chain, "RotateGradientWithShape") == "0" else turn
-    return Gradient(direction, round(_degrees(_cell(chain, "FillGradientAngle")), 4), tuple(stops), turn)
+    turn = STRAIGHT if cell(chain, "RotateGradientWithShape") == "0" else turn
+    return Gradient(direction, round(_degrees(cell(chain, "FillGradientAngle")), 4), tuple(stops), turn)
 
 
 def _gradients(package: Package) -> dict[str, Gradient]:
@@ -195,7 +178,7 @@ def _gradients(package: Package) -> dict[str, Gradient]:
             ambiguous.add(shape_id)
             continue
         seen.add(shape_id)
-        gradient = _gradient(_chain(placed.shape, placed.master_shape, styles), colors, _turn(placed))
+        gradient = gradient_of(chain_of(placed.shape, placed.master_shape, styles), colors, turn_of(placed))
         if gradient is not None:
             found[shape_id] = gradient
     return {shape_id: gradient for shape_id, gradient in found.items() if shape_id not in ambiguous}
@@ -228,14 +211,16 @@ def gradient_element(identifier: str, gradient: Gradient) -> ET.Element:
 def path_shapes(calls: list[Call]) -> list[str]:
     """The ID of the shape of each drawPath call with path data; "" where libvisio names none.
 
-    A group with a geometry of its own opens a layer that names the group, and draws that geometry in it
-    without a name: such a path belongs to the innermost layer open around it.
+    A group with a geometry of its own opens a layer that names the group, and draws that geometry in it, or
+    in a layer without a name inside it, without a name: such a path belongs to the innermost named layer
+    open around it.
     """
     layers: list[str] = []
     shapes = []
     for name, argument in calls:
         if name == "startLayer":
-            layers.append(properties(argument).get("draw:id", ""))
+            # A layer without a name holds the geometry of the group whose layer is around it
+            layers.append(properties(argument).get("draw:id") or (layers[-1] if layers else ""))
         elif name == "endLayer" and layers:
             layers.pop()
         elif name == "drawPath" and "svg:d:" in argument:

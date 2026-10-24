@@ -8,6 +8,7 @@ stops early.
 from __future__ import annotations
 
 import io
+import math
 import zipfile
 import zlib
 from collections.abc import Callable, Iterator
@@ -97,6 +98,17 @@ class Package:
             back = entries[back].get("BackPage")
         return ids
 
+    def hidden_layers(self) -> set[str]:
+        """The indexes of the layers of the first page that do not show or do not print."""
+        hidden = set()
+        for section in self._first_entry().iter(f"{VISIO}Section"):
+            if section.get("N") != "Layer":
+                continue
+            for row in section.findall(f"{VISIO}Row"):
+                if cell([row], "Visible") == "0" or cell([row], "Print") == "0":
+                    hidden.add(row.get("IX", ""))
+        return hidden
+
     def _first_entry(self) -> ET.Element:
         for page in self.part("visio/pages/pages.xml").iter(f"{VISIO}Page"):
             if page.get("Background") != "1" and page.find(f"{VISIO}Rel") is not None:
@@ -175,3 +187,21 @@ def page_shapes(package: Package) -> Iterator[Placed]:
     shapes = package.first_page().find(f"{VISIO}Shapes")
     if shapes is not None:
         yield from _Walk(masters).shapes(shapes, None, ())
+
+
+def cell(chain: list[ET.Element], name: str) -> str | None:
+    """The value of a cell from the first of the chain that sets it."""
+    for source in chain:
+        for element in source.findall(f"{VISIO}Cell"):
+            if element.get("N") == name:
+                return element.get("V")
+    return None
+
+
+def number(value: str | None, default: float) -> float:
+    """A number of a cell; the default for none, a formula of the theme, an infinity or not a number."""
+    try:
+        result = float(value) if value else default
+    except ValueError:
+        return default
+    return result if math.isfinite(result) else default
