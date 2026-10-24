@@ -32,6 +32,8 @@ from .markers import path_box
 from .package import Package, Placed, cell, page_shapes, read
 from .raw import Call, properties
 
+FILL_KEY = "draw:fill"
+FILL_COLOR_KEY = "draw:fill-color"
 FILL_COLOR = re.compile(r"draw:fill-color: #[0-9A-Fa-f]{6}")
 PT_PER_INCH = 72.0
 LINE_COLOR = re.compile(r"draw:color: #[0-9A-Fa-f]{6}")
@@ -96,14 +98,54 @@ def _fills(package: Package) -> Fills:
     groups = frozenset(group.shape.get("ID", "") for placed in background for group in placed.groups)
     shapes = list(page_shapes(package))
     # libvisio names a shape of the page and of its background alike: their outlines tell their paths apart
+    page, colors_of_background = _colors(shapes, styles, colors), _colors(background, styles, colors)
     by_id = {placed.shape.get("ID", ""): placed for placed in background}
-    boxes = {placed.shape.get("ID", ""): (geometry.shape_box(by_id[placed.shape.get("ID", "")]), geometry.shape_box(placed)) for placed in shapes if placed.shape.get("ID", "") in by_id}
-    return Fills(_colors(shapes, styles, colors), _colors(background, styles, colors), order, groups, boxes)
+    # One budget for the outlines of all these shapes, as for the shapes geometry.py draws on a page
+    budget = geometry.Budget(geometry.MAX_SEGMENTS)
+    boxes = {shape_id: (geometry.shape_box(by_id[shape_id], budget), geometry.shape_box(placed, budget)) for placed in shapes if (shape_id := placed.shape.get("ID", "")) in by_id and (shape_id in page or shape_id in colors_of_background)}
+    return Fills(page, colors_of_background, order, groups, boxes)
 
 
 def shape_fills(document: bytes) -> Fills | None:
     """The fill colors of the shapes of the first page of a VSDX and of its background pages; None for another drawing."""
     return read(document, _fills)
+
+
+class _Recolor:
+    """The walk over the calls of a page: the style, the layers and whether the background is still being drawn."""
+
+    def __init__(self, fills: Fills, page_height: float) -> None:
+        self.fills = fills
+        self.page_height = page_height
+        self.on_background = bool(fills.background_order)
+        self.place = 0
+        self.layers: list[str] = []
+        self.style = ""
+
+    def track(self, name: str, argument: str) -> None:
+        """Follow the style and the layers."""
+        if name == "setStyle":
+            self.style = argument
+        elif name == "startLayer":
+            self.layers.append(properties(argument).get("draw:id", ""))
+        elif name == "endLayer" and self.layers:
+            self.layers.pop()
+
+    def colors(self, shape: str, data: str) -> Colors | None:
+        """The colors of the shape of a path; None where the path keeps what libvisio drew."""
+        fills = self.fills
+        # The background ends at a shape or a group it lacks, or where its shapes start over
+        group = next((layer.removeprefix("id") for layer in reversed(self.layers) if layer), None)
+        if self.on_background and (fills.background_order.get(shape, -1) < self.place or (group is not None and group not in fills.groups)):
+            self.on_background = False
+        self.place = fills.background_order.get(shape, self.place)
+        if self.on_background and shape in fills.boxes:
+            side = _side(data, fills.boxes[shape], self.page_height)
+            if side is None:
+                # Neither outline tells
+                return None
+            self.on_background = side
+        return (fills.background if self.on_background else fills.page).get(shape, (None, None))
 
 
 def recolor(page: ET.Element, calls: list[Call], fills: Fills) -> list[Call] | None:
@@ -117,45 +159,24 @@ def recolor(page: ET.Element, calls: list[Call], fills: Fills) -> list[Call] | N
     paths = drawn_paths(page)
     if len(paths) != len(shapes):
         return None
-    on_background = bool(fills.background_order)
-    place = 0
     viewbox = (page.get("viewBox") or "").split()
-    page_height = float(viewbox[3]) / PT_PER_INCH if len(viewbox) == 4 else 0.0
+    walk = _Recolor(fills, float(viewbox[3]) / PT_PER_INCH if len(viewbox) == 4 else 0.0)
     result: list[Call] = []
-    layers: list[str] = []
-    style = ""
-    index = 0
+    drawn = iter(zip(paths, shapes, strict=True))
     for name, argument in calls:
-        if name == "setStyle":
-            style = argument
-        elif name == "startLayer":
-            layers.append(properties(argument).get("draw:id", ""))
-        elif name == "endLayer" and layers:
-            layers.pop()
+        walk.track(name, argument)
         if name != "drawPath" or "svg:d:" not in argument:
             result.append((name, argument))
             continue
-        path, shape = paths[index][0], shapes[index]
-        index += 1
-        # The background ends at a shape or a group it lacks, or where its shapes start over
-        group = next((layer.removeprefix("id") for layer in reversed(layers) if layer), None)
-        if on_background and (fills.background_order.get(shape, -1) < place or (group is not None and group not in fills.groups)):
-            on_background = False
-        place = fills.background_order.get(shape, place)
-        if on_background and shape in fills.boxes:
-            side = _side(path.get("d") or "", fills.boxes[shape], page_height)
-            if side is None:
-                # Neither outline tells: the path keeps what libvisio drew
-                result.append((name, argument))
-                continue
-            on_background = side
-        recolored = _recolored(style, (fills.background if on_background else fills.page).get(shape, (None, None)))
+        (path, _), shape = next(drawn)
+        colors = walk.colors(shape, path.get("d") or "")
+        recolored = _recolored(walk.style, colors) if colors is not None else None
         if recolored is None:
             result.append((name, argument))
             continue
-        result.extend([("setStyle", recolored), (name, argument), ("setStyle", style)])
-        color = properties(recolored).get("draw:fill-color")
-        if properties(style).get("draw:fill") == "solid" and color:
+        result.extend([("setStyle", recolored), (name, argument), ("setStyle", walk.style)])
+        color = properties(recolored).get(FILL_COLOR_KEY)
+        if properties(walk.style).get(FILL_KEY) == "solid" and color:
             path.set("style", f"{path.get('style', '').rstrip()} fill: {color};".strip())
     return result
 
@@ -182,10 +203,10 @@ def _recolored(style: str, colors: Colors) -> str | None:
     foreground over its background; None where nothing changes."""
     current = properties(style)
     foreground, background = colors
-    if current.get("draw:fill") == "solid":
-        changes = [(FILL_COLOR, "draw:fill-color", foreground)]
-    elif current.get("draw:fill") == "hatch":
-        changes = [(FILL_COLOR, "draw:fill-color", background), (LINE_COLOR, "draw:color", foreground)]
+    if current.get(FILL_KEY) == "solid":
+        changes = [(FILL_COLOR, FILL_COLOR_KEY, foreground)]
+    elif current.get(FILL_KEY) == "hatch":
+        changes = [(FILL_COLOR, FILL_COLOR_KEY, background), (LINE_COLOR, "draw:color", foreground)]
     else:
         return None
     recolored = style

@@ -419,11 +419,11 @@ def _sections(placed: Placed, budget: Budget | None = None) -> tuple[list[ET.Ele
     return sections, master
 
 
-def shape_box(placed: Placed) -> tuple[float, float, float, float] | None:
-    """The box of the outline of a shape on the page, in inches, y up: left, bottom, right, top; None without one."""
+def shape_box(placed: Placed, budget: Budget | None = None) -> tuple[float, float, float, float] | None:
+    """The box of the outline of a shape on the page, in inches, y up: left, bottom, right, top; None without one or past the budget."""
     try:
-        sections, master = _sections(placed)
-        points = [point for _, items in outline(placed, sections, master) for point in items]
+        sections, master = _sections(placed, budget)
+        points = [point for _, items in outline(placed, sections, master, budget) for point in items]
     except Exhausted:
         return None
     if not points:

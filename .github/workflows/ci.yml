@@ -77,7 +77,9 @@ jobs:
           PYTHON_VERSION: ${{ matrix.python-version }}
         run: make test BASE="python:${PYTHON_VERSION}-slim-trixie"
 
-  # The other libvisio weasyvsdx is tested with: 0.1.11, the latest, from Debian testing, on the newest Python
+  # The other libvisio weasyvsdx is tested with: 0.1.11, the latest, from Debian testing, on the newest Python.
+  # No check requires it, build does not wait for it: Debian testing moves on, and the image fails its check
+  # of the release when it does
   test-libvisio:
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -126,7 +128,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [lint, test, test-libvisio, sonar]
+    needs: [lint, test, sonar]
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

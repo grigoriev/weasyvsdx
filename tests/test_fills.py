@@ -4,8 +4,10 @@ from __future__ import annotations
 
 from xml.etree import ElementTree as ET
 
+import pytest
 from helpers import vsdx
 
+from weasyvsdx import geometry
 from weasyvsdx.fills import Box, Fills, recolor, shape_fills
 from weasyvsdx.hidden import SVG_NS
 from weasyvsdx.raw import first_page
@@ -137,6 +139,15 @@ def test_the_boxes_of_the_shapes_of_one_id() -> None:
     assert found is not None
     # The shape 1 of the background of the helper has no geometry
     assert found.boxes == {"1": (None, (0.0, 0.0, 1.0, 1.0))}
+
+
+def test_the_outlines_past_the_budget_of_a_page_have_no_box(monkeypatch: pytest.MonkeyPatch) -> None:
+    square = "<Cell N='Width' V='1'/><Cell N='Height' V='1'/><Cell N='PinX' V='0.5'/><Cell N='PinY' V='0.5'/><Cell N='LocPinX' V='0.5'/><Cell N='LocPinY' V='0.5'/>"
+    geometry_rows = "<Section N='Geometry' IX='0'><Row T='RelMoveTo' IX='1'><Cell N='X' V='0'/><Cell N='Y' V='0'/></Row><Row T='RelLineTo' IX='2'><Cell N='X' V='1'/><Cell N='Y' V='1'/></Row></Section>"
+    monkeypatch.setattr(geometry, "MAX_SEGMENTS", 3)
+    found = shape_fills(vsdx(f"<Shape ID='1'>{square}{geometry_rows}</Shape>", backed=True))
+    assert found is not None
+    assert found.boxes == {"1": (None, None)}
 
 
 def test_a_group_of_the_background_stays_on_the_background() -> None:
