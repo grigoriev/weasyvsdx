@@ -17,7 +17,7 @@ import shutil
 import subprocess
 import tempfile
 import time
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
@@ -50,7 +50,7 @@ class Limits:
 
     def with_timeout(self, timeout: float) -> Limits:
         """The same limits with another timeout."""
-        return replace(self, timeout=timeout)
+        return Limits(timeout=timeout, max_input=self.max_input, max_output=self.max_output, max_memory=self.max_memory)
 
 
 @dataclass(frozen=True)
