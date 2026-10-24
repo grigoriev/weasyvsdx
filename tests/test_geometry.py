@@ -290,5 +290,8 @@ def test_a_page_that_does_not_pair_or_a_drawing_that_does_not_read() -> None:
 
 
 def test_the_segments_of_a_page_stay_bounded(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(geometry, "MAX_SEGMENTS", 0)
+    # Room for the five commands of shape 2, counted as they are built: shape 3 stops the page
+    monkeypatch.setattr(geometry, "MAX_SEGMENTS", 5)
     assert add_missing(page(0), calls(), vsdx(GROUP, MASTER)) == 2
+    monkeypatch.setattr(geometry, "MAX_SEGMENTS", 4)
+    assert add_missing(page(0), calls(), vsdx(GROUP, MASTER)) == 0

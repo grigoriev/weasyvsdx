@@ -32,7 +32,7 @@ NURBS_SEGMENTS = 8  # line segments of each span of a NURBS
 # The points and the degree of one NURBS: a hostile drawing would cost the square of either, in the process of WeasyPrint
 MAX_NURBS_POINTS = 1000
 MAX_DEGREE = 9
-MAX_SEGMENTS = 100_000  # line segments of all shapes of a page: a drawing of huge arcs stays bounded
+MAX_SEGMENTS = 100_000  # commands of all shapes of a page, counted as they are built: a hostile drawing stays bounded
 INHERITED = "inherited"  # an attribute that marks a cell of a merged section that comes from the master
 # The dashes of each LinePattern, in line widths, as the SVG of Visio draws them. Each family of seven shares
 # its gap: the bench measured 2 to 5, 9 to 11, 13, 14, 16 and 20, and the others follow their family.
@@ -78,14 +78,20 @@ class Affine:
         )
 
 
-@dataclass(frozen=True)
-class Missing:
-    """A shape libvisio leaves out: its outline on the page, in points, and its style."""
+class Exhausted(Exception):
+    """The shapes of a page took all the commands MAX_SEGMENTS allows."""
 
-    shape_id: str
-    data: str
-    style: str
-    gradient: gradients.Gradient | None
+
+class Budget:
+    """The commands the shapes of a page may still take."""
+
+    def __init__(self, left: int) -> None:
+        self.left = left
+
+    def take(self) -> None:
+        self.left -= 1
+        if self.left < 0:
+            raise Exhausted
 
 
 def _chain(placed: Placed) -> list[ET.Element]:
@@ -128,7 +134,8 @@ def _rows(section: ET.Element) -> Iterator[tuple[str, dict[str, str], dict[str, 
 class _Outline:
     """The commands of the geometry of a shape, in its own coordinates, at its size."""
 
-    def __init__(self, width: float, height: float, scale_x: float, scale_y: float) -> None:
+    def __init__(self, width: float, height: float, scale_x: float, scale_y: float, budget: Budget | None = None) -> None:
+        self.budget = budget if budget is not None else Budget(MAX_SEGMENTS)
         self.width, self.height = width, height
         # The rows of a master hold their values at the size of the master
         self.scale_x, self.scale_y = scale_x, scale_y
@@ -148,14 +155,17 @@ class _Outline:
         return number(values.get(x), 0.0) * self.width, number(values.get(y), 0.0) * self.height
 
     def move(self, point: Point) -> None:
+        self.budget.take()
         self.commands.append(("M", (point,)))
         self.current = point
 
     def line(self, point: Point) -> None:
+        self.budget.take()
         self.commands.append(("L", (point,)))
         self.current = point
 
     def curve(self, first: Point, second: Point, end: Point) -> None:
+        self.budget.take()
         self.commands.append(("C", (first, second, end)))
         self.current = end
 
@@ -394,13 +404,13 @@ def _sections(placed: Placed) -> tuple[list[ET.Element], ET.Element | None]:
     return sections, master
 
 
-def outline(placed: Placed, sections: list[ET.Element], master: ET.Element | None) -> list[Command]:
-    """The commands of the geometry sections of a shape, on the page, in inches."""
+def outline(placed: Placed, sections: list[ET.Element], master: ET.Element | None, budget: Budget | None = None) -> list[Command]:
+    """The commands of the geometry sections of a shape, on the page, in inches; Exhausted past the budget."""
     chain = _chain(placed)
     width, height = _value(chain, "Width"), _value(chain, "Height")
     master_width = _value([master], "Width") if master is not None else 0.0
     master_height = _value([master], "Height") if master is not None else 0.0
-    shape = _Outline(width, height, width / master_width if master_width else 1.0, height / master_height if master_height else 1.0)
+    shape = _Outline(width, height, width / master_width if master_width else 1.0, height / master_height if master_height else 1.0, budget)
     for section in sections:
         for kind, values, formulas, inherited in _rows(section):
             shape.row(kind, values, formulas, inherited)
@@ -440,7 +450,7 @@ class _Painter:
         self.styles = package.styles()
         self.colors = package.colors()
         self.page_height = page_height
-        self.segments = 0
+        self.budget = Budget(MAX_SEGMENTS)
 
     def paths(self, placed: Placed) -> list[tuple[ET.Element, gradients.Gradient | None]]:
         """The fill path, then the line path, of a shape, each with its gradient."""
@@ -450,7 +460,7 @@ class _Painter:
         gradient = gradients.gradient_of(fill_chain, self.colors, gradients.turn_of(placed)) if cell(fill_chain, "FillPattern") != "0" else None
         fill = _paint(fill_chain, "FillForegnd", "FillPattern", "FillForegndTrans", self.colors)
         line = _paint(line_chain, "LineColor", "LinePattern", "LineColorTrans", self.colors)
-        filled, lined = _split(placed, sections, master)
+        filled, lined = _split(placed, sections, master, self.budget)
         result = []
         if filled and (fill is not None or gradient is not None):
             style = f"fill-rule: evenodd; fill: {fill[0] if fill else 'none'}; fill-opacity: {fill[1] if fill else 1:g}; stroke: none;"
@@ -460,16 +470,15 @@ class _Painter:
         return result
 
     def path(self, commands: list[Command], style: str) -> ET.Element:
-        self.segments += len(commands)
         return ET.Element(f"{{{SVG_NS}}}path", {"class": MASTER_CLASS, "d": path_data(commands, self.page_height), "style": style})
 
 
-def _split(placed: Placed, sections: list[ET.Element], master: ET.Element | None) -> tuple[list[Command], list[Command]]:
+def _split(placed: Placed, sections: list[ET.Element], master: ET.Element | None, budget: Budget) -> tuple[list[Command], list[Command]]:
     """The commands of the sections that fill, closed ones without NoFill, and of those that stroke, without NoLine."""
     filled: list[Command] = []
     lined: list[Command] = []
     for section in sections:
-        commands = outline(placed, [section], master)
+        commands = outline(placed, [section], master, budget)
         if cell([section], "NoFill") != "1" and _closed(commands):
             filled.extend(commands)
         if cell([section], "NoLine") != "1":
@@ -539,35 +548,41 @@ def _add(page: ET.Element, package: Package, last: dict[str, tuple[ET.Element, E
     # The path of the last shape drawn so far, and the parent and index after which the next path goes
     drawn: tuple[ET.Element, ET.Element] | None = None
     position: tuple[ET.Element, int] | None = None
-    defs = None
+    defs: list[ET.Element] = []
     added = 0
     for placed, missing in _candidates(package, set(last), hidden):
         shape_id = placed.shape.get("ID", "")
         if shape_id in last:
             drawn, position = last[shape_id], None
-        if not missing or painter.segments > MAX_SEGMENTS:
+        if not missing:
             continue
-        for path, gradient in painter.paths(placed):
+        try:
+            paths = painter.paths(placed)
+        except Exhausted:
+            # Past the budget of the page the shapes left stay out
+            break
+        for path, gradient in paths:
             if gradient is not None:
-                had = defs is not None
-                defs = _gradient(page, defs, path, gradient)
-                # New definitions go first in the page, before the place of the next path
-                if not had and position is not None and position[0] is page:
-                    position = (page, position[1] + 1)
+                position = _gradient(page, defs, path, gradient, position)
             position = _insert(page, drawn, position, path)
             added += 1
     return added
 
 
-def _gradient(page: ET.Element, defs: ET.Element | None, path: ET.Element, gradient: gradients.Gradient) -> ET.Element:
-    """Fill a path with a gradient, defined in the definitions this module adds, which it returns."""
-    if defs is None:
-        defs = ET.Element(f"{{{SVG_NS}}}defs")
-        page.insert(0, defs)
-    identifier = f"weasyvsdx-master-gradient-{len(defs)}"
-    defs.append(gradients.gradient_element(identifier, gradient))
+def _gradient(page: ET.Element, defs: list[ET.Element], path: ET.Element, gradient: gradients.Gradient, position: tuple[ET.Element, int] | None) -> tuple[ET.Element, int] | None:
+    """Fill a path with a gradient, defined in the definitions this module adds; the place of the next path.
+
+    defs holds those definitions once added. They go first in the page, so a place in the page moves one on.
+    """
+    if not defs:
+        defs.append(ET.Element(f"{{{SVG_NS}}}defs"))
+        page.insert(0, defs[0])
+        if position is not None and position[0] is page:
+            position = (page, position[1] + 1)
+    identifier = f"weasyvsdx-master-gradient-{len(defs[0])}"
+    defs[0].append(gradients.gradient_element(identifier, gradient))
     path.set("style", f"{path.get('style')} fill: url(#{identifier});")
-    return defs
+    return position
 
 
 def _insert(page: ET.Element, drawn: tuple[ET.Element, ET.Element] | None, position: tuple[ET.Element, int] | None, path: ET.Element) -> tuple[ET.Element, int]:
