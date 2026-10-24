@@ -62,8 +62,9 @@ uv build                # wheel and sdist
 - `package.py`: reads the XML of a VSDX within a budget of unpacked bytes: the first page, its background
   pages, masters, styles and colors. `page_shapes()` walks the shapes of the first page as `Placed`: each with
   its master shape and the groups around it.
-- `fills.py`: the fill colors of each shape of a VSDX (FillForegnd, FillBkgnd, through master and style chain;
-  `Themed` draws white), and of its background pages. `recolor()` restores them on the paths, which libvisio
+- `fills.py`: the fill colors of each shape of a VSDX (FillForegnd, FillBkgnd, through master and style chain,
+  the value Visio saved; `Themed` draws white for QuickStyleFillColor 100 and keeps libvisio's color for an
+  accent), and of its background pages. `recolor()` restores them on the paths, which libvisio
   0.1.8 and later fill with theme colors; its calls go to `hatch.py` only, as `markers.py` counts setStyle.
   The background ends at the first path of a shape or group the background pages lack.
 - `gradients.py`: the gradient of each shape of a VSDX (FillGradientEnabled, the FillGradient stops,

@@ -51,7 +51,8 @@ Use libvisio 0.1.7 or 0.1.11, the latest. The tests run with both, and `install(
 release. libvisio 0.1.8 and later fill the shapes of a VSDX with the colors of its theme over their own:
 on the Azure diagrams of the bench, icons turned into olive disks and subnets into olive boxes. weasyvsdx
 takes the colors of the shapes from the XML of the VSDX instead, so both releases draw them alike: on the
-bench against Visio, a median mismatch of 24.7 % for either.
+bench against Visio, a median mismatch of 24.9 % for either. Where a shape takes an accent color from
+the theme, the releases still differ: the test drawings of libvisio for quick styles draw otherwise.
 
 | Distribution | libvisio |
 |---|---|
@@ -184,7 +185,7 @@ some drawings LibreOffice is wrong where weasyvsdx is right, for example it fill
 
 LibreOffice reads the drawings through libvisio, as weasyvsdx does, and shares its errors. So the bench
 also compares 206 Azure diagrams with the SVG that Visio exported for their article. The median mismatch
-is 25.0% against Visio, 49.5% against LibreOffice: weasyvsdx draws the gradients and the master
+is 24.9% against Visio, 49.6% against LibreOffice: weasyvsdx draws the gradients and the master
 shapes of the Azure icons, which LibreOffice fills black or leaves out. Much of the rest is the icons of Azure, see "Known gaps".
 
 The median Azure diagram converts in 0.08 s, and 9 in 10 in less than 0.5 s. Drawings that embed bitmaps

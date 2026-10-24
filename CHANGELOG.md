@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - weasyvsdx supports libvisio 0.1.11, the latest, besides 0.1.7. The tests run with both.
 - Each shape of a VSDX fills with the colors of its XML: libvisio 0.1.8 and later fill them with the colors
   of the theme over their own. A pattern draws its lines in its foreground over its background, and a
-  fill of the theme draws white, as Visio draws most of them.
+  fill of the theme of quick style color 100 draws white, as Visio draws most of them.
 
 ### Changed
 
