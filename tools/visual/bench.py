@@ -248,22 +248,26 @@ def moved(old: float | None, new: float | None) -> str | None:
     return None
 
 
+def add_moves(moves: dict[str, list[str]], key: str, suffix: str, before: dict[str, float | None], rows: list[dict[str, Any]]) -> None:
+    """Add the drawings whose value of key moved past TOLERANCE to moves, by direction."""
+    # A drawing whose SVG of Visio is not in the cache has no Visio value, which is no regression
+    missing = [row for row in rows if key == "visio" and row["name"] in before and not row["visio_svg"]]
+    if missing:
+        print(f"{len(missing)} SVG of Visio not in the cache, run tools/corpus/azure.py fetch")
+    for row in rows:
+        if row["name"] in before and row not in missing:
+            direction = moved(before[row["name"]], row.get(key))
+            if direction:
+                moves[direction].append(f"{row['name']}{suffix}: {before[row['name']]} -> {row.get(key)}")
+
+
 def compare(path: Path, rows: list[dict[str, Any]]) -> list[str]:
     """The drawings whose mismatch moved past TOLERANCE since the baseline, worse first; the regressions."""
     baseline = json.loads(path.read_text())
     moves: dict[str, list[str]] = {"worse": [], "better": []}
     # Against LibreOffice, then against Visio, which an older baseline lacks
     for key, suffix in (("mismatch", ""), ("visio", " (Visio)")):
-        before: dict[str, float | None] = baseline.get(key, {})
-        # A drawing whose SVG of Visio is not in the cache has no Visio value, which is no regression
-        missing = [row for row in rows if key == "visio" and row["name"] in before and not row["visio_svg"]]
-        if missing:
-            print(f"{len(missing)} SVG of Visio not in the cache, run tools/corpus/azure.py fetch")
-        for row in rows:
-            if row["name"] in before and row not in missing:
-                direction = moved(before[row["name"]], row.get(key))
-                if direction:
-                    moves[direction].append(f"{row['name']}{suffix}: {before[row['name']]} -> {row.get(key)}")
+        add_moves(moves, key, suffix, baseline.get(key, {}), rows)
     worse, better = moves["worse"], moves["better"]
     print(f"against {path.name} (WeasyPrint {baseline.get('weasyprint')} -> {weasyprint.__version__}):")
     for title, lines in (("worse", worse), ("better", better)):
@@ -273,7 +277,15 @@ def compare(path: Path, rows: list[dict[str, Any]]) -> list[str]:
     return worse
 
 
-def main() -> int:
+def render(drawing: Drawing, out: Path, handler: Warnings) -> dict[str, Any]:
+    """The row of one drawing, printed as it comes."""
+    row = run(drawing, out, handler)
+    against = "" if row["visio"] is None else f", against Visio {row['visio']}"
+    print(f"{row['name']}: mismatch {row['mismatch']}{against} in {row['ms']} ms {row['error'] or ''}", flush=True)
+    return row
+
+
+def arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--only", default="", help="render only the names that contain this text")
     parser.add_argument("--out", type=Path, default=ROOT / "tools" / "visual" / "out")
@@ -286,6 +298,11 @@ def main() -> int:
     # A baseline of some drawings would stop the comparison of all the others
     if args.write_baseline and (args.only or args.corpus_only):
         parser.error("--write-baseline needs every drawing: leave out --only and --corpus-only")
+    return args
+
+
+def main() -> int:
+    args = arguments()
     baseline = inside(args.write_baseline) if args.write_baseline else None
     out = inside(args.out)
     (out / "pdf").mkdir(parents=True, exist_ok=True)
@@ -296,14 +313,7 @@ def main() -> int:
     handler = Warnings()
     for logger in ("weasyprint", "weasyvsdx"):
         logging.getLogger(logger).addHandler(handler)
-    rows = []
-    for drawing in drawings(args.only):
-        if args.corpus_only and drawing.group == "azure":
-            continue
-        row = run(drawing, out, handler)
-        rows.append(row)
-        against = "" if row["visio"] is None else f", against Visio {row['visio']}"
-        print(f"{row['name']}: mismatch {row['mismatch']}{against} in {row['ms']} ms {row['error'] or ''}", flush=True)
+    rows = [render(drawing, out, handler) for drawing in drawings(args.only) if not (args.corpus_only and drawing.group == "azure")]
     (out / "rows.json").write_text(json.dumps(rows, indent=1) + "\n")
     report(rows, out)
     print(f"{len(rows)} drawings, report at {out / 'report.html'}")
