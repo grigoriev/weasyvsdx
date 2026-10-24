@@ -71,7 +71,7 @@ def _own_turn(chain: list[ET.Element]) -> Turn:
     flip_x, flip_y = _cell(chain, "FlipX") == "1", _cell(chain, "FlipY") == "1"
     # A flip of y is a flip of x and a half turn
     flip = (180.0 if flip_y else 0.0, flip_x != flip_y)
-    return _then((math.degrees(_number(_cell(chain, "Angle"), 0.0)), False), flip)
+    return _then((_degrees(_cell(chain, "Angle")), False), flip)
 
 
 def _turn(placed: Placed) -> Turn:
@@ -154,6 +154,11 @@ def _number(value: str | None, default: float) -> float:
     return number if math.isfinite(number) else default
 
 
+def _degrees(value: str | None) -> float:
+    """An angle of a cell, in radians, as degrees within a half turn either way: a huge one would overflow."""
+    return math.degrees(math.remainder(_number(value, 0.0), math.tau))
+
+
 def _gradient(chain: list[ET.Element], colors: dict[str, str], turn: Turn = STRAIGHT) -> Gradient | None:
     """The gradient a shape fills with; None when it fills without one or with one this module does not draw."""
     if _cell(chain, "FillGradientEnabled") != "1":
@@ -173,7 +178,7 @@ def _gradient(chain: list[ET.Element], colors: dict[str, str], turn: Turn = STRA
         return None
     # Unless the fill keeps the gradient straight on the page
     turn = STRAIGHT if _cell(chain, "RotateGradientWithShape") == "0" else turn
-    return Gradient(direction, round(math.degrees(_number(_cell(chain, "FillGradientAngle"), 0.0)), 4), tuple(stops), turn)
+    return Gradient(direction, round(_degrees(_cell(chain, "FillGradientAngle")), 4), tuple(stops), turn)
 
 
 def _gradients(package: Package) -> dict[str, Gradient]:

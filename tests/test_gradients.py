@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import math
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
@@ -151,6 +152,16 @@ def test_an_id_that_a_shape_of_a_master_shares_with_the_page_keeps_its_fill() ->
     assert list(shape_gradients(vsdx(page, master)) or {}) == ["8"]
     # The same where the shape of the page fills without a gradient
     assert list(shape_gradients(vsdx("<Shape ID='1'/><Shape ID='2' Master='2'/>", master)) or {}) == ["8"]
+
+
+def test_a_huge_angle_turns_whole_turns_away() -> None:
+    huge = "<Cell N='FillGradientAngle' V='1e308'/><Cell N='Angle' V='1e308'/>"
+    gradients = shape_gradients(vsdx(f"<Shape ID='1'>{ON}{huge}{STOPS}</Shape><Shape ID='2'>{ON}<Cell N='FillGradientAngle' V='7.853981633974483'/>{STOPS}</Shape>")) or {}
+    assert math.isfinite(gradients["1"].angle)
+    assert math.isfinite(gradients["1"].turn[0])
+    gradient_element("g", gradients["1"])
+    # Five quarter turns are one
+    assert gradients["2"].angle == 90.0
 
 
 def test_another_drawing_has_no_gradients() -> None:
