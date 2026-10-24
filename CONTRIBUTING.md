@@ -28,11 +28,17 @@ for every pull request.
 
 The unit tests check the SVG and the PDF. The bench checks what it looks like:
 
-1. `make azure` downloads the Azure diagrams of `corpus/azure.json` into the cache, once.
+1. `make azure` downloads the Azure diagrams of `corpus/azure.json` and their SVGs of Visio into the cache.
 2. `make visual` renders every drawing of the corpus and of the cache through WeasyPrint and weasyvsdx.
 3. It rasterizes each PDF with PDFium at 96 dpi and compares it with the LibreOffice reference. The
    mismatch is the share of the drawing that differs, in percent.
-4. It writes `tools/visual/out/report.html`: LibreOffice and weasyvsdx side by side, worst first.
+4. An Azure diagram with an SVG of Visio of the size of its first page is compared with it too, through
+   `rsvg-convert`. LibreOffice reads the drawing through libvisio and shares its errors; Visio does not.
+5. It writes `tools/visual/out/report.html`: LibreOffice, weasyvsdx and Visio side by side, worst first.
+
+`tools/corpus/azure.py visio CHECKOUT` takes the SVG of Visio of each diagram from a checkout of
+MicrosoftDocs/architecture-center: the image above the link to the diagram in its article, at the commit
+of the checkout.
 
 `make visual ARGS="--only azure"` renders the names that contain `azure`. The bench is a dev tool, not a
 CI gate, and LibreOffice no exact reference: it picks its own fonts and breaks words in narrow text

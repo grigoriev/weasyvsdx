@@ -83,6 +83,10 @@ warning: the mapping relies on both walking the drawing in one order.
 references and writes a report. LibreOffice Draw has one page size per document, the largest page: the
 bench places the first page at its top left, at 96 dpi, shrunk as LibreOffice shrinks to 2048 px.
 
+LibreOffice reads the drawings through libvisio 0.1.7, as weasyvsdx does, and shares its errors. The SVGs
+that Visio exported for the Azure articles (`corpus/azure.json`, key `visio`) are the reference that counts:
+the bench compares 206 diagrams with them. Overlay both renderings to see what differs.
+
 **Never judge a rendering with poppler.** Use PDFium (`tools/visual/imaging.py`), and check a disputed
 case in Quartz (macOS Preview). LibreOffice is no exact reference for text: it picks its own fonts.
 
