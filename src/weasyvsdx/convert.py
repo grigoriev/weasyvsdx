@@ -180,6 +180,9 @@ def first_page(document: bytes) -> ET.Element:
     page = root.find(f".//{{{SVG_NS}}}svg")
     if page is None:
         raise ConversionError(f"the drawing has no page that {CONVERTER} draws")
+    # libvisio 0.1.9 and later write a page of no size for a drawing they cannot read, where 0.1.7 failed
+    if raw.points(page.get("width")) <= 0 or raw.points(page.get("height")) <= 0:
+        raise ConversionError(f"the first page that {CONVERTER} draws has no size")
     return page
 
 
