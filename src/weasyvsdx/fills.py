@@ -2,13 +2,14 @@
 
 libvisio 0.1.8 and later fill the shapes of a VSDX with a color of its theme over their own: the icons of the
 Azure stencils turned into olive disks. A VSDX holds the color of each shape, FillForegnd, in the XML of its
-page, its masters and its styles; on the corpus it is the color libvisio 0.1.7 writes for 98.6 % of the paths.
+page, its masters and its styles, as the value Visio worked out when it saved the drawing: a color written
+out or an index of the palette. On the corpus it is the color libvisio 0.1.7 writes for 98.6 % of the paths.
 
 Each path whose shape fills with a color gets that color back, in the SVG of vsd2xhtml and in the calls of
 vsd2raw, which the hatches read. A pattern draws its lines in FillForegnd over FillBkgnd, as libvisio 0.1.7
 writes all 71 hatches of the corpus. The n-th path of the page belongs to the n-th drawPath call with path data,
-as in hidden.py, and its shape is the one gradients.path_shapes() names. A color of the theme draws white, as
-Visio draws most of them.
+as in hidden.py, and its shape is the one gradients.path_shapes() names. A color of the theme of quick style color
+100 draws white, as Visio draws most of them; an accent of the theme keeps what libvisio draws.
 
 libvisio draws the background pages first, and names their shapes by IDs that the page may use too. Their
 paths come before the first path of a shape the background pages lack, or of a group they lack, and take
@@ -30,9 +31,12 @@ from .raw import Call, properties
 
 FILL_COLOR = re.compile(r"draw:fill-color: #[0-9A-Fa-f]{6}")
 LINE_COLOR = re.compile(r"draw:color: #[0-9A-Fa-f]{6}")
-# The fill of a shape that takes it from the theme: Visio draws most of them white, 270 of 400 in its SVG of
-# the bench, and so does libvisio 0.1.7; 0.1.11 fills them with an accent of the theme
+# The fill of a shape that takes it from the theme, with the quick style color 100: Visio draws most of them
+# white, 300 of 330 in its SVG of the bench, and so does libvisio 0.1.7; 0.1.11 fills them with an accent of
+# the theme. A fill of another quick style color, an accent, keeps what libvisio draws: 0.1.7 and 0.1.11 tell
+# them apart, and the bench has no SVG of Visio to tell which is right.
 THEMED_FILL = "#ffffff"
+WHITE_QUICK_STYLE = "100"
 
 
 # The colors of a fill: its foreground, the color of a solid fill and of the lines of a pattern, and its background
@@ -49,8 +53,12 @@ class Fills:
     groups: frozenset[str]
 
 
-def _color(value: str | None, colors: dict[str, str]) -> str | None:
-    return THEMED_FILL if value == gradients.THEMED else gradients.color_of(value, colors)
+def _color(value: str | None, colors: dict[str, str], quick_style: str | None) -> str | None:
+    """The color of a fill cell to restore; None where libvisio keeps its own."""
+    if value == gradients.THEMED:
+        return THEMED_FILL if quick_style == WHITE_QUICK_STYLE else None
+    # The value Visio worked out when it saved the drawing: a color written out or an index of the palette
+    return gradients.color_of(value, colors)
 
 
 def _colors(shapes: Iterable[Placed], styles: dict[str, ET.Element], colors: dict[str, str]) -> dict[str, Colors]:
@@ -64,7 +72,8 @@ def _colors(shapes: Iterable[Placed], styles: dict[str, ET.Element], colors: dic
             ambiguous.add(shape_id)
         seen.add(shape_id)
         chain = gradients.chain_of(placed.shape, placed.master_shape, styles)
-        found[shape_id] = (_color(cell(chain, "FillForegnd"), colors), _color(cell(chain, "FillBkgnd"), colors))
+        quick_style = cell(chain, "QuickStyleFillColor")
+        found[shape_id] = (_color(cell(chain, "FillForegnd"), colors, quick_style), _color(cell(chain, "FillBkgnd"), colors, None))
     return {shape_id: color for shape_id, color in found.items() if shape_id not in ambiguous}
 
 

@@ -39,14 +39,17 @@ def test_the_colors_of_the_shapes_their_masters_and_styles() -> None:
     styles = "<StyleSheets><StyleSheet ID='3'><Cell N='FillForegnd' V='2'/></StyleSheet></StyleSheets>"
     shapes = (
         "<Shape ID='1' Master='2'/>"
-        # A color of the theme draws white; a shape without a fill color has none
-        "<Shape ID='2'><Cell N='FillForegnd' V='Themed'/></Shape><Shape ID='3' FillStyle='3'/><Shape ID='4'/>"
+        # A color of the theme of quick style 100 draws white, an accent keeps what libvisio draws, and so does a shape without a fill color
+        "<Shape ID='2'><Cell N='FillForegnd' V='Themed'/><Cell N='QuickStyleFillColor' V='100'/></Shape>"
+        "<Shape ID='7'><Cell N='FillForegnd' V='Themed'/><Cell N='QuickStyleFillColor' V='201'/></Shape>"
+        "<Shape ID='3' FillStyle='3'/><Shape ID='4'/>"
         # Two shapes of one ID keep what libvisio drew
         "<Shape ID='6'/><Shape ID='6'/>"
     )
     found = shape_fills(vsdx(shapes, master, document=styles))
     assert found is not None
-    assert found.page == {"1": ("#00ff00", "#ffff00"), "2": ("#ffffff", None), "3": ("#ff0000", None), "4": (None, None)}
+    # An index of the palette, as shape 3 has through its style, is a color too
+    assert found.page == {"1": ("#00ff00", "#ffff00"), "2": ("#ffffff", None), "7": (None, None), "3": ("#ff0000", None), "4": (None, None)}
     assert found.background == {}
 
 
