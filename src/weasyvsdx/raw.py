@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import re
 
-LENGTH = re.compile(r"^(-?[0-9.]+)(in|pt)?$")
+LENGTH = re.compile(r"^(-?(?:[0-9]+\.?[0-9]*|\.[0-9]+))(in|pt)?$")
 # The key of a property, in the namespaces of ODF and librevenge: fo:font-size, librevenge:path-action
 KEY = re.compile(r"^[a-z]+:[A-Za-z0-9-]+: ")
 PT_PER_INCH = 72.0
