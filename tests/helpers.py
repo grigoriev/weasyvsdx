@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import base64
+import io
 import struct
+import zipfile
 from pathlib import Path
 from typing import Any
 
@@ -18,6 +20,8 @@ TOOLS = find_tools(CONVERTER)
 
 VISIO = Path(__file__).resolve().parents[1] / "corpus" / "visio"
 VSDX_TYPE = "application/vnd.ms-visio.drawing"
+NS = "xmlns='http://schemas.microsoft.com/office/visio/2012/main' xmlns:r='http://schemas.openxmlformats.org/officeDocument/2006/relationships'"
+PACKAGE = "xmlns='http://schemas.openxmlformats.org/package/2006/relationships'"
 
 
 def drawing(source: str) -> bytes:
@@ -138,3 +142,25 @@ def stretch_dibits(rows: list[bytes], height: int, *, bit_count: int = 8, compre
     # Type, size, bounds, x and y, source x, y, width and height, header and bits, usage, operation, width, height
     record = struct.pack("<II4iiiiiiiIIIIIIii", 81, size, 0, 0, 0, 0, 2, 100, 0, 0, width, len(rows), 80, len(info), 80 + len(info), len(bits), 0, 0xCC0020, 50, height)
     return record + info + bits
+
+
+def vsdx(page: str | None, master: str | None = None, *, foreground: bool = True, copies: int = 0, document: str | None = None) -> bytes:
+    """A VSDX of a background page and the page, with one master of ID 2 and the content of document.xml if given; a page of None has no shapes."""
+    pages = f"<Pages {NS}><Page ID='4' Background='1'><Rel r:id='rId1'/></Page>" + ("<Page ID='0'><Rel r:id='rId2'/></Page>" if foreground else "") + "</Pages>"
+    parts = {
+        "visio/pages/pages.xml": pages,
+        "visio/pages/_rels/pages.xml.rels": f"<Relationships {PACKAGE}><Relationship Id='rId1' Target='page1.xml'/><Relationship Id='rId2' Target='page2.xml'/></Relationships>",
+        "visio/pages/page1.xml": f"<PageContents {NS}><Shapes><Shape ID='1'><Text>Background</Text></Shape></Shapes></PageContents>",
+        "visio/pages/page2.xml": f"<PageContents {NS}>" + (f"<Shapes>{page}</Shapes>" if page is not None else "") + "</PageContents>",
+    }
+    if master is not None:
+        parts["visio/masters/masters.xml"] = f"<Masters {NS}><Master ID='2'><Rel r:id='rId1'/></Master><Master ID='3'/>" + "<Master ID='4'><Rel r:id='rId1'/></Master>" * copies + "</Masters>"
+        parts["visio/masters/_rels/masters.xml.rels"] = f"<Relationships {PACKAGE}><Relationship Id='rId1' Target='master1.xml'/></Relationships>"
+        parts["visio/masters/master1.xml"] = f"<MasterContents {NS}><Shapes>{master}</Shapes></MasterContents>"
+    if document is not None:
+        parts["visio/document.xml"] = f"<VisioDocument {NS}>{document}</VisioDocument>"
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w") as archive:
+        for name, content in parts.items():
+            archive.writestr(name, content)
+    return buffer.getvalue()
