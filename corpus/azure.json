@@ -2,17 +2,29 @@
  {
   "name": "azure-APIOpsCLIAPIManagement",
   "url": "https://arch-center.azureedge.net/APIOpsCLIAPIManagement.vsdx",
-  "sha256": "49fd5cb9f6672b71d7d3b70f7f1f8c37b96b5f49140b22b8ac8c289a3385df50"
+  "sha256": "49fd5cb9f6672b71d7d3b70f7f1f8c37b96b5f49140b22b8ac8c289a3385df50",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/devops/media/automated-api-deployments-apiops-architecture.svg",
+   "sha256": "a61fe4c575d8577037f580fafad49c0c5dea691f9bc4d8092c603d547fd16cc8"
+  }
  },
  {
   "name": "azure-AVD-GIS-Azure-Network",
   "url": "https://arch-center.azureedge.net/AVD-GIS-Azure-Network.vsdx",
-  "sha256": "45d9b4d04c97242f6b7f1ba46fb36f41c2602b9a0084ba2818fd443dfed0c2d0"
+  "sha256": "45d9b4d04c97242f6b7f1ba46fb36f41c2602b9a0084ba2818fd443dfed0c2d0",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/data/media/virtual-desktop-azure-network.svg",
+   "sha256": "15d97876aeb3324dab19597642f8891467c63c6648850ca830253c1da53f0f34"
+  }
  },
  {
   "name": "azure-AzureComponents",
   "url": "https://arch-center.azureedge.net/AzureComponents.vsdx",
-  "sha256": "517f01de626754d75a4dc738722f7b70295be8e8851f8b5f5b32f4ba3da0b704"
+  "sha256": "517f01de626754d75a4dc738722f7b70295be8e8851f8b5f5b32f4ba3da0b704",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/databases/guide/_images/components.svg",
+   "sha256": "02c374d02f9a29f93aecebbd2a0db89524c24c6b390a0fa6e08b2dc86bb3d1a5"
+  }
  },
  {
   "name": "azure-Performance-security-optimized-VWAN-architecture-azure",
@@ -27,17 +39,29 @@
  {
   "name": "azure-TransactionalOutbox",
   "url": "https://arch-center.azureedge.net/TransactionalOutbox.vsdx",
-  "sha256": "e642ea8c14a073c140aca0df32ef36578c34447ddb284415b0b91b2fa274fc94"
+  "sha256": "e642ea8c14a073c140aca0df32ef36578c34447ddb284415b0b91b2fa274fc94",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/databases/guide/_images/out-box-pattern.svg",
+   "sha256": "36bdda0a5038eb48682f6b0057141e21b2963a0379b1025d46834b2e7af7262a"
+  }
  },
  {
   "name": "azure-UNIX-AIX-Azure-RHEL-migration",
   "url": "https://arch-center.azureedge.net/UNIX-AIX-Azure-RHEL-migration.vsdx",
-  "sha256": "00292f9fa82af1788963c51949443aaee670d7089155cb36c7eae85e8d67fc4a"
+  "sha256": "00292f9fa82af1788963c51949443aaee670d7089155cb36c7eae85e8d67fc4a",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/unix-migration/media/aix-on-premises-system.svg",
+   "sha256": "a4e351721bf931198cd7ecfdef01a8f68ac9a9ae18b24215c873b16fe95eb72a"
+  }
  },
  {
   "name": "azure-US-1880866-multilayered-protection-azure-vm-architecture-diagram",
   "url": "https://arch-center.azureedge.net/US-1880866-multilayered-protection-azure-vm-architecture-diagram.vsdx",
-  "sha256": "811c3e29a04abfe25755c535cec887dd0e94f8aa489b962fe13f8b83f3fb4eb9"
+  "sha256": "811c3e29a04abfe25755c535cec887dd0e94f8aa489b962fe13f8b83f3fb4eb9",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/solution-ideas/media/multilayered-protection-azure-vm-architecture-diagram.svg",
+   "sha256": "c3e1c9e596a7c17ce5570a6a02a532faddecde3e5fbdce9200dd1e1805564625"
+  }
  },
  {
   "name": "azure-US-1888816-enterprise-file-shares-disaster-recovery",
@@ -47,17 +71,29 @@
  {
   "name": "azure-US-1893117-azure-files-on-premises-authentication",
   "url": "https://arch-center.azureedge.net/US-1893117-azure-files-on-premises-authentication.vsdx",
-  "sha256": "f58c5880b61b2dd3212081af4ca0dbcbc636ba0623d593b70f6cda378c54e9c0"
+  "sha256": "f58c5880b61b2dd3212081af4ca0dbcbc636ba0623d593b70f6cda378c54e9c0",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/hybrid/media/azure-files-on-premises-authentication.svg",
+   "sha256": "8be7f183913c89edf72084c0e10036810cd6d88727456808115bd7179d7046fd"
+  }
  },
  {
   "name": "azure-US-1938642-microsoft-sentinel-automated-response",
   "url": "https://arch-center.azureedge.net/US-1938642-microsoft-sentinel-automated-response.vsdx",
-  "sha256": "f5c158e04c1af855c8ce2433e91d689ff415e0be1b826f38f8bb6753311ea017"
+  "sha256": "f5c158e04c1af855c8ce2433e91d689ff415e0be1b826f38f8bb6753311ea017",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/solution-ideas/media/microsoft-sentinel-automated-response-architecture.svg",
+   "sha256": "62a88977cf7312fcaf601edca8aab0c21f5c6d5ef267b05c430b43ab4f21062e"
+  }
  },
  {
   "name": "azure-US-1956833-access-azure-kubernetes-service-cluster-api-server-architecture",
   "url": "https://arch-center.azureedge.net/US-1956833-access-azure-kubernetes-service-cluster-api-server-architecture.vsdx",
-  "sha256": "6291f5e47ae02192fe503ae96d47bacb9504a0a4a864a71818d735c7f381ab3e"
+  "sha256": "6291f5e47ae02192fe503ae96d47bacb9504a0a4a864a71818d735c7f381ab3e",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/security/images/access-azure-kubernetes-service-cluster-api-server-bastion-architecture.svg",
+   "sha256": "587f638f24b3b5ac1f0dd251dfdd0724cbb4cd91bb1d558358f091f16a63c42b"
+  }
  },
  {
   "name": "azure-US-1996186-blue-green-deployment-for-aks",
@@ -67,7 +103,11 @@
  {
   "name": "azure-active-active-architecture",
   "url": "https://arch-center.azureedge.net/active-active-architecture.vsdx",
-  "sha256": "ce43ece0fc7055e63fb25b5812b6386bec58eb3e443143d9a1c57c6f4fa41b54"
+  "sha256": "ce43ece0fc7055e63fb25b5812b6386bec58eb3e443143d9a1c57c6f4fa41b54",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/web-apps/guides/_images/active-active-architecture.svg",
+   "sha256": "e7abb7bc678f96027c538e2e08feb9d991936811ca6c4675923fc011c4ce8706"
+  }
  },
  {
   "name": "azure-adaptive-apps",
@@ -77,62 +117,110 @@
  {
   "name": "azure-agentic-ai-architecture",
   "url": "https://arch-center.azureedge.net/agentic-ai-architecture.vsdx",
-  "sha256": "08d7fec2a076c2345f599e4f7fe4d403e90ddff5a28a7f5478204a76f016c595"
+  "sha256": "08d7fec2a076c2345f599e4f7fe4d403e90ddff5a28a7f5478204a76f016c595",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/iot/media/agentic-ai-architecture.svg",
+   "sha256": "d0fdcdbace4c5b20d0e69c5589f383dee3bcc902bb7622ef1fc293345a1d006f"
+  }
  },
  {
   "name": "azure-agentic-rag",
   "url": "https://arch-center.azureedge.net/agentic-rag.vsdx",
-  "sha256": "d3b3b0c02f132fde893f360fc2c568b486abefb88f19659eb22bfd54388f0eaa"
+  "sha256": "d3b3b0c02f132fde893f360fc2c568b486abefb88f19659eb22bfd54388f0eaa",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/ai-ml/guide/rag/_images/agentic-rag.svg",
+   "sha256": "0834a77fdb6642f4c0dab34b7f3a5e7b0ae809cec37ace07e9554e0e7bd42c3b"
+  }
  },
  {
   "name": "azure-ai-agents-at-scale-architecture",
   "url": "https://arch-center.azureedge.net/ai-agents-at-scale-architecture.vsdx",
-  "sha256": "0d65ee61a541e77846c8e66002a06403bfad1c51097d01a2c1deda2739fa5383"
+  "sha256": "0d65ee61a541e77846c8e66002a06403bfad1c51097d01a2c1deda2739fa5383",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/solution-ideas/media/ai-agents-at-scale-architecture.svg",
+   "sha256": "9258ce129fcb0b27ab1574d9352572449b423d6e972dfb9cbac94c5716ae2aa5"
+  }
  },
  {
   "name": "azure-ai-search-skillsets",
   "url": "https://arch-center.azureedge.net/ai-search-skillsets.vsdx",
-  "sha256": "0f8bb767dedb13c863cf1f323cabeb7d6651c0a95dfa5b1dbf641532be1ccbfa"
+  "sha256": "0f8bb767dedb13c863cf1f323cabeb7d6651c0a95dfa5b1dbf641532be1ccbfa",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/solution-ideas/media/ai-search-skillsets.svg",
+   "sha256": "403e2e4c63ffc8ca91a9381575ac20384877de28c8f6cbc7614d1e150949c444"
+  }
  },
  {
   "name": "azure-aks-agc-multitenant",
   "url": "https://arch-center.azureedge.net/aks-agc-multitenant.vsdx",
-  "sha256": "3667a76dae468eda8e9ced92d6451940c84f5c1e9406a87a82b63d75e52de62f"
+  "sha256": "3667a76dae468eda8e9ced92d6451940c84f5c1e9406a87a82b63d75e52de62f",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/aks-agic/media/aks-agc-architecture.svg",
+   "sha256": "d8e197fab715a1eefd92dab441127c4b001cf8de876f4d5ab47a0f36fd294c76"
+  }
  },
  {
   "name": "azure-aks-azure-local-baseline-v9",
   "url": "https://arch-center.azureedge.net/aks-azure-local-baseline-v9.vsdx",
-  "sha256": "c2adf610f2d4595ddec37f3e56289d27c33aabfa564c109bd70c33522fb51a69"
+  "sha256": "c2adf610f2d4595ddec37f3e56289d27c33aabfa564c109bd70c33522fb51a69",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/hybrid/media/aks-azure-local-baseline-v9.svg",
+   "sha256": "bef905c8931a71be9b9cf999af1d10578ead87c86a12973f0fc1799dd3b6c5ec"
+  }
  },
  {
   "name": "azure-aks-baseline-architecture",
   "url": "https://arch-center.azureedge.net/aks-baseline-architecture.vsdx",
-  "sha256": "162ba2d49092d3dee9b050a9d8f32ca7cca7fe36875164ba316ac109325bac8f"
+  "sha256": "162ba2d49092d3dee9b050a9d8f32ca7cca7fe36875164ba316ac109325bac8f",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/reference-architectures/containers/aks/images/aks-baseline-architecture.svg",
+   "sha256": "470fe6ad224b4579049e44b2833682bddb35098b77f3094a3779bb629a33f601"
+  }
  },
  {
   "name": "azure-aks-baseline-network-topology",
   "url": "https://arch-center.azureedge.net/aks-baseline-network-topology.vsdx",
-  "sha256": "7827891c8ca496f81cd849e39a8b9b8dc61b9b517911e39a9ec4a1357491bffb"
+  "sha256": "7827891c8ca496f81cd849e39a8b9b8dc61b9b517911e39a9ec4a1357491bffb",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/reference-architectures/containers/aks/images/aks-baseline-network-topology.svg",
+   "sha256": "07553d2825ff1fdaab6c0459db6567ad37b3858fd3f8025049fd188eea507b31"
+  }
  },
  {
   "name": "azure-aks-firewall-digrams",
   "url": "https://arch-center.azureedge.net/aks-firewall-digrams.vsdx",
-  "sha256": "58d6f483fb662a03866b424a9ebcb4e979421263a9ce5c77dc44c42273daf598"
+  "sha256": "58d6f483fb662a03866b424a9ebcb4e979421263a9ce5c77dc44c42273daf598",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/aks/media/aks-firewall.svg",
+   "sha256": "8c91c6b0d55d6d1900702c8b5d3d5cd1fe22c1ac4ba59f230a4c4abcc6d3ebc8"
+  }
  },
  {
   "name": "azure-aks-front-door",
   "url": "https://arch-center.azureedge.net/aks-front-door.vsdx",
-  "sha256": "0a26ddd8bd8d82a623127a758ac5a67c5aa930bdf8c81f17bafdb5140ce32b76"
+  "sha256": "0a26ddd8bd8d82a623127a758ac5a67c5aa930bdf8c81f17bafdb5140ce32b76",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/aks-front-door/media/aks-front-door.svg",
+   "sha256": "2fdd4bb65af3605d5ee49689f9caf7278f4323707e17301cc48ec86e8a58630b"
+  }
  },
  {
   "name": "azure-aks-microservices-advanced-production-deployment",
   "url": "https://arch-center.azureedge.net/aks-microservices-advanced-production-deployment.vsdx",
-  "sha256": "b92654bf46442c0f4c84840197fa31b7f11d235f627ca9b9b729882c522f6b59"
+  "sha256": "b92654bf46442c0f4c84840197fa31b7f11d235f627ca9b9b729882c522f6b59",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/reference-architectures/containers/aks-microservices/images/aks-microservices-advanced-production-deployment.svg",
+   "sha256": "951a842e5c462149fbcf11fa96304847749217b34131029ee2b2694b12be2eb4"
+  }
  },
  {
   "name": "azure-aks-multi-cluster-aks-ingress-flow",
   "url": "https://arch-center.azureedge.net/aks-multi-cluster-aks-ingress-flow.vsdx",
-  "sha256": "13afd6c202bb048836c518b1709ea1d61afad2ec34fc80d9e83ee2b1b9118b5a"
+  "sha256": "13afd6c202bb048836c518b1709ea1d61afad2ec34fc80d9e83ee2b1b9118b5a",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/reference-architectures/containers/aks-multi-region/images/aks-ingress-flow.svg",
+   "sha256": "301a9fb6b28c726a27306d8a8cad7c2a1ffecd393f06a49eea771f224ea6476c"
+  }
  },
  {
   "name": "azure-aks-multi-cluster",
@@ -142,87 +230,155 @@
  {
   "name": "azure-aks-on-hci-architecture",
   "url": "https://arch-center.azureedge.net/aks-on-hci-architecture.vsdx",
-  "sha256": "9df299d9f00dffc5b776693d5f9af693c73c0bd53918a76d0d72c5089073c438"
+  "sha256": "9df299d9f00dffc5b776693d5f9af693c73c0bd53918a76d0d72c5089073c438",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/hybrid/media/aks-on-hci-architecture-v2.svg",
+   "sha256": "56625b28c8e5a13f4288f2c63378f5a3abcca0903e536d01264d6ce9a6e311af"
+  }
  },
  {
   "name": "azure-analytics-get-started-diagram",
   "url": "https://arch-center.azureedge.net/analytics-get-started-diagram.vsdx",
-  "sha256": "92be8720d41102ba71e538fd7de80edcd0997354e73782fb79d66c3c1510293d"
+  "sha256": "92be8720d41102ba71e538fd7de80edcd0997354e73782fb79d66c3c1510293d",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/analytics/media/analytics-get-started-diagram.svg",
+   "sha256": "a6bad686171360f6259d4c4dd8d9cecfdd0c3dfb7c9f01957947fd15c7f8f87d"
+  }
  },
  {
   "name": "azure-analytics-netapp-object-api",
   "url": "https://arch-center.azureedge.net/analytics-netapp-object-api.vsdx",
-  "sha256": "25312fb23909840ee2e3655cb37b2e69caf48642a8ddcaaac77df6c4b56dc18e"
+  "sha256": "25312fb23909840ee2e3655cb37b2e69caf48642a8ddcaaac77df6c4b56dc18e",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/solution-ideas/media/analytics-netapp-object-api.svg",
+   "sha256": "1af9bad60c85f2f36e2a6fa9d09e5ee35d0901a7bab4b8f0505b77d0b38a3590"
+  }
  },
  {
   "name": "azure-analytics-with-microsoft-fabric",
   "url": "https://arch-center.azureedge.net/analytics-with-microsoft-fabric.vsdx",
-  "sha256": "2440172501efba2b7390cc3e4c380002b422924e6be4ca3e4ec9df88999da65a"
+  "sha256": "2440172501efba2b7390cc3e4c380002b422924e6be4ca3e4ec9df88999da65a",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/dataplate2e/media/azure-analytics-end-to-end.svg",
+   "sha256": "a434b48923d1c84ec06e8ccd762b65dd4fa653beaea7932f0c836949a5ab3cc4"
+  }
  },
  {
   "name": "azure-anti-corruption-layer",
   "url": "https://arch-center.azureedge.net/anti-corruption-layer.vsdx",
-  "sha256": "9e47a69361456829a8651a357e7ca78780a0975cc0911d8214409d5c8d5c3209"
+  "sha256": "9e47a69361456829a8651a357e7ca78780a0975cc0911d8214409d5c8d5c3209",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/patterns/_images/anti-corruption-layer.svg",
+   "sha256": "4f5fdbd87ef6e19380497e64a16ba2d9ee5b545d3bfbaf56b3fc22cab0ba007e"
+  }
  },
  {
   "name": "azure-api-management-api-scenario-architecture",
   "url": "https://arch-center.azureedge.net/api-management-api-scenario-architecture.vsdx",
-  "sha256": "d67f5de1102f1ef20b549ae6e1fd844ca8a3ba6215e02cfd66854825f38ba247"
+  "sha256": "d67f5de1102f1ef20b549ae6e1fd844ca8a3ba6215e02cfd66854825f38ba247",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/apps/media/api-management-api-scenario-architecture.svg",
+   "sha256": "9d867f057bf2fb9248bffb78bab5800618e25f1ea03a377dd00a9887a4b31b2d"
+  }
  },
  {
   "name": "azure-app-gateway-internal-api-management-function",
   "url": "https://arch-center.azureedge.net/app-gateway-internal-api-management-function.vsdx",
-  "sha256": "11580b8877172705327975fdae27879978c417d462ec56c76e20e8fbea387807"
+  "sha256": "11580b8877172705327975fdae27879978c417d462ec56c76e20e8fbea387807",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/integration/media/app-gateway-internal-api-management-function.svg",
+   "sha256": "16483f7a89674c0d9132732879d5573e4b4a69ffb13326f647793ca810a44801"
+  }
  },
  {
   "name": "azure-app-service-environment-high-availability",
   "url": "https://arch-center.azureedge.net/app-service-environment-high-availability.vsdx",
-  "sha256": "7c34523d9fb8c541cccc26d0824b1b65e1a7f003cc2c5be61846a01c3ff8fb57"
+  "sha256": "7c34523d9fb8c541cccc26d0824b1b65e1a7f003cc2c5be61846a01c3ff8fb57",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/web-apps/app-service-environment/_images/app-service-environment-high-availability.svg",
+   "sha256": "b9e11499e2e3d1db619ad006e33c5b1eed47a622df96a8cc7ca71d308ec5c1ee"
+  }
  },
  {
   "name": "azure-app-service-environment",
   "url": "https://arch-center.azureedge.net/app-service-environment.vsdx",
-  "sha256": "29f8e97ffdcbba411f919d5270727de44527ed34a84c4aa6799a1c71ead8e156"
+  "sha256": "29f8e97ffdcbba411f919d5270727de44527ed34a84c4aa6799a1c71ead8e156",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/web-apps/app-service-environment/_images/app-service-environment.svg",
+   "sha256": "7adca0d7aba504043d68b96e6ea41905ed99b61ca41d655e39a944b0aa21f87a"
+  }
  },
  {
   "name": "azure-application-gateway-before-azure-firewall",
   "url": "https://arch-center.azureedge.net/application-gateway-before-azure-firewall.vsdx",
-  "sha256": "eb951cfde9de5e00c84e07cc1e192ad91255a67cabb89b3bb4c18041f8220a71"
+  "sha256": "eb951cfde9de5e00c84e07cc1e192ad91255a67cabb89b3bb4c18041f8220a71",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/gateway/images/application-gateway-before-azure-firewall-architecture.svg",
+   "sha256": "f3f2faecf1a9a71a7adfbe95a77a16a327dad65b3a0aab86708654be27bf34c4"
+  }
  },
  {
   "name": "azure-arc-hybrid-kubernetes",
   "url": "https://arch-center.azureedge.net/arc-hybrid-kubernetes.vsdx",
-  "sha256": "5e0d3e5c37e940a06932420e9254a899e36e065c28a65e29d6c7466074d1fe63"
+  "sha256": "5e0d3e5c37e940a06932420e9254a899e36e065c28a65e29d6c7466074d1fe63",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/hybrid/images/arc-hybrid-kubernetes.svg",
+   "sha256": "0f4555005e62795a32f3d25142eeefcdf893f65ff7aff43364854769e06cd4b1"
+  }
  },
  {
   "name": "azure-architecture-data-warehousing",
   "url": "https://arch-center.azureedge.net/architecture-data-warehousing.vsdx",
-  "sha256": "2140b6f9f82ed0688e1f7c4c63b6681d22422bcbf68b794d42bf1f199109a38b"
+  "sha256": "2140b6f9f82ed0688e1f7c4c63b6681d22422bcbf68b794d42bf1f199109a38b",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/data/media/architecture-data-warehousing.svg",
+   "sha256": "163a31f7f072a03b707f0b47adb35b60fc03a1bb1245299947c0da10631fad71"
+  }
  },
  {
   "name": "azure-architecture-disaster-recovery-multi-tier-app",
   "url": "https://arch-center.azureedge.net/architecture-disaster-recovery-multi-tier-app.vsdx",
-  "sha256": "339cfdbbc18375361a69fecd3c8d71f6c8efcdc9297668e65fb601796b361024"
+  "sha256": "339cfdbbc18375361a69fecd3c8d71f6c8efcdc9297668e65fb601796b361024",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/infrastructure/media/architecture-disaster-recovery-multi-tier-app.svg",
+   "sha256": "a8a8915ffd6c38b8c9cdb32e6bfb288dc3ebd2dd1e51685d68973317df24fdd6"
+  }
  },
  {
   "name": "azure-architecture-extract-object-text",
   "url": "https://arch-center.azureedge.net/architecture-extract-object-text.vsdx",
-  "sha256": "cc530bb2259208fa6568fb62aa4eba190c593ec3a1fa0f3d7565cdc41079fb7d"
+  "sha256": "cc530bb2259208fa6568fb62aa4eba190c593ec3a1fa0f3d7565cdc41079fb7d",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/ai/media/architecture-extract-object-text.svg",
+   "sha256": "fe2fc9037896766222e7d1f3f27e398734b9e541343c423abe9996c4baac46a8"
+  }
  },
  {
   "name": "azure-architecture-intelligent-apps-image-processing",
   "url": "https://arch-center.azureedge.net/architecture-intelligent-apps-image-processing.vsdx",
-  "sha256": "a18d4c0c64017cd15c36cd3aee3376f1c656b1bc00eefcddbf5d40a9b68968bc"
+  "sha256": "a18d4c0c64017cd15c36cd3aee3376f1c656b1bc00eefcddbf5d40a9b68968bc",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/ai-ml/idea/_images/architecture-intelligent-apps-image-processing.svg",
+   "sha256": "70b0865b8a141ec9b46027712544f24533913c83079261124e7ec726397f8230"
+  }
  },
  {
   "name": "azure-archive-mainframe-data",
   "url": "https://arch-center.azureedge.net/archive-mainframe-data.vsdx",
-  "sha256": "83a31d37f28765465ef873ac43a725b7828d58b442084084a3dc559006db2fcb"
+  "sha256": "83a31d37f28765465ef873ac43a725b7828d58b442084084a3dc559006db2fcb",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/mainframe/media/mainframe-export-archive-data.svg",
+   "sha256": "aceee1459501d850a56d4c3ccd361b8989be0f253cca2072ffaec2b3d3cae7e8"
+  }
  },
  {
   "name": "azure-automate-document-classification-durable-functions",
   "url": "https://arch-center.azureedge.net/automate-document-classification-durable-functions.vsdx",
-  "sha256": "95c638b405d09b861754e78af3694c74261a69b1f5a24115aad5f1c58cea6fcf"
+  "sha256": "95c638b405d09b861754e78af3694c74261a69b1f5a24115aad5f1c58cea6fcf",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/ai-ml/architecture/_images/automate-document-classification-durable-functions.svg",
+   "sha256": "350331b5d7cea95ecb155c6c7190d2e761f6d595f3d3b26a8ef853b41a75d55c"
+  }
  },
  {
   "name": "azure-azure-analytics-end-to-end",
@@ -232,7 +388,11 @@
  {
   "name": "azure-azure-arc-sql-server",
   "url": "https://arch-center.azureedge.net/azure-arc-sql-server.vsdx",
-  "sha256": "7c1a1e286d6e834609973ec1fdd22307921cf476785527f4e0f10f1b368c7e9e"
+  "sha256": "7c1a1e286d6e834609973ec1fdd22307921cf476785527f4e0f10f1b368c7e9e",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/hybrid/images/administer-sql-server-azure-arc.svg",
+   "sha256": "4c6d61df151dedb55e317a2bcc0e061cf8c808bc7b1eabda7096cd744caac108"
+  }
  },
  {
   "name": "azure-azure-data-factory-baseline-logical",
@@ -242,7 +402,11 @@
  {
   "name": "azure-azure-data-factory-baseline-network",
   "url": "https://arch-center.azureedge.net/azure-data-factory-baseline-network.vsdx",
-  "sha256": "95f576d88147f384a51b4dc1f693bfc418ca9d7f1066202824f593dc41280a3f"
+  "sha256": "95f576d88147f384a51b4dc1f693bfc418ca9d7f1066202824f593dc41280a3f",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/databases/architecture/_images/azure-data-factory-hardened-network.svg",
+   "sha256": "6cbda814fdc8813734feeb6b725466ec720d96e602745515df672ee53a982c3b"
+  }
  },
  {
   "name": "azure-azure-data-factory-hardened-logical",
@@ -257,77 +421,137 @@
  {
   "name": "azure-azure-databricks-modern-analytics-architecture",
   "url": "https://arch-center.azureedge.net/azure-databricks-modern-analytics-architecture.vsdx",
-  "sha256": "03f197147436ef4c1b56b0d0abe5b47868f3600d7d20799ec0af73aa638f8c8a"
+  "sha256": "03f197147436ef4c1b56b0d0abe5b47868f3600d7d20799ec0af73aa638f8c8a",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/solution-ideas/media/azure-databricks-modern-analytics-architecture.svg",
+   "sha256": "914d0b9137544391f23fb8cef57c4bf84ab83352ae5025ce13681dca90dbc79c"
+  }
  },
  {
   "name": "azure-azure-devops-ci-cd-aks-architecture",
   "url": "https://arch-center.azureedge.net/azure-devops-ci-cd-aks-architecture.vsdx",
-  "sha256": "eae00275fad50a3d871d3b56eafa9d089737e27ccf12468fd3dbec1df29f6a71"
+  "sha256": "eae00275fad50a3d871d3b56eafa9d089737e27ccf12468fd3dbec1df29f6a71",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/aks/media/aks-cicd-azure-pipelines-architecture.svg",
+   "sha256": "64358accbacff76fb8f55391084a0817c032da54a39c2b44bb733f7975f86180"
+  }
  },
  {
   "name": "azure-azure-file-share",
   "url": "https://arch-center.azureedge.net/azure-file-share.vsdx",
-  "sha256": "f4da905008d9b264b60d68756400c02c88917aeb3e75c0702cafe0892ee1d221"
+  "sha256": "f4da905008d9b264b60d68756400c02c88917aeb3e75c0702cafe0892ee1d221",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/hybrid/images/azure-file-share.svg",
+   "sha256": "abcca917ce086ac7ba2e94271a3502123fec91b9a3ab0fd87d359d81103d7dd0"
+  }
  },
  {
   "name": "azure-azure-files-private",
   "url": "https://arch-center.azureedge.net/azure-files-private.vsdx",
-  "sha256": "dbd0ee7bead6c6ba6042bf0b50fd927af1e51ba69f641aced3a7bffe5a01fc76"
+  "sha256": "dbd0ee7bead6c6ba6042bf0b50fd927af1e51ba69f641aced3a7bffe5a01fc76",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/hybrid/images/azure-files-private.svg",
+   "sha256": "8efc74361347459211b845dbc902cc639c4eeb3c85597b2651c453268dadccf6"
+  }
  },
  {
   "name": "azure-azure-governance-visualizer-accelerator-architecture",
   "url": "https://arch-center.azureedge.net/azure-governance-visualizer-accelerator-architecture.vsdx",
-  "sha256": "d4322ebd6a267e0b7b6184a34e09c7557235b02db9ff4786e0ba8d6b1969e01a"
+  "sha256": "d4322ebd6a267e0b7b6184a34e09c7557235b02db9ff4786e0ba8d6b1969e01a",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/landing-zones/images/azure-governance-visualizer-accelerator-architecture.svg",
+   "sha256": "aab480ca17297b912aa45df313e06ad18246a33ef0ba22625e1c16b0441a6c6b"
+  }
  },
  {
   "name": "azure-azure-iot-file-upload-private-network",
   "url": "https://arch-center.azureedge.net/azure-iot-file-upload-private-network.vsdx",
-  "sha256": "8d914851aca3e744de686df7796f4a92e2d2c02b397b5e22ec7dc3acbd7923ec"
+  "sha256": "8d914851aca3e744de686df7796f4a92e2d2c02b397b5e22ec7dc3acbd7923ec",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/iot/media/azure-iot-file-upload-private-network.svg",
+   "sha256": "3988728786107f3bc1a53d2903996cd08c60cd72a607574049c2dd1370d5db03"
+  }
  },
  {
   "name": "azure-azure-monitor-integrate-security-components-2",
   "url": "https://arch-center.azureedge.net/azure-monitor-integrate-security-components-2.vsdx",
-  "sha256": "f13ab599fae2b26dd7bc08e191815797de153718caef3ea11f18a2b35699ac42"
+  "sha256": "f13ab599fae2b26dd7bc08e191815797de153718caef3ea11f18a2b35699ac42",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/solution-ideas/media/azure-monitor-integrate-security-components-2.svg",
+   "sha256": "166f72aa82dbf2af859718f4f667c784d36c3a7248e4f1416e3c5aeaa6e98fec"
+  }
  },
  {
   "name": "azure-azure-near-realtime-data-processing",
   "url": "https://arch-center.azureedge.net/azure-near-realtime-data-processing.vsdx",
-  "sha256": "809c18eda1d943f7965fe1d2a7483c03d67eea99a8441b9ebebf2ea67089c3fa"
+  "sha256": "809c18eda1d943f7965fe1d2a7483c03d67eea99a8441b9ebebf2ea67089c3fa",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/data/media/real-time-lakehouse-data-processing/azure-near-realtime-data-processing.svg",
+   "sha256": "6640fb8c72724f5e1387caca29f0cd278d8f2e69014add8c95b467fadecc50f2"
+  }
  },
  {
   "name": "azure-azure-netapp-files-moodle-zonal",
   "url": "https://arch-center.azureedge.net/azure-netapp-files-moodle-zonal.vsdx",
-  "sha256": "59e8c79488ebdaba07a9bc8606396ece5a2d32b4ef049e7a55fa9404f6840b69"
+  "sha256": "59e8c79488ebdaba07a9bc8606396ece5a2d32b4ef049e7a55fa9404f6840b69",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/file-storage/media/azure-netapp-files-moodle-zonal.svg",
+   "sha256": "a156b2d521cbf6f620bdb451838f4f6cfdb2ceaa7c06750771bf63eafd07f419"
+  }
  },
  {
   "name": "azure-azure-openai-authentication",
   "url": "https://arch-center.azureedge.net/azure-openai-authentication.vsdx",
-  "sha256": "1b43083f16ecea01de0d787c299ad56955032113d490bb853cd4894fc2c0bbb4"
+  "sha256": "1b43083f16ecea01de0d787c299ad56955032113d490bb853cd4894fc2c0bbb4",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/ai-ml/guide/_images/azure-openai-gateway-identity-scenario-external-identity-provider.svg",
+   "sha256": "a8498b16c18e541a23e3eeff11e3374dbd2a6d24af1298b1b2403942c23247c4"
+  }
  },
  {
   "name": "azure-azure-sql-managed-instance-architecture",
   "url": "https://arch-center.azureedge.net/azure-sql-managed-instance-architecture.vsdx",
-  "sha256": "3cdbf0e7de89632a42ffdf00787e758d77950c6bf046906df050b3ea496aafea"
+  "sha256": "3cdbf0e7de89632a42ffdf00787e758d77950c6bf046906df050b3ea496aafea",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/solution-ideas/media/azure-sql-managed-instance-architecture.svg",
+   "sha256": "f619657a26492246d89cf1a4ce973bc9c6e9b71db142c87469cdd9fad35af909"
+  }
  },
  {
   "name": "azure-azure-virtual-desktop-accelerator-baseline-architecture",
   "url": "https://arch-center.azureedge.net/azure-virtual-desktop-accelerator-baseline-architecture.vsdx",
-  "sha256": "49f13d0992c97416d12a7c0efafe1bdd5e31c32fb3cfab65ef892662ac190b51"
+  "sha256": "49f13d0992c97416d12a7c0efafe1bdd5e31c32fb3cfab65ef892662ac190b51",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/landing-zones/azure-virtual-desktop/media/virtual-desktop-accelerator-baseline.svg",
+   "sha256": "03897fcc29c946fa04b49b64d43f6ffb0433f489d5a96e2bcf89bba0530ec34a"
+  }
  },
  {
   "name": "azure-azure-virtual-desktop-bcdr-personal-host-pool",
   "url": "https://arch-center.azureedge.net/azure-virtual-desktop-bcdr-personal-host-pool.vsdx",
-  "sha256": "d5ef78a12b7fa9cbe91dd7d256819f8a0719f8a8cacf29ef3fce4dcb982d7345"
+  "sha256": "d5ef78a12b7fa9cbe91dd7d256819f8a0719f8a8cacf29ef3fce4dcb982d7345",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/azure-virtual-desktop/images/azure-virtual-desktop-bcdr-personal-host-pool.svg",
+   "sha256": "03b51bda7c47cebb0c752266a2464b8dd3ebce16e4242628f163cf35d1f3de7a"
+  }
  },
  {
   "name": "azure-azure-virtual-desktop-bcdr-pooled-host-pool",
   "url": "https://arch-center.azureedge.net/azure-virtual-desktop-bcdr-pooled-host-pool.vsdx",
-  "sha256": "85eba1e8c29fb0738fb529b01bbea71e648aa74ba407d39f0318d9a44ee7fd76"
+  "sha256": "85eba1e8c29fb0738fb529b01bbea71e648aa74ba407d39f0318d9a44ee7fd76",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/azure-virtual-desktop/images/azure-virtual-desktop-bcdr-pooled-host-pool.svg",
+   "sha256": "d41eeb10ce931c8e18db8e7cffbf5de925f80451bdee01d1e68c2d6d7dd4b703"
+  }
  },
  {
   "name": "azure-azure-wordpress-container",
   "url": "https://arch-center.azureedge.net/azure-wordpress-container.vsdx",
-  "sha256": "7d974a6dab23a55b02e93b42d3d0331b5ea29a5a55b66db010e0d1c7d16df784"
+  "sha256": "7d974a6dab23a55b02e93b42d3d0331b5ea29a5a55b66db010e0d1c7d16df784",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/infrastructure/media/azure-wordpress-container.svg",
+   "sha256": "f024148198ed7ac078558a8d13ccf7953d90a7be0db65dfa03a30eb2723ea080"
+  }
  },
  {
   "name": "azure-azure-wordpress",
@@ -337,77 +561,137 @@
  {
   "name": "azure-baseline-architecture",
   "url": "https://arch-center.azureedge.net/baseline-architecture.vsdx",
-  "sha256": "88b93873fcec8257cfc9fdc103033a19fac0d32dfbc46dd0f29b2e8e1c62600b"
+  "sha256": "88b93873fcec8257cfc9fdc103033a19fac0d32dfbc46dd0f29b2e8e1c62600b",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/virtual-machines/media/baseline-architecture.svg",
+   "sha256": "0b7a0d3139ffefdac15a11186ef0dee20f3fa6fa240bc642dc0eea5dcd5a1fd9"
+  }
  },
  {
   "name": "azure-baseline-certificates",
   "url": "https://arch-center.azureedge.net/baseline-certificates.vsdx",
-  "sha256": "90869495810a4c33c42ac6916641bf36693469df0cb90a1d2c472478fd301cee"
+  "sha256": "90869495810a4c33c42ac6916641bf36693469df0cb90a1d2c472478fd301cee",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/virtual-machines/media/baseline-certificates.svg",
+   "sha256": "8167ff7e579f0a411b2ebfdd371523e16a93510fdba2608a5d4208bd988deff2"
+  }
  },
  {
   "name": "azure-baseline-landing-zone-monitoring",
   "url": "https://arch-center.azureedge.net/baseline-landing-zone-monitoring.vsdx",
-  "sha256": "d1eab3604c5089aee3158d737b7c400acd33513911b08fb371e9246f79619e0d"
+  "sha256": "d1eab3604c5089aee3158d737b7c400acd33513911b08fb371e9246f79619e0d",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/virtual-machines/media/baseline-landing-zone-monitoring.svg",
+   "sha256": "de350e6c3f2931e47db0d13cf41598741d9f9f946fee3be83128c38b7305a648"
+  }
  },
  {
   "name": "azure-baseline-landing-zone-network-egress",
   "url": "https://arch-center.azureedge.net/baseline-landing-zone-network-egress.vsdx",
-  "sha256": "20b017fa0939179197b0b541aab471a631db90274d761ab726b0994e3403a6ec"
+  "sha256": "20b017fa0939179197b0b541aab471a631db90274d761ab726b0994e3403a6ec",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/virtual-machines/media/baseline-landing-zone-network-egress.svg",
+   "sha256": "6e6d759b1b50a6fe03813a97c0a8c1ce1920080c684ebc64904d5239a2edd4cf"
+  }
  },
  {
   "name": "azure-baseline-landing-zone-network-topology",
   "url": "https://arch-center.azureedge.net/baseline-landing-zone-network-topology.vsdx",
-  "sha256": "95ac4638c8b625a895f71e1bae2c5f36ca9dbfd324e489950ded259cd94ffc64"
+  "sha256": "95ac4638c8b625a895f71e1bae2c5f36ca9dbfd324e489950ded259cd94ffc64",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/virtual-machines/media/baseline-landing-zone-network-topology.svg",
+   "sha256": "c6c612f20d4e231111ffde5fce29def4b8eb79fc9be14685640d0c9c5016dc52"
+  }
  },
  {
   "name": "azure-baseline-landing-zone-networking-egress",
   "url": "https://arch-center.azureedge.net/baseline-landing-zone-networking-egress.vsdx",
-  "sha256": "1100c9c89e7995626b33236243004a3afd19d671eb694c95191450762ac6ea57"
+  "sha256": "1100c9c89e7995626b33236243004a3afd19d671eb694c95191450762ac6ea57",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/ai-ml/architecture/_images/baseline-landing-zone-networking-egress.svg",
+   "sha256": "a7929efe58626b7f0fa7baaa06f56f79e3f0cef4de8441c05ec6dd23319af485"
+  }
  },
  {
   "name": "azure-baseline-landing-zone-networking",
   "url": "https://arch-center.azureedge.net/baseline-landing-zone-networking.vsdx",
-  "sha256": "83beb6c5d0e82371cf5288798240db5dc802192b0c8a84651fd9ee1b7e01a712"
+  "sha256": "83beb6c5d0e82371cf5288798240db5dc802192b0c8a84651fd9ee1b7e01a712",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/ai-ml/architecture/_images/baseline-landing-zone-networking.svg",
+   "sha256": "38a01d5ca106fd6d45cee879e3139b1101ce6bf7e0d3fa174dc5c24dcf0ec112"
+  }
  },
  {
   "name": "azure-baseline-landing-zone",
   "url": "https://arch-center.azureedge.net/baseline-landing-zone.vsdx",
-  "sha256": "79613ab1456e8836f7c53ffe5887e3d85a045af40c68d1ea5d081401ec58bda9"
+  "sha256": "79613ab1456e8836f7c53ffe5887e3d85a045af40c68d1ea5d081401ec58bda9",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/virtual-machines/media/baseline-landing-zone.svg",
+   "sha256": "7ee58584a2e6e40431d580109b09b0555ee512a582c483c79a12f1a6ca9efb4d"
+  }
  },
  {
   "name": "azure-baseline-microsoft-foundry-landing-zone",
   "url": "https://arch-center.azureedge.net/baseline-microsoft-foundry-landing-zone.vsdx",
-  "sha256": "2f0c5824b87ae78755e7db649a75af4d7257afe4a5507331a37cc0c4c2afad14"
+  "sha256": "2f0c5824b87ae78755e7db649a75af4d7257afe4a5507331a37cc0c4c2afad14",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/ai-ml/architecture/_images/baseline-microsoft-foundry-landing-zone.svg",
+   "sha256": "a256abd2b09c1a832886564a6be9725326da5351fbb601ee10c518ae1fc542c7"
+  }
  },
  {
   "name": "azure-baseline-microsoft-foundry",
   "url": "https://arch-center.azureedge.net/baseline-microsoft-foundry.vsdx",
-  "sha256": "8adb8a31b0f29f1ea8d5141c1b488fb45be0636e6a9c0df2eea1a8f626503705"
+  "sha256": "8adb8a31b0f29f1ea8d5141c1b488fb45be0636e6a9c0df2eea1a8f626503705",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/ai-ml/architecture/_images/baseline-microsoft-foundry.svg",
+   "sha256": "d413aea4bcb6a6a5650a17a377f62bf5df656a6da417f5c39cf389dc5af7331b"
+  }
  },
  {
   "name": "azure-baseline-monitoring",
   "url": "https://arch-center.azureedge.net/baseline-monitoring.vsdx",
-  "sha256": "da5163cd971f9ca24c6e20780a3eacecd92595d09f5a6a3540dfa7a616d81c47"
+  "sha256": "da5163cd971f9ca24c6e20780a3eacecd92595d09f5a6a3540dfa7a616d81c47",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/virtual-machines/media/baseline-monitoring.svg",
+   "sha256": "163df190f178e3151325564973a47b5d67a610b27eed2ad1b1ff24504eb18210"
+  }
  },
  {
   "name": "azure-baseline-network-egress",
   "url": "https://arch-center.azureedge.net/baseline-network-egress.vsdx",
-  "sha256": "cae228fc732079d3955323cf5c46cbb6123701a20359622846f54cb86c421d64"
+  "sha256": "cae228fc732079d3955323cf5c46cbb6123701a20359622846f54cb86c421d64",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/virtual-machines/media/baseline-network-egress.svg",
+   "sha256": "76da467094724494509a1fe7bb5c3dfc49c5a79ceb9559d3081eebb0fca9cffa"
+  }
  },
  {
   "name": "azure-baseline-network-ingress",
   "url": "https://arch-center.azureedge.net/baseline-network-ingress.vsdx",
-  "sha256": "edf8ca19853a2f3988ae776acafaf1c20d6aa3ca85af06278951371fb11b108d"
+  "sha256": "edf8ca19853a2f3988ae776acafaf1c20d6aa3ca85af06278951371fb11b108d",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/virtual-machines/media/baseline-network-ingress.svg",
+   "sha256": "3ea0f3e3c2a0e969cacfb5b1aecfcce5f7f620bcffd1a5eb702b04c80f774bc6"
+  }
  },
  {
   "name": "azure-basic-app-service-architecture-flow",
   "url": "https://arch-center.azureedge.net/basic-app-service-architecture-flow.vsdx",
-  "sha256": "4371f94da59e4d3cffee748c0db73dcc2000c63a7cfcd9c76f0c75be3899395e"
+  "sha256": "4371f94da59e4d3cffee748c0db73dcc2000c63a7cfcd9c76f0c75be3899395e",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/web-apps/app-service/_images/basic-app-service-architecture-flow.svg",
+   "sha256": "e2bbe9263b76cb174cf3bdbb81297f0f10d997d9f0556ff20846e3daf255fcb7"
+  }
  },
  {
   "name": "azure-build-deploy-custom-models",
   "url": "https://arch-center.azureedge.net/build-deploy-custom-models.vsdx",
-  "sha256": "3fc56f1af4cc148482cccbde0fd4ec0db8fcef3a0f839a72035ec006dc9c4b42"
+  "sha256": "3fc56f1af4cc148482cccbde0fd4ec0db8fcef3a0f839a72035ec006dc9c4b42",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/ai-ml/architecture/_images/build-deploy-custom-models.svg",
+   "sha256": "255b06e60ddb6960994856694bf344663eeceef0730f8b0fa2ff836093eabaeb"
+  }
  },
  {
   "name": "azure-cache-aside-azure-managed-redis-postgresql",
@@ -417,102 +701,182 @@
  {
   "name": "azure-call-center-analytics",
   "url": "https://arch-center.azureedge.net/call-center-analytics.vsdx",
-  "sha256": "903364e162944d790c9363ada308bb5af480a23ae9a316e730ddc8e703db0d51"
+  "sha256": "903364e162944d790c9363ada308bb5af480a23ae9a316e730ddc8e703db0d51",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/ai-ml/openai/architecture/_images/call-center-analytics.svg",
+   "sha256": "ccdd7e7320f36ce67f2439445bb2bbebea9aac06c3af3006e407e5adf036a712"
+  }
  },
  {
   "name": "azure-certificate-life-cycle-architecture",
   "url": "https://arch-center.azureedge.net/certificate-life-cycle-architecture.vsdx",
-  "sha256": "c8acedfa8a469f33aac15c0f6eaf47e4173385c23946a93e09149632cd7c0849"
+  "sha256": "c8acedfa8a469f33aac15c0f6eaf47e4173385c23946a93e09149632cd7c0849",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/certificate-lifecycle/media/certificate-life-cycle-architecture.svg",
+   "sha256": "36f6e1af5bdc5c901bc1ae79f5d29aea505033e5cbc73cb135ac6c0030901306"
+  }
  },
  {
   "name": "azure-certificate-life-cycle-workflow",
   "url": "https://arch-center.azureedge.net/certificate-life-cycle-workflow.vsdx",
-  "sha256": "da30a732f02ebe91c372ef2d1d6acd27cafe9dafe323b03d2d7d4a9e22c17002"
+  "sha256": "da30a732f02ebe91c372ef2d1d6acd27cafe9dafe323b03d2d7d4a9e22c17002",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/certificate-lifecycle/media/certificate-life-cycle-workflow.svg",
+   "sha256": "027ac0352b2bb41ae6329b0412391d4ce5dc293eb1b429609a3da7c2baf9ad70"
+  }
  },
  {
   "name": "azure-chain-of-custody",
   "url": "https://arch-center.azureedge.net/chain-of-custody.vsdx",
-  "sha256": "947979835f45f3df3411ab615291a6b59058bc1454f630731251a10157d5a4fa"
+  "sha256": "947979835f45f3df3411ab615291a6b59058bc1454f630731251a10157d5a4fa",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/forensics/media/chain-of-custody.svg",
+   "sha256": "d6d60fbab5da8c0b6bab92c3321258e336e9c3c5e70f1075c6ad5935b60bda3a"
+  }
  },
  {
   "name": "azure-change-data-capture-mainframe-data-with-azure",
   "url": "https://arch-center.azureedge.net/change-data-capture-mainframe-data-with-azure.vsdx",
-  "sha256": "dfa39100286fb709d33d9bd81d3bd0c3e656acfbf1d038cfcfc85b3b5b855292"
+  "sha256": "dfa39100286fb709d33d9bd81d3bd0c3e656acfbf1d038cfcfc85b3b5b855292",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/mainframe/media/change-data-capture-mainframe-data-with-azure.svg",
+   "sha256": "716f2e5745b9e01634a7271a389503ba40a2405dd4ae2d283549d5c43ea4c5d8"
+  }
  },
  {
   "name": "azure-circuit-breaker-pattern",
   "url": "https://arch-center.azureedge.net/circuit-breaker-pattern.vsdx",
-  "sha256": "bd2ffe7a709357ad7babcc30fce45d383dbbb87f6a5d2a2cde7a0cd9ae31128e"
+  "sha256": "bd2ffe7a709357ad7babcc30fce45d383dbbb87f6a5d2a2cde7a0cd9ae31128e",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/patterns/_images/circuit-breaker-pattern.svg",
+   "sha256": "0ad8a33fe1c9dbfcb6a0200d50a84d83f7e4b09f3c20bd36fb47d3740dc225d3"
+  }
  },
  {
   "name": "azure-cloud-cache-replication-diagram",
   "url": "https://arch-center.azureedge.net/cloud-cache-replication-diagram.vsdx",
-  "sha256": "95e207d80308bff5b03d21a81cf219b694cd1ff8072c0bbb83514849030d7100"
+  "sha256": "95e207d80308bff5b03d21a81cf219b694cd1ff8072c0bbb83514849030d7100",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/azure-virtual-desktop/images/cloud-cache-replication-diagram.svg",
+   "sha256": "1b0ec3eca0f71f26fa9ab7f7675262eb0ab1d420b35af056da38c677a94c0e44"
+  }
  },
  {
   "name": "azure-compute-choices",
   "url": "https://arch-center.azureedge.net/compute-choices.vsdx",
-  "sha256": "71077e0fb458d12bf0caddd65084aae6690ebced5862af45e551c696a138db26"
+  "sha256": "71077e0fb458d12bf0caddd65084aae6690ebced5862af45e551c696a138db26",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/technology-choices/images/compute-choices.svg",
+   "sha256": "0215229eee2430f3d422f7a5264b26a51058ca0f7e8d91221464ada3ba0953ab"
+  }
  },
  {
   "name": "azure-compute-get-started-diagram",
   "url": "https://arch-center.azureedge.net/compute-get-started-diagram.vsdx",
-  "sha256": "4c9706b16646a4c14e5d4f69bf2bdaed64bfcf208b2b03e15e18c67a73079e02"
+  "sha256": "4c9706b16646a4c14e5d4f69bf2bdaed64bfcf208b2b03e15e18c67a73079e02",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/solution-ideas/media/compute-get-started-diagram.svg",
+   "sha256": "a2f6fc3e1b6c9a63129a61ddc82830c17fef008821fa2d270b8b0a548823ccc8"
+  }
  },
  {
   "name": "azure-control-plane-approaches-custom",
   "url": "https://arch-center.azureedge.net/control-plane-approaches-custom.vsdx",
-  "sha256": "cc15e30294ba586f334ec8bec21537cb4451e8258692cd038bef43b749184253"
+  "sha256": "cc15e30294ba586f334ec8bec21537cb4451e8258692cd038bef43b749184253",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/multitenant/approaches/media/control-plane/control-plane-approaches-custom.svg",
+   "sha256": "42545b0410314a4b5a84d479bdd548243a3c504ae21c6033d9d7f364aedad729"
+  }
  },
  {
   "name": "azure-control-plane-approaches-low-code",
   "url": "https://arch-center.azureedge.net/control-plane-approaches-low-code.vsdx",
-  "sha256": "e9198662f7c2828d59cba39e5d98cba1afc0f01cb2513ccbc03c217529511f34"
+  "sha256": "e9198662f7c2828d59cba39e5d98cba1afc0f01cb2513ccbc03c217529511f34",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/multitenant/approaches/media/control-plane/control-plane-approaches-low-code.svg",
+   "sha256": "f6d7097c5c979ff0f4422ae4bee14e1075a07829e6199d7b1da90a93a337cbbb"
+  }
  },
  {
   "name": "azure-control-plane-approaches-manual",
   "url": "https://arch-center.azureedge.net/control-plane-approaches-manual.vsdx",
-  "sha256": "991b770ac0924299c3a20a5d3cd926cbedea00b024b4e7cd0a653e16845ceb8e"
+  "sha256": "991b770ac0924299c3a20a5d3cd926cbedea00b024b4e7cd0a653e16845ceb8e",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/multitenant/approaches/media/control-plane/control-plane-approaches-manual.svg",
+   "sha256": "68f66eff8b95350f358092227c964255f98c292a19ff4c02bf9dbcba6d75ba75"
+  }
  },
  {
   "name": "azure-create-azure-sandbox",
   "url": "https://arch-center.azureedge.net/create-azure-sandbox.vsdx",
-  "sha256": "c7ffd4a038343e2b78a6b415564edcb107c22c4d5c0113b55ae3a34533c15a6c"
+  "sha256": "c7ffd4a038343e2b78a6b415564edcb107c22c4d5c0113b55ae3a34533c15a6c",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/azure-sandbox/images/create-azure-sandbox.svg",
+   "sha256": "49e584d47096a2083312352b102e8aefddef63f228bc3c9ca2c22589efff1fea"
+  }
  },
  {
   "name": "azure-cross-tenant-migration-strategy",
   "url": "https://arch-center.azureedge.net/cross-tenant-migration-strategy.vsdx",
-  "sha256": "c035e716d607f54fcad2a9051754c945626c5a341f50880423453ff732d03cf9"
+  "sha256": "c035e716d607f54fcad2a9051754c945626c5a341f50880423453ff732d03cf9",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/solution-ideas/media/cross-tenant-migration-strategy.svg",
+   "sha256": "5eb40fbd9f7c1a638654e3c099110a65df99d1f2cf8afa94ee435e6982d26a57"
+  }
  },
  {
   "name": "azure-cross-tenant-secure-access-private-endpoints-architecture",
   "url": "https://arch-center.azureedge.net/cross-tenant-secure-access-private-endpoints-architecture.vsdx",
-  "sha256": "8d0535c0736a772019b66c83a88860bba39d081b54ddf98f866f917652f71af7"
+  "sha256": "8d0535c0736a772019b66c83a88860bba39d081b54ddf98f866f917652f71af7",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/networking/guide/images/cross-tenant-secure-access-private-endpoints-architecture.svg",
+   "sha256": "4e586865c7af1aab792cd5f9817b4899cc0b5c3f5331ceb25469c181898872dc"
+  }
  },
  {
   "name": "azure-data-science-decision-tree",
   "url": "https://arch-center.azureedge.net/data-science-decision-tree.vsdx",
-  "sha256": "b9002ad41c4418ec1dbb0f70daaeb19eed7cd1b483c47e56062453ba25cfbcae"
+  "sha256": "b9002ad41c4418ec1dbb0f70daaeb19eed7cd1b483c47e56062453ba25cfbcae",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/ai-ml/guide/_images/data-science-decision-tree.svg",
+   "sha256": "1248f5655a3fdfb86640da25fd24df507d048a2abb7e535d4e3c54deca3e5caa"
+  }
  },
  {
   "name": "azure-data-streaming-scenario",
   "url": "https://arch-center.azureedge.net/data-streaming-scenario.vsdx",
-  "sha256": "5dde96628e00b5a68ccf7c46c1edfce1d7571b03d0372c40acb1ae68ace78b05"
+  "sha256": "5dde96628e00b5a68ccf7c46c1edfce1d7571b03d0372c40acb1ae68ace78b05",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/solution-ideas/media/data-streaming-scenario.svg",
+   "sha256": "055e9aa1a6329403dbc594fe1fc5b938e2979839bd88a7f4e8d227dc3edb33af"
+  }
  },
  {
   "name": "azure-databases-get-started-diagram",
   "url": "https://arch-center.azureedge.net/databases-get-started-diagram.vsdx",
-  "sha256": "56f1db11f275053dc288adea43903bf2c1074fd11bc6d61ba53082f27558917a"
+  "sha256": "56f1db11f275053dc288adea43903bf2c1074fd11bc6d61ba53082f27558917a",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/databases/media/get-started-databases.svg",
+   "sha256": "c85d1431b6ca29b43ba8868850384091e82947e959f4770a1da452086437dbf2"
+  }
  },
  {
   "name": "azure-deploy-ibm-maximo-application-suite",
   "url": "https://arch-center.azureedge.net/deploy-ibm-maximo-application-suite.vsdx",
-  "sha256": "3bb5b56f1b6acf7cee36cad18c099f9eff1989c1335b5af80bc3eacb92b9c7da"
+  "sha256": "3bb5b56f1b6acf7cee36cad18c099f9eff1989c1335b5af80bc3eacb92b9c7da",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/apps/media/deploy-ibm-maximo-application-suite-architecture.svg",
+   "sha256": "dfa4e32e77f9af4835d2ee2399af8cbaf949bd7fd0cc57ccdb0d2ada326df6df"
+  }
  },
  {
   "name": "azure-deployment-scripts-property-check",
   "url": "https://arch-center.azureedge.net/deployment-scripts-property-check.vsdx",
-  "sha256": "cc06dca2bc7bf53f87daa1a4984d840eb886e94fcb945c069e9bf1ee512210f8"
+  "sha256": "cc06dca2bc7bf53f87daa1a4984d840eb886e94fcb945c069e9bf1ee512210f8",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/devops/images/deployment-scripts-property-check.svg",
+   "sha256": "497c8333f6d6b5484842cf6e70a12a29999cd146305ac2f6cc14c98a0ff74cfe"
+  }
  },
  {
   "name": "azure-design-microservice-drone-delivery-imp",
@@ -522,22 +886,38 @@
  {
   "name": "azure-devops-get-started-diagram",
   "url": "https://arch-center.azureedge.net/devops-get-started-diagram.vsdx",
-  "sha256": "e894bbb240b8f94ceaf7af22f8cc332449999616b78ee43139aa008447f382a6"
+  "sha256": "e894bbb240b8f94ceaf7af22f8cc332449999616b78ee43139aa008447f382a6",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/devops/images/devops-get-started-diagram.svg",
+   "sha256": "ef00360946d7c972bef8700c4b217c8bb8a8c83034b3adf592490847f943f3ad"
+  }
  },
  {
   "name": "azure-devsecops-azure-aks",
   "url": "https://arch-center.azureedge.net/devsecops-azure-aks.vsdx",
-  "sha256": "195fae5117c7ed840decc5d9586bf5308ed5e9e78a73e437e9074bfda01cd009"
+  "sha256": "195fae5117c7ed840decc5d9586bf5308ed5e9e78a73e437e9074bfda01cd009",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/devsecops/media/devsecops-azure-aks.svg",
+   "sha256": "70d1f634bea579c1ba809876262ead02175bf5f9d9d4252ebfd7dfef6aed2386"
+  }
  },
  {
   "name": "azure-devsecops-for-iac-avm",
   "url": "https://arch-center.azureedge.net/devsecops-for-iac-avm.vsdx",
-  "sha256": "c9786a982126067712621e28d4738f162b026b9a2d08114e2134976e8cb1497e"
+  "sha256": "c9786a982126067712621e28d4738f162b026b9a2d08114e2134976e8cb1497e",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/solution-ideas/media/devsecops-for-iac.svg",
+   "sha256": "39904981d276e13e31f75337956d74355d2643c828e464bd3733f1d4e905b376"
+  }
  },
  {
   "name": "azure-devsecops-stages",
   "url": "https://arch-center.azureedge.net/devsecops-stages.vsdx",
-  "sha256": "afce5d4424a29cb60d07d5935bf6cb280d2dbd951fc750d7c5c9599181f252fb"
+  "sha256": "afce5d4424a29cb60d07d5935bf6cb280d2dbd951fc750d7c5c9599181f252fb",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/devsecops/media/devsecops-stages.svg",
+   "sha256": "6d0e45d182bbf423af87b94ecb71552cbbde51950c4943bcad5caecd45f7900f"
+  }
  },
  {
   "name": "azure-dmz-reference-architectures",
@@ -547,92 +927,164 @@
  {
   "name": "azure-dns-private-endpoints-virtual-wan",
   "url": "https://arch-center.azureedge.net/dns-private-endpoints-virtual-wan.vsdx",
-  "sha256": "62280aa0ac2447c0e307c8add982a0782c8a8adff7f3c0b24c72154060a52a21"
+  "sha256": "62280aa0ac2447c0e307c8add982a0782c8a8adff7f3c0b24c72154060a52a21",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/networking/guide/images/dns-private-endpoints-virtual-wan-scenario-single-region.svg",
+   "sha256": "0010a7e17c8e32a994fed5a4ef3b64eb7c4c8ba00d7042d555b2ab0b26e1b902"
+  }
  },
  {
   "name": "azure-dr-for-azure-data-platform-landing-zone-architecture",
   "url": "https://arch-center.azureedge.net/dr-for-azure-data-platform-landing-zone-architecture.vsdx",
-  "sha256": "b8103ecd2bd51c2587eed9c04951594735fc589abb87708b27c0afb2a4d607a9"
+  "sha256": "b8103ecd2bd51c2587eed9c04951594735fc589abb87708b27c0afb2a4d607a9",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/data-guide/images/dr-for-azure-data-platform-landing-zone-architecture.svg",
+   "sha256": "3ce8dba144cdfa63d29c07ce065c3d6f6b83420838a420a8788e199bded1eb2a"
+  }
  },
  {
   "name": "azure-eks-to-aks-monitoring",
   "url": "https://arch-center.azureedge.net/eks-to-aks-monitoring.vsdx",
-  "sha256": "2df4e3fa6237c175610ccff958dfd2fe28e8c8dce7f8ad187ef21f20fbc090a8"
+  "sha256": "2df4e3fa6237c175610ccff958dfd2fe28e8c8dce7f8ad187ef21f20fbc090a8",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/aws-professional/eks-to-aks/media/monitor-containers-architecture.svg",
+   "sha256": "6acbc9b6fc5b1dfa0c458d9afd50400d7638d495c3675632962c02e461b0df4d"
+  }
  },
  {
   "name": "azure-eks-to-aks-networking-private-cluster",
   "url": "https://arch-center.azureedge.net/eks-to-aks-networking-private-cluster.vsdx",
-  "sha256": "054bea873ec74a64136ed47936a393eaa72dc417396a55ac4ec22d30685b4a0c"
+  "sha256": "054bea873ec74a64136ed47936a393eaa72dc417396a55ac4ec22d30685b4a0c",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/aws-professional/eks-to-aks/media/private-cluster.svg",
+   "sha256": "527f0fd06337446e3babb69d7af83f50064c47ff0feb5156bd608c3ef1c11075"
+  }
  },
  {
   "name": "azure-enterprise-bi-scoped-architecture",
   "url": "https://arch-center.azureedge.net/enterprise-bi-scoped-architecture.vsdx",
-  "sha256": "d428f0aba08cfb7fccdd6652bae53b62d17a3a5ea772368a4f46126bd1c50570"
+  "sha256": "d428f0aba08cfb7fccdd6652bae53b62d17a3a5ea772368a4f46126bd1c50570",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/analytics/media/enterprise-bi-scoped-architecture.svg",
+   "sha256": "2401e78481a4565a8dda0704d638d576ee46698e5fe6370bd27d37c2cad3a11a"
+  }
  },
  {
   "name": "azure-event-driven-cache-updates-azure-managed-redis-azure-cosmos-db",
   "url": "https://arch-center.azureedge.net/event-driven-cache-updates-azure-managed-redis-azure-cosmos-db.vsdx",
-  "sha256": "a11759a68c2126210c1e7e169f887b693538585812a4a9ee953de972b1512289"
+  "sha256": "a11759a68c2126210c1e7e169f887b693538585812a4a9ee953de972b1512289",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/databases/architecture/_images/event-driven-cache-updates-azure-managed-redis-azure-cosmos-db.svg",
+   "sha256": "9425402b9954ff815b3eeabcbf7e2f0c7b16bba03d61738b84d16285e1a3ee4a"
+  }
  },
  {
   "name": "azure-event-sourcing-example",
   "url": "https://arch-center.azureedge.net/event-sourcing-example.vsdx",
-  "sha256": "cffd499ce4839daa744bff5ceafb92dc8fc776c5e894c5ab372cd218259ef07f"
+  "sha256": "cffd499ce4839daa744bff5ceafb92dc8fc776c5e894c5ab372cd218259ef07f",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/patterns/_images/event-sourcing-example.svg",
+   "sha256": "59ee58cecfe969594724f5cf6caa3f2a07e8587650e63ab4bc1f1578b9cbf7fa"
+  }
  },
  {
   "name": "azure-event-sourcing-overview",
   "url": "https://arch-center.azureedge.net/event-sourcing-overview.vsdx",
-  "sha256": "ee1e4db7e2a77046e2a114fa861c174dc9b242ad5276f6e42b7859c1d0b34f21"
+  "sha256": "ee1e4db7e2a77046e2a114fa861c174dc9b242ad5276f6e42b7859c1d0b34f21",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/patterns/_images/event-sourcing-overview.svg",
+   "sha256": "da6b93cff5fe4b3a9a16aed30356ee0302df17eebdb80283abd5036d160c8190"
+  }
  },
  {
   "name": "azure-fabric-deployment-pattern",
   "url": "https://arch-center.azureedge.net/fabric-deployment-pattern.vsdx",
-  "sha256": "fc49c683a43598b7f2ca3e02fc0b2a32573275c7acabe7943135a51d327ab567"
+  "sha256": "fc49c683a43598b7f2ca3e02fc0b2a32573275c7acabe7943135a51d327ab567",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/data-guide/images/fabric-deployment-pattern.svg",
+   "sha256": "b5b51fd5c2c7153121d0169ef922b1990b3d61bbb823681dc0d1e9e9af22dfbb"
+  }
  },
  {
   "name": "azure-fabric-real-time-intelligence-service-bus",
   "url": "https://arch-center.azureedge.net/fabric-real-time-intelligence-service-bus.vsdx",
-  "sha256": "891ba2db919b81c86bea1760eb8c8afc5de83f024132d510789c811e179fe6d7"
+  "sha256": "891ba2db919b81c86bea1760eb8c8afc5de83f024132d510789c811e179fe6d7",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/solution-ideas/media/fabric-real-time-intelligence-service-bus.svg",
+   "sha256": "4c6d7a8a783505e3c4f0d334779fe72ed84ccd67d61709b2aea1a8018557699d"
+  }
  },
  {
   "name": "azure-federated-identity-microsoft-entra-id",
   "url": "https://arch-center.azureedge.net/federated-identity-microsoft-entra-id.vsdx",
-  "sha256": "4ec882bab865f324381763cedbcfdb36e23bb8b5c3a7a681a7db4650eede5a6e"
+  "sha256": "4ec882bab865f324381763cedbcfdb36e23bb8b5c3a7a681a7db4650eede5a6e",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/patterns/_images/federated-identity-microsoft-entra-id.svg",
+   "sha256": "ff1d7cb9f07caeece1bcb5fb7dee1f0ae748994247ed76ea14fa425064a59456"
+  }
  },
  {
   "name": "azure-fiori",
   "url": "https://arch-center.azureedge.net/fiori.vsdx",
-  "sha256": "0ed3a20038242fb1fc52a141ad545b08ba0f53d578eaa308e9b805f1bd3ede35"
+  "sha256": "0ed3a20038242fb1fc52a141ad545b08ba0f53d578eaa308e9b805f1bd3ede35",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/sap/media/fiori.svg",
+   "sha256": "c1afee1a0d068189ffdafa80e4411d3a90eae004698ea6108660dbd9446f5cd7"
+  }
  },
  {
   "name": "azure-foundry-gateway-conceptual-architecture",
   "url": "https://arch-center.azureedge.net/foundry-gateway-conceptual-architecture.vsdx",
-  "sha256": "f4f62f88a9a92abd50a233d5f5a64265576a610e8c5520c5fc2ee4f4287e9ce3"
+  "sha256": "f4f62f88a9a92abd50a233d5f5a64265576a610e8c5520c5fc2ee4f4287e9ce3",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/ai-ml/guide/_images/foundry-gateway-conceptual-architecture.svg",
+   "sha256": "303ea3ccff1887178c05b04ed815f42a9253b5d3ac9b332334d4d09a9b694d59"
+  }
  },
  {
   "name": "azure-foundry-gateway-example-architecture",
   "url": "https://arch-center.azureedge.net/foundry-gateway-example-architecture.vsdx",
-  "sha256": "ea71daffb47c0fc43e71a0b8a6904e39586e9ccdd289d70ffeb3952abafa5202"
+  "sha256": "ea71daffb47c0fc43e71a0b8a6904e39586e9ccdd289d70ffeb3952abafa5202",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/ai-ml/guide/_images/foundry-gateway-example-architecture.svg",
+   "sha256": "07920e6a7d2fd39f8ca8b3dd2109155cf58523cedd1654c43d2bcaebfbed775b"
+  }
  },
  {
   "name": "azure-fsi-architecture",
   "url": "https://arch-center.azureedge.net/fsi-architecture.vsdx",
-  "sha256": "1f1eb74d4c45ed9e5075f3dd46d5a541e63436fd77aabf5bdadaf854c593c149"
+  "sha256": "1f1eb74d4c45ed9e5075f3dd46d5a541e63436fd77aabf5bdadaf854c593c149",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/reference-architectures/containers/aro/images/financial-services-industry-architecture.svg",
+   "sha256": "58047784d8af7b5d0a626c1dc6c166e1ed06db96ab848d7aec222aa8a25045bf"
+  }
  },
  {
   "name": "azure-fully-managed-secure-apps",
   "url": "https://arch-center.azureedge.net/fully-managed-secure-apps.vsdx",
-  "sha256": "762047b05d2ab51955231e1ac742f477f8457ee7950270c845607683d427110d"
+  "sha256": "762047b05d2ab51955231e1ac742f477f8457ee7950270c845607683d427110d",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/apps/media/fully-managed-secure-apps.svg",
+   "sha256": "e5d160d9c263181b13d605f58c3d1b47fa509e71ad9e8426d8b9918e12d00e92"
+  }
  },
  {
   "name": "azure-gatekeeper",
   "url": "https://arch-center.azureedge.net/gatekeeper.vsdx",
-  "sha256": "d222f0c3e9ddbc5f2a9334fd54b3d9b147b4b9978d91eb4584e3da4ecace714f"
+  "sha256": "d222f0c3e9ddbc5f2a9334fd54b3d9b147b4b9978d91eb4584e3da4ecace714f",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/patterns/_images/gatekeeper-example.svg",
+   "sha256": "3d56f2292b77cde1707ffbc2ea651c3c75260af344042c136e2f3ef4282a27f1"
+  }
  },
  {
   "name": "azure-gateway-aggregation-example",
   "url": "https://arch-center.azureedge.net/gateway-aggregation-example.vsdx",
-  "sha256": "a98b5baa6a1c1a4f3609dc63309e3e9febe25d862be162a9644999237cda46ab"
+  "sha256": "a98b5baa6a1c1a4f3609dc63309e3e9febe25d862be162a9644999237cda46ab",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/patterns/_images/gateway-aggregation-example.svg",
+   "sha256": "f652c836b600e0254951b48a6209d7f83376990930252f83318476e246aa7c03"
+  }
  },
  {
   "name": "azure-gateway",
@@ -642,117 +1094,209 @@
  {
   "name": "azure-generate-documents",
   "url": "https://arch-center.azureedge.net/generate-documents.vsdx",
-  "sha256": "8e7a4d229c3547a427bc013084bcf7ad8120a9b3154cb33245f23a96168ee066"
+  "sha256": "8e7a4d229c3547a427bc013084bcf7ad8120a9b3154cb33245f23a96168ee066",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/ai-ml/idea/_images/generate-documents.svg",
+   "sha256": "c560e98d718be31ffaf3f2f14a817d8734fdd32e1f637646786d228134e772bd"
+  }
  },
  {
   "name": "azure-gitops-blueprint-aks-content",
   "url": "https://arch-center.azureedge.net/gitops-blueprint-aks-content.vsdx",
-  "sha256": "ec6764743244aca3dadae39e0a0aeae2e515c3405a7f902bace313a0bf14d031"
+  "sha256": "ec6764743244aca3dadae39e0a0aeae2e515c3405a7f902bace313a0bf14d031",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/gitops-aks/media/gitops-flux.svg",
+   "sha256": "fd990de4bf8be6e56abac99355dc1d0e74a36791e1faf20d0907551c443e258b"
+  }
  },
  {
   "name": "azure-greenfield-lakehouse-fabric",
   "url": "https://arch-center.azureedge.net/greenfield-lakehouse-fabric.vsdx",
-  "sha256": "767e8589669fd120e78294348b3d226e5d82edbfbabd258cbd9006496df7ad72"
+  "sha256": "767e8589669fd120e78294348b3d226e5d82edbfbabd258cbd9006496df7ad72",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/data/media/greenfield-lakehouse-fabric/greenfield-lakehouse-fabric.svg",
+   "sha256": "707642dc9dcc1fe63d3e9efe0022e61324e50a784d9962e49a3f7d2f6122186b"
+  }
  },
  {
   "name": "azure-high-availability-multi-region-v-10",
   "url": "https://arch-center.azureedge.net/high-availability-multi-region-v-10.vsdx",
-  "sha256": "b4febd401aded7038255157933a82a85b704c592b5a6eb3740924e0c03053a50"
+  "sha256": "b4febd401aded7038255157933a82a85b704c592b5a6eb3740924e0c03053a50",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/high-availability/images/high-availability-multi-region-web-v-10.svg",
+   "sha256": "e9fd7c1fa3f68ee5bce0204b01f94e3a31625ef3d25022379083adddc314dfa2"
+  }
  },
  {
   "name": "azure-hub-spoke-network-topology-architecture",
   "url": "https://arch-center.azureedge.net/hub-spoke-network-topology-architecture.vsdx",
-  "sha256": "e447ca064c4b4fc60743a5823b1fb6c71dfd5ed7909a8351c2da14284b294eec"
+  "sha256": "e447ca064c4b4fc60743a5823b1fb6c71dfd5ed7909a8351c2da14284b294eec",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/_images/hub-spoke-network-topology-architecture.svg",
+   "sha256": "43fa17eead5406e9842a4ccd91ff4d03c293b947d0a766fba18a229e77326276"
+  }
  },
  {
   "name": "azure-hub-spoke-virtual-wan-architecture-1",
   "url": "https://arch-center.azureedge.net/hub-spoke-virtual-wan-architecture-1.vsdx",
-  "sha256": "d424baadcc721be1577def4af57620ff568b6e74cdcb0089592508e44fda0f90"
+  "sha256": "d424baadcc721be1577def4af57620ff568b6e74cdcb0089592508e44fda0f90",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/networking/architecture/_images/hub-spoke-virtual-wan-architecture-1.svg",
+   "sha256": "a916c627cb5d322d220b6258519936b54821ff4ba3244e48f4e90192c5470d37"
+  }
  },
  {
   "name": "azure-hub-spoke-virtual-wan-architecture-2",
   "url": "https://arch-center.azureedge.net/hub-spoke-virtual-wan-architecture-2.vsdx",
-  "sha256": "49bacf8352d16faa82fec707a8507a46542ee794e9e794c6dbbc2490137332e6"
+  "sha256": "49bacf8352d16faa82fec707a8507a46542ee794e9e794c6dbbc2490137332e6",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/networking/architecture/_images/hub-spoke-virtual-wan-architecture-2.svg",
+   "sha256": "0f3a044d86d338737b1b13efa8ae4e1fd7a301702dba854ada474a723df4a91e"
+  }
  },
  {
   "name": "azure-hybrid-dns-infrastructure",
   "url": "https://arch-center.azureedge.net/hybrid-dns-infrastructure.vsdx",
-  "sha256": "48767d4eb3bb8c775be8619a6460a5c4300f79f2ed54ac69f0c5f7c1c042998c"
+  "sha256": "48767d4eb3bb8c775be8619a6460a5c4300f79f2ed54ac69f0c5f7c1c042998c",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/hybrid/images/hybrid-dns-infrastructure.svg",
+   "sha256": "c5946dabc3a590e903c2b8cd04b506bcc4438e6041d304223867e312a9bb09a3"
+  }
  },
  {
   "name": "azure-hybrid-file-services",
   "url": "https://arch-center.azureedge.net/hybrid-file-services.vsdx",
-  "sha256": "9fe8c33ccd6af8fa6cc1cb1bdea92d84f92e1e420ffe86cfc408a828ce31263c"
+  "sha256": "9fe8c33ccd6af8fa6cc1cb1bdea92d84f92e1e420ffe86cfc408a828ce31263c",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/hybrid/images/hybrid-file-services.svg",
+   "sha256": "60e94076a7f388c761ef29eae15b44e70d8484a8916a35b8f1d35d0a460bbf3f"
+  }
  },
  {
   "name": "azure-hybrid-perf-monitoring",
   "url": "https://arch-center.azureedge.net/hybrid-perf-monitoring.vsdx",
-  "sha256": "c6a35d300f8aa584869caddd57d563ba0e924467387736355f9dab8f1f305cd5"
+  "sha256": "c6a35d300f8aa584869caddd57d563ba0e924467387736355f9dab8f1f305cd5",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/hybrid/images/hybrid-perf-monitoring.svg",
+   "sha256": "7ec34e0c971529d406d85cbc55ae58e1c40941ef298403f369d393ba4037be67"
+  }
  },
  {
   "name": "azure-ibm-zos-online-transaction-processing-on-azure",
   "url": "https://arch-center.azureedge.net/ibm-zos-online-transaction-processing-on-azure.vsdx",
-  "sha256": "6128a6101c396af503a30d3dee1a48078e2c3f51ecfb595a47fcdd729c251fd6"
+  "sha256": "6128a6101c396af503a30d3dee1a48078e2c3f51ecfb595a47fcdd729c251fd6",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/mainframe/media/ibm-zos-online-transaction-processing-on-azure.svg",
+   "sha256": "38a1422288f5393e6539c0f25c656055719a70a86c20d63d3667e395a2bdf4f2"
+  }
  },
  {
   "name": "azure-identity-architecture-adds",
   "url": "https://arch-center.azureedge.net/identity-architecture-adds.vsdx",
-  "sha256": "b8a5c39134437213736aa9b3b5c51a6b6a79873d64a8e5e242132f4f3e997a41"
+  "sha256": "b8a5c39134437213736aa9b3b5c51a6b6a79873d64a8e5e242132f4f3e997a41",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/identity/media/ad-ds-extend-domain.svg",
+   "sha256": "eff55c9194581e3471420b2251bf5b2c79ca7d1fdff3787624ecebf8c72bae34"
+  }
  },
  {
   "name": "azure-identity-architectures",
   "url": "https://arch-center.azureedge.net/identity-architectures.vsdx",
-  "sha256": "475d1a8e4dfebc8766423b6ea0703ed9d2b92e8f457c34a5750f7b89207f7edc"
+  "sha256": "475d1a8e4dfebc8766423b6ea0703ed9d2b92e8f457c34a5750f7b89207f7edc",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/identity/media/identity-architecture.svg",
+   "sha256": "adf4a07c659707f9a0695973102ea77bdd5328e937f2e2dec3b9b0589f383cb7"
+  }
  },
  {
   "name": "azure-ingest-etl-and-stream-processing-with-azure-databricks",
   "url": "https://arch-center.azureedge.net/ingest-etl-and-stream-processing-with-azure-databricks.vsdx",
-  "sha256": "3d1ef7bbe5778dac61542996aed22d7d369f783cb98242b6f4c142961404895f"
+  "sha256": "3d1ef7bbe5778dac61542996aed22d7d369f783cb98242b6f4c142961404895f",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/solution-ideas/media/ingest-etl-and-stream-processing-with-azure-databricks.svg",
+   "sha256": "19104f5cad1870b6b8c5f8a253f840eeb710f846abfa1636e3a2407a1ce78a69"
+  }
  },
  {
   "name": "azure-integrate-ibm-message-queues-azure",
   "url": "https://arch-center.azureedge.net/integrate-ibm-message-queues-azure.vsdx",
-  "sha256": "4479bfe58bb81c7ad3715c90bdaec57a5ad656861913df8da6b7280fa7b10863"
+  "sha256": "4479bfe58bb81c7ad3715c90bdaec57a5ad656861913df8da6b7280fa7b10863",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/mainframe/media/integrate-ibm-message-queues-azure-01.svg",
+   "sha256": "3018db356dd2476c83a862ae3680ce65d635ab7d24d78055d2a27b5b0d8f83bf"
+  }
  },
  {
   "name": "azure-integration-get-started-diagram",
   "url": "https://arch-center.azureedge.net/integration-get-started-diagram.vsdx",
-  "sha256": "4b2c209f4bf90583c355f427d4987ba98e1c16a232d1b563f2973a4b9436ad27"
+  "sha256": "4b2c209f4bf90583c355f427d4987ba98e1c16a232d1b563f2973a4b9436ad27",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/integration/media/integration-get-started-diagram.svg",
+   "sha256": "cb330763585c2a7cff0a7d78125dd8fcb3ff13c1d96517526d3d9f6e8e22a91d"
+  }
  },
  {
   "name": "azure-iot-azure-data-explorer",
   "url": "https://arch-center.azureedge.net/iot-azure-data-explorer.vsdx",
-  "sha256": "aebcbb6d2db543476819c9373d4f79fca09e1aa089fdaa7f17d8669a33460c9d"
+  "sha256": "aebcbb6d2db543476819c9373d4f79fca09e1aa089fdaa7f17d8669a33460c9d",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/solution-ideas/media/iot-azure-data-explorer.svg",
+   "sha256": "3bcaaee69f8c04087c87adf27509bdb1b9bd65615b19c376454664be746c7ca4"
+  }
  },
  {
   "name": "azure-iot-get-started-diagram",
   "url": "https://arch-center.azureedge.net/iot-get-started-diagram.vsdx",
-  "sha256": "8e9a94e2d89bf11171cc61ab3a42fe6bac9dd889405354a428ac51574124505f"
+  "sha256": "8e9a94e2d89bf11171cc61ab3a42fe6bac9dd889405354a428ac51574124505f",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/iot/media/iot-get-started-diagram.svg",
+   "sha256": "5ce0dd501746e1e01fd0668a6fadf4fb337ff5f6dae72012c056e4ff584bb3f1"
+  }
  },
  {
   "name": "azure-ipv6-hub-spoke-network-topology",
   "url": "https://arch-center.azureedge.net/ipv6-hub-spoke-network-topology.vsdx",
-  "sha256": "311c71c624db5bf9849d3399ce94517d6f2a5d01ca18885a90bae069e785cf2d"
+  "sha256": "311c71c624db5bf9849d3399ce94517d6f2a5d01ca18885a90bae069e785cf2d",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/networking/guide/images/ipv6-hub-spoke.svg",
+   "sha256": "bc5215a0a2e0e0f80c82fe6dc2c15a3c1064c8e25ecfa2773279910a64d0384f"
+  }
  },
  {
   "name": "azure-linux-vm-single-vm-diagram",
   "url": "https://arch-center.azureedge.net/linux-vm-single-vm-diagram.vsdx",
-  "sha256": "d02d80934393c0b53df39794e5750b0fa23f01b4032c879332c20d183fdfc030"
+  "sha256": "d02d80934393c0b53df39794e5750b0fa23f01b4032c879332c20d183fdfc030",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/reference-architectures/n-tier/images/single-vm-diagram.svg",
+   "sha256": "1e918fb1841dbbcd727fb3dcf753a2414c34bef959d94d3fdb4e2daabb61c4ca"
+  }
  },
  {
   "name": "azure-load-balancing",
   "url": "https://arch-center.azureedge.net/load-balancing.vsdx",
-  "sha256": "ee204dd3d0de9f2d96702745c75e552e2a670efd842e1f9f046c6a0106fb0a1f"
+  "sha256": "ee204dd3d0de9f2d96702745c75e552e2a670efd842e1f9f046c6a0106fb0a1f",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/aks/media/load-balancing.svg",
+   "sha256": "90c8f05645d2b9e3381804d2911d879602d059f244194e2544e1cc312de73946"
+  }
  },
  {
   "name": "azure-load-testing-architecture",
   "url": "https://arch-center.azureedge.net/load-testing-architecture.vsdx",
-  "sha256": "0bbbe0f6d799ac93a98a0052d592903b6e46280b793a933c238f04b2efaf9865"
+  "sha256": "0bbbe0f6d799ac93a98a0052d592903b6e46280b793a933c238f04b2efaf9865",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/testing/load-testing/images/load-testing-architecture.svg",
+   "sha256": "af6c9d6fd3e72d476947b75f07ce7c5bc310234ff66085619842822d59b5d963"
+  }
  },
  {
   "name": "azure-m365-dev-ops",
   "url": "https://arch-center.azureedge.net/m365-dev-ops.vsdx",
-  "sha256": "4e78b2428ead9b939afd7e0467b3e2bca0a29bec7d56908c24baefea5b198095"
+  "sha256": "4e78b2428ead9b939afd7e0467b3e2bca0a29bec7d56908c24baefea5b198095",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/devops/media/manage-microsoft-365-tenant-configuration-microsoft365dsc-azure-devops.svg",
+   "sha256": "a8260b21dd0ac2358aeca328f7a765e08d6b998abec1a7bff790a63f40746407"
+  }
  },
  {
   "name": "azure-machine-learning-inference",
@@ -777,37 +1321,65 @@
  {
   "name": "azure-mainframe-azure-file-replication-updated",
   "url": "https://arch-center.azureedge.net/mainframe-azure-file-replication-updated.vsdx",
-  "sha256": "66c6dc1fd8853a6e2e6c0cd366be5a96a28a96712f544c06eb6617d755020da7"
+  "sha256": "66c6dc1fd8853a6e2e6c0cd366be5a96a28a96712f544c06eb6617d755020da7",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/solution-ideas/media/mainframe-azure-file-replication-updated.svg",
+   "sha256": "2b80c8a19508a6141165b20c03c7a7fc80d4095e45f62d72d4ea7f2106008f8f"
+  }
  },
  {
   "name": "azure-mainframe-general-azure-refactor",
   "url": "https://arch-center.azureedge.net/mainframe-general-azure-refactor.vsdx",
-  "sha256": "8004f4d3ad40ee039f9528ec89ce29426cd62437888ac39a456996dccb11edb6"
+  "sha256": "8004f4d3ad40ee039f9528ec89ce29426cd62437888ac39a456996dccb11edb6",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/mainframe/media/general-mainframe.svg",
+   "sha256": "4b065618a0f7c698645d2b3e2e101a63fd9eec2e3f9171b303740a0fbbc530f1"
+  }
  },
  {
   "name": "azure-mainframe-midrange-data-replication-azure-precisely",
   "url": "https://arch-center.azureedge.net/mainframe-midrange-data-replication-azure-precisely.vsdx",
-  "sha256": "60a483e49e7d076d95017d59c1dfc498a24ecc491ca5d698b8e4d23c78925598"
+  "sha256": "60a483e49e7d076d95017d59c1dfc498a24ecc491ca5d698b8e4d23c78925598",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/mainframe/media/mainframe-midrange-data-replication-azure-precisely.svg",
+   "sha256": "b1b94588d2a4766c791e0eea5fb7d7d2416079c97a1810561004fb8faaeac5f1"
+  }
  },
  {
   "name": "azure-mainframe-midrange-data-replication-azure-qlik",
   "url": "https://arch-center.azureedge.net/mainframe-midrange-data-replication-azure-qlik.vsdx",
-  "sha256": "18726f05958e3b82ac25dbfd54c5c2c8100a8a4b77b16f17cb603d0d4576e4aa"
+  "sha256": "18726f05958e3b82ac25dbfd54c5c2c8100a8a4b77b16f17cb603d0d4576e4aa",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/mainframe/media/mainframe-midrange-data-replication-azure-qlik.svg",
+   "sha256": "0bd1ebcf21091a86b72d26cf69a197dae4183457b0d5477452475ce2a3086030"
+  }
  },
  {
   "name": "azure-mainframe-realtime-batch-data-replication-azure-rdrs",
   "url": "https://arch-center.azureedge.net/mainframe-realtime-batch-data-replication-azure-rdrs.vsdx",
-  "sha256": "86403ff8ebcd5b973aeafe5f26dc6e3ca0e780871c0e607af0cc7396c43811db"
+  "sha256": "86403ff8ebcd5b973aeafe5f26dc6e3ca0e780871c0e607af0cc7396c43811db",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/mainframe/media/mainframe-realtime-batch-data-replication-azure-rdrs.svg",
+   "sha256": "24a89fd1f7882eb7b66052710baa10e95ca29789a9e8c0146bcb49b5b3b6f9da"
+  }
  },
  {
   "name": "azure-management-governance-get-started-diagram",
   "url": "https://arch-center.azureedge.net/management-governance-get-started-diagram.vsdx",
-  "sha256": "483770f3d4778dbc916c462ed835a47b8c2d608ac986b9051bc051514ceb7d02"
+  "sha256": "483770f3d4778dbc916c462ed835a47b8c2d608ac986b9051bc051514ceb7d02",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/media/images/management-governance-get-started-diagram.svg",
+   "sha256": "d756e44dcbcf6e4174b08207da1f87aaad2cc7db4ae904b48bf4bbe55d0cd8a2"
+  }
  },
  {
   "name": "azure-many-models-machine-learning-azure",
   "url": "https://arch-center.azureedge.net/many-models-machine-learning-azure.vsdx",
-  "sha256": "d787c38169942e98ef714e3da975073549111159ad0d59fd07a1b92df111ec40"
+  "sha256": "d787c38169942e98ef714e3da975073549111159ad0d59fd07a1b92df111ec40",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/ai-ml/idea/_images/many-models-machine-learning-azure.svg",
+   "sha256": "76253d8e83956e925642c7668ffeeb214115687ed4d634d0c40efec3896a9a6d"
+  }
  },
  {
   "name": "azure-massive-scale-architecture",
@@ -817,7 +1389,11 @@
  {
   "name": "azure-measure-app-sci-score",
   "url": "https://arch-center.azureedge.net/measure-app-sci-score.vsdx",
-  "sha256": "1bf39b2ce69f4ca9fc7a85d2be70484c6d48adb852f65af9c9ca322ce832d686"
+  "sha256": "1bf39b2ce69f4ca9fc7a85d2be70484c6d48adb852f65af9c9ca322ce832d686",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/apps/media/measure-app-sci-score.svg",
+   "sha256": "f644a6e8bf93d7ffd1bc0f58bfdf941ab938d4fff7b8899e608d539b2535c380"
+  }
  },
  {
   "name": "azure-microservice-boundaries",
@@ -827,207 +1403,371 @@
  {
   "name": "azure-microservices-architecture",
   "url": "https://arch-center.azureedge.net/microservices-architecture.vsdx",
-  "sha256": "a09690b8c164659cf8a01905bd432e4477c509bdb011281598ef457adc9bd1da"
+  "sha256": "a09690b8c164659cf8a01905bd432e4477c509bdb011281598ef457adc9bd1da",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/reference-architectures/containers/aks-microservices/images/microservices-architecture.svg",
+   "sha256": "afe65947fec6b93f844493c067531e128c8cfbc88ed28def2f4c744538eadfca"
+  }
  },
  {
   "name": "azure-microservices-with-container-apps",
   "url": "https://arch-center.azureedge.net/microservices-with-container-apps.vsdx",
-  "sha256": "4c9eb00a7985f7fdc7b74d8273cb92b580e5538d284cca9c4a984cdabb393969"
+  "sha256": "4c9eb00a7985f7fdc7b74d8273cb92b580e5538d284cca9c4a984cdabb393969",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/serverless/media/microservices-with-container-apps.svg",
+   "sha256": "4473416f570d78737c2cf65bb879f34a8587338eddacf67372e343ff0b266d01"
+  }
  },
  {
   "name": "azure-microsoft-defender-xdr-build-second-layer-defense",
   "url": "https://arch-center.azureedge.net/microsoft-defender-xdr-build-second-layer-defense.vsdx",
-  "sha256": "486729230da97fb0f1e143f4410a0b42ad18ced135666eed92f89a75c80e4189"
+  "sha256": "486729230da97fb0f1e143f4410a0b42ad18ced135666eed92f89a75c80e4189",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/solution-ideas/media/microsoft-defender-xdr-build-second-layer-defense.svg",
+   "sha256": "a675ccea80bb540e3facfe7a1b4f3ecb515a0eb0d25f693157e775cb7a3662ef"
+  }
  },
  {
   "name": "azure-migrate-aix-workloads-to-azure-with-skytap",
   "url": "https://arch-center.azureedge.net/migrate-aix-workloads-to-azure-with-skytap.vsdx",
-  "sha256": "a0b59cc6bdfc304f3e28cef85465897f24182227b9ab3579c6a81f6e7fb14bf3"
+  "sha256": "a0b59cc6bdfc304f3e28cef85465897f24182227b9ab3579c6a81f6e7fb14bf3",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/mainframe/media/migrate-aix-workloads-to-azure-with-skytap.svg",
+   "sha256": "09358fed72234cb8f0b3df99901e2fe4921a776c34737678f899ee9afc327042"
+  }
  },
  {
   "name": "azure-migrate-ibm-i-series-to-azure-with-skytap",
   "url": "https://arch-center.azureedge.net/migrate-ibm-i-series-to-azure-with-skytap.vsdx",
-  "sha256": "536f63ba43f79b74c5a5414c04a33004fd15732b641f60613919b3d100bb9da2"
+  "sha256": "536f63ba43f79b74c5a5414c04a33004fd15732b641f60613919b3d100bb9da2",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/mainframe/media/migrate-ibm-i-series-to-azure-with-skytap.svg",
+   "sha256": "4352edb171605be2a07c633aa23756fdda5a0c2e85cdaff6b072bbcf2a8de4c4"
+  }
  },
  {
   "name": "azure-minimal-storage-change-feed-replicate-data",
   "url": "https://arch-center.azureedge.net/minimal-storage-change-feed-replicate-data.vsdx",
-  "sha256": "4f917a0937ba011d5e52ebe111039943b0a62b6780e6271a3bfb51e40492a850"
+  "sha256": "4f917a0937ba011d5e52ebe111039943b0a62b6780e6271a3bfb51e40492a850",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/databases/idea/images/minimal-storage-change-feed-replicate-data.svg",
+   "sha256": "66b9dd7cfe85781b2727f18c1474a373523be2cbc179867f9079acbce47dbeb4"
+  }
  },
  {
   "name": "azure-mlogica-mainframe-data-migration-architecture",
   "url": "https://arch-center.azureedge.net/mlogica-mainframe-data-migration-architecture.vsdx",
-  "sha256": "c2898d17840c75bdd36f8d36dcc041044df6b4d43b294534f1d56fe3da298fe9"
+  "sha256": "c2898d17840c75bdd36f8d36dcc041044df6b4d43b294534f1d56fe3da298fe9",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/mainframe/media/mlogica-mainframe-data-migration-architecture.svg",
+   "sha256": "a7049a8e107b29c6f9149e26cfa5df13bd9be397b8ded4622ba95f9a6aef781c"
+  }
  },
  {
   "name": "azure-modernize-mainframe-data-azure",
   "url": "https://arch-center.azureedge.net/modernize-mainframe-data-azure.vsdx",
-  "sha256": "38a5a0abcb2b19be4caefcde7d8ac17ae971445426edebb899587d4f6c8bd49c"
+  "sha256": "38a5a0abcb2b19be4caefcde7d8ac17ae971445426edebb899587d4f6c8bd49c",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/mainframe/media/modernize-mainframe-data-azure.svg",
+   "sha256": "6680475e8a266f3662ddb2da78f4dc0036d81704bb87a36986cfb4dd70201300"
+  }
  },
  {
   "name": "azure-mongodb-atlas-fabric",
   "url": "https://arch-center.azureedge.net/mongodb-atlas-fabric.vsdx",
-  "sha256": "a67770e290720c1df5f3c8d59addcb2aaf66db7c66a34dae7a169526ba9a5796"
+  "sha256": "a67770e290720c1df5f3c8d59addcb2aaf66db7c66a34dae7a169526ba9a5796",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/analytics/media/mongodb-atlas-fabric.svg",
+   "sha256": "364fd1e04a2f210576870e36fddcbee45e3afc7fdade7ad7f53024659bcf30cd"
+  }
  },
  {
   "name": "azure-mongodb-atlas-multi-region",
   "url": "https://arch-center.azureedge.net/mongodb-atlas-multi-region.vsdx",
-  "sha256": "f5b8064bd5cfa5341fcc4396078cea47085f54e8e710521e615279f6671ef790"
+  "sha256": "f5b8064bd5cfa5341fcc4396078cea47085f54e8e710521e615279f6671ef790",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/databases/architecture/_images/mongodb-atlas-multi-region.svg",
+   "sha256": "97449d897016984ca700e0caa9e302b1eb2a6c6f62333011e30f0365b8f9c2af"
+  }
  },
  {
   "name": "azure-mongodb-atlas-single-region",
   "url": "https://arch-center.azureedge.net/mongodb-atlas-single-region.vsdx",
-  "sha256": "56982e8beab6d676486e65303f268aa071feda1a27f68651852fdfdbf36929d6"
+  "sha256": "56982e8beab6d676486e65303f268aa071feda1a27f68651852fdfdbf36929d6",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/databases/architecture/_images/mongodb-atlas-single-region.svg",
+   "sha256": "e266752798ab7c25d3fc42d04e6c456c00da3c6a0e701d8b42f45da5ba6ecdbc"
+  }
  },
  {
   "name": "azure-multi-modal-content-processing",
   "url": "https://arch-center.azureedge.net/multi-modal-content-processing.vsdx",
-  "sha256": "6b9cf41cb827466c7eb87e403d3995ed2cf26413b0d6d3263a1cbbdf68178599"
+  "sha256": "6b9cf41cb827466c7eb87e403d3995ed2cf26413b0d6d3263a1cbbdf68178599",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/ai-ml/idea/_images/multi-modal-content-processing.svg",
+   "sha256": "50cdcc155c7e6d0b4bf0b556309498b4af6140268bbf77032496ea9f19bb6518"
+  }
  },
  {
   "name": "azure-multiple-agent-workflow-automation",
   "url": "https://arch-center.azureedge.net/multiple-agent-workflow-automation.vsdx",
-  "sha256": "a871bc0beb7597c0823e66ca1facd7d6e4ffd3021d05bb76128242b063e01779"
+  "sha256": "a871bc0beb7597c0823e66ca1facd7d6e4ffd3021d05bb76128242b063e01779",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/ai-ml/idea/_images/multiple-agent-workflow-automation.svg",
+   "sha256": "222ebc47d2a53624abe2821dd062ce7bee9ed66e4a13624602ba7e851206d6b9"
+  }
  },
  {
   "name": "azure-multitenant-web-apps",
   "url": "https://arch-center.azureedge.net/multitenant-web-apps.vsdx",
-  "sha256": "3f97cde4a793409cff576db5ceed53e7b33d9f7be56cf0050ebbb40535bc51e2"
+  "sha256": "3f97cde4a793409cff576db5ceed53e7b33d9f7be56cf0050ebbb40535bc51e2",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/web-apps/guides/_images/multitenant-web-apps.svg",
+   "sha256": "2a8e7418f056b826a1f00eb6b3198f7c4d74a2261fd3e0aaae13e41c37ab7527"
+  }
  },
  {
   "name": "azure-network-virtual-appliance-high-availability-load-balancer-internet-inbound",
   "url": "https://arch-center.azureedge.net/network-virtual-appliance-high-availability-load-balancer-internet-inbound.vsdx",
-  "sha256": "e5e7443233d557405c53dd922e5b44849abd4dea18e0f810714365b2503c3bbb"
+  "sha256": "e5e7443233d557405c53dd922e5b44849abd4dea18e0f810714365b2503c3bbb",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/networking/guide/images/network-virtual-appliance-high-availability-load-balancer-internet-inbound.svg",
+   "sha256": "18457539ff616836fc365815a70bfa55c6aa99c1154ecfb6b82a22be24e046a9"
+  }
  },
  {
   "name": "azure-no-token-in-the-browser",
   "url": "https://arch-center.azureedge.net/no-token-in-the-browser.vsdx",
-  "sha256": "d81df5824d33d2760116946cb1ea5c680caa9a038018120193ace6a643fc7aa1"
+  "sha256": "d81df5824d33d2760116946cb1ea5c680caa9a038018120193ace6a643fc7aa1",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/web-apps/guides/_images/no-token.svg",
+   "sha256": "865a54584d302ed02022aec2a5a06b326c59cc63a43f322e1b38120c9758847a"
+  }
  },
  {
   "name": "azure-openai-end-to-end-basic",
   "url": "https://arch-center.azureedge.net/openai-end-to-end-basic.vsdx",
-  "sha256": "50c023bcc886bfe365e8491e26645b063831416009fe26d9e75021522d716887"
+  "sha256": "50c023bcc886bfe365e8491e26645b063831416009fe26d9e75021522d716887",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/ai-ml/architecture/_images/openai-end-to-end-basic.svg",
+   "sha256": "40333e380df10f0c3154f561a6225dd3eaca68607f6778941f7540af757712d7"
+  }
  },
  {
   "name": "azure-oracle-database-azure-migration",
   "url": "https://arch-center.azureedge.net/oracle-database-azure-migration.vsdx",
-  "sha256": "fc57e99e6dc5566be749b18130eba033683b5651a05d42440752046cfdf4a014"
+  "sha256": "fc57e99e6dc5566be749b18130eba033683b5651a05d42440752046cfdf4a014",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/databases/idea/images/topic-migrate-oracle-azure/oracle-database-azure-migration.svg",
+   "sha256": "8e99b37f931c52c7ceb359c7ccae29a5e197a9594ebde0a83d7b0ce966dd9340"
+  }
  },
  {
   "name": "azure-oracle-migration-iaas",
   "url": "https://arch-center.azureedge.net/oracle-migration-iaas.vsdx",
-  "sha256": "8caef64602099fc19cf9c15f8f11670e19aac5e50f0d5ff23e7ae1e6f838eb54"
+  "sha256": "8caef64602099fc19cf9c15f8f11670e19aac5e50f0d5ff23e7ae1e6f838eb54",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/databases/idea/images/migrate-oracle-azure-iaas/oracle-migration-iaas.svg",
+   "sha256": "6c9968a6838636d288a45792e6ce942c7ca3f21c043f19b8293d6e156a7c9bca"
+  }
  },
  {
   "name": "azure-oracle-migration-odaa",
   "url": "https://arch-center.azureedge.net/oracle-migration-odaa.vsdx",
-  "sha256": "acc99b37ea840b7137b3d4a95ec1684f66421305e5939b197aab7fdfffd891a6"
+  "sha256": "acc99b37ea840b7137b3d4a95ec1684f66421305e5939b197aab7fdfffd891a6",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/databases/idea/images/migrate-oracle-odaa-exadata/oracle-migration-odaa.svg",
+   "sha256": "bfe0c331863ca7d19563a3c5e4e9684c6faeef931fb2fe7396bf79e9d8e5bd6c"
+  }
  },
  {
   "name": "azure-orchestrate-mlops-azure-databricks",
   "url": "https://arch-center.azureedge.net/orchestrate-mlops-azure-databricks.vsdx",
-  "sha256": "befea32bb043525917877d0828145ffebfebd5bc3e61069be24715cf873f0180"
+  "sha256": "befea32bb043525917877d0828145ffebfebd5bc3e61069be24715cf873f0180",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/ai-ml/idea/_images/orchestrate-machine-learning-azure-databricks.svg",
+   "sha256": "6e548ba6c1ac97ad28145184113e1621c57a99900cf8420816dd1f45c857534f"
+  }
  },
  {
   "name": "azure-private-link-hub-spoke-network-basic-hub-spoke-diagram",
   "url": "https://arch-center.azureedge.net/private-link-hub-spoke-network-basic-hub-spoke-diagram.vsdx",
-  "sha256": "f86303340eedc50b3e8dc4c452e21dc52db7c2066c09bdfc558fef5a927f4909"
+  "sha256": "f86303340eedc50b3e8dc4c452e21dc52db7c2066c09bdfc558fef5a927f4909",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/networking/guide/images/private-link-hub-spoke-network-basic-hub-spoke-diagram.svg",
+   "sha256": "e7dd00c3ab56f6827bd99efbdd3869d5fb86d53cc21633896fc9f9ff87315d39"
+  }
  },
  {
   "name": "azure-private-link-hub-spoke-network-decision-tree",
   "url": "https://arch-center.azureedge.net/private-link-hub-spoke-network-decision-tree.vsdx",
-  "sha256": "9950b38cbfd0a7be04bce5517c596a66c7c44da5709d0027496efc136b55046f"
+  "sha256": "9950b38cbfd0a7be04bce5517c596a66c7c44da5709d0027496efc136b55046f",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/networking/guide/images/private-link-hub-spoke-network-decision-tree.svg",
+   "sha256": "c854a482f7a400c91a00d529ace7920a78fbc0e33eb5dd5590818fbad973fb9d"
+  }
  },
  {
   "name": "azure-private-link-hub-spoke-network-private-link",
   "url": "https://arch-center.azureedge.net/private-link-hub-spoke-network-private-link.vsdx",
-  "sha256": "9bb5f5790371e3ec1ce84cd37ddb476f5019563aff30985791e9e047e01f70ea"
+  "sha256": "9bb5f5790371e3ec1ce84cd37ddb476f5019563aff30985791e9e047e01f70ea",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/networking/guide/images/private-link-hub-spoke-network-private-link.svg",
+   "sha256": "dc6277dde35e51313241b8beede1e7f2963cb3ab52fd38c0c77e39e5d94d90b3"
+  }
  },
  {
   "name": "azure-process-batch-transactions",
   "url": "https://arch-center.azureedge.net/process-batch-transactions.vsdx",
-  "sha256": "d5604d8fcc2cb9fbdb3ee4c9eaab0b966f632a20f6ad6498060c05a0e2f7f471"
+  "sha256": "d5604d8fcc2cb9fbdb3ee4c9eaab0b966f632a20f6ad6498060c05a0e2f7f471",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/mainframe/media/process-batch-transactions.svg",
+   "sha256": "699a9cfc077ed0d425ad282b80d7246a0dbba650546b68e5053b7dc9ab82601b"
+  }
  },
  {
   "name": "azure-protect-apis",
   "url": "https://arch-center.azureedge.net/protect-apis.vsdx",
-  "sha256": "4a6346291c7739a5d73b2131a46d52494ad435b4597bd7fd16aefee030f90346"
+  "sha256": "4a6346291c7739a5d73b2131a46d52494ad435b4597bd7fd16aefee030f90346",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/web-apps/api-management/_images/protect-apis.svg",
+   "sha256": "8d43bee96b15cae0956f8f1d200d94ccecb876d8ed0e73da469adda2261099ab"
+  }
  },
  {
   "name": "azure-queues-events",
   "url": "https://arch-center.azureedge.net/queues-events.vsdx",
-  "sha256": "3e0e057726a396d13fe56cbec1c0ae7a5c7356c36f82d77e876f0ece28e148e5"
+  "sha256": "3e0e057726a396d13fe56cbec1c0ae7a5c7356c36f82d77e876f0ece28e148e5",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/integration/media/enterprise-integration-message-broker-events.svg",
+   "sha256": "d1863357213ae2f823a1a6d864f9f68be1cfad3003bd7b7b84733f419b6a13be"
+  }
  },
  {
   "name": "azure-raincode-reference-architecture",
   "url": "https://arch-center.azureedge.net/raincode-reference-architecture.vsdx",
-  "sha256": "84d96aa8cd2f8052a6832b8bc20c1f3c3bc8b42210a0d4b1e4d8ee111805a853"
+  "sha256": "84d96aa8cd2f8052a6832b8bc20c1f3c3bc8b42210a0d4b1e4d8ee111805a853",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/reference-architectures/app-modernization/media/raincode-reference-architecture-01.svg",
+   "sha256": "705d69a80d633ff1983f23b30cfb0e9b1bf499b9f8b4677d31ea574fbb2ce3be"
+  }
  },
  {
   "name": "azure-real-time-monitoring-rti",
   "url": "https://arch-center.azureedge.net/real-time-monitoring-rti.vsdx",
-  "sha256": "0ac0a38e4a626e8a4dc6266dedf903da669c7ebb84d61ed82feceff03df24be7"
+  "sha256": "0ac0a38e4a626e8a4dc6266dedf903da669c7ebb84d61ed82feceff03df24be7",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/monitoring/media/monitor-media.svg",
+   "sha256": "8eef10d4523550fe0250d6fcc6bbb8dd4a5a0f9720a4be043d709aab2c9828ce"
+  }
  },
  {
   "name": "azure-reengineered-batch-application-architecture",
   "url": "https://arch-center.azureedge.net/reengineered-batch-application-architecture.vsdx",
-  "sha256": "8f20b077da9d10ddbfee16daa34711226121dfec748e7c34444de76d7bc062da"
+  "sha256": "8f20b077da9d10ddbfee16daa34711226121dfec748e7c34444de76d7bc062da",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/mainframe/media/reengineered-batch-application-architecture.svg",
+   "sha256": "1f718bc8eb58098b74a00c61803f48a49e4203ed78f4d9682c7002993260db62"
+  }
  },
  {
   "name": "azure-rehost-ims-raincode-imsql",
   "url": "https://arch-center.azureedge.net/rehost-ims-raincode-imsql.vsdx",
-  "sha256": "61e595b421f169249e5426bb2c5cc3a2bf23ec5a6b9562c728186551f871c4d0"
+  "sha256": "61e595b421f169249e5426bb2c5cc3a2bf23ec5a6b9562c728186551f871c4d0",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/mainframe/media/rehost-ims-raincode-imsql.svg",
+   "sha256": "a6247407b0e3bb389600a153b9fccbf696a3f046207a2ce0f0b23b8206fba456"
+  }
  },
  {
   "name": "azure-replicas",
   "url": "https://arch-center.azureedge.net/replicas.vsdx",
-  "sha256": "aa728de83e7355466a584dc180b1875d9becaa4591de395526230aad6de565a2"
+  "sha256": "aa728de83e7355466a584dc180b1875d9becaa4591de395526230aad6de565a2",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/aks/media/replicas.svg",
+   "sha256": "f267d9882a499ab0968ae915f9ac830aa09d206e35926bb01705d2654dc566e4"
+  }
  },
  {
   "name": "azure-s-4hana",
   "url": "https://arch-center.azureedge.net/s-4hana.vsdx",
-  "sha256": "a2123bebe5b90c764c61dcc26b3ad5d940c31a93c8fabb26dfd6cf9906be61be"
+  "sha256": "a2123bebe5b90c764c61dcc26b3ad5d940c31a93c8fabb26dfd6cf9906be61be",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/sap/media/s-4hana.svg",
+   "sha256": "c9be644571c8b6304fee65ebb1848965762add44bb1bedfdf32447a1e1b4d23c"
+  }
  },
  {
   "name": "azure-sap-bw4hana",
   "url": "https://arch-center.azureedge.net/sap-bw4hana.vsdx",
-  "sha256": "3f72db16378750af04819321a34667465b5f13fa30a242c15816ca3dd6e6917a"
+  "sha256": "3f72db16378750af04819321a34667465b5f13fa30a242c15816ca3dd6e6917a",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/reference-architectures/sap/images/sap-bw4hana.svg",
+   "sha256": "9c665ed7a7d9570135e45eddeab64b6efe88b7c076c4800e43fd74d760be0ef8"
+  }
  },
  {
   "name": "azure-sap-hana-architecture",
   "url": "https://arch-center.azureedge.net/sap-hana-architecture.vsdx",
-  "sha256": "2f3ea87333737c56155f53ed2c401ca2ec9733682b62b096c25a64cdf452eb32"
+  "sha256": "2f3ea87333737c56155f53ed2c401ca2ec9733682b62b096c25a64cdf452eb32",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/reference-architectures/sap/images/sap-hana-architecture.svg",
+   "sha256": "1ada824f42ab98021660901c9b8cfbca37f66e74d2949dff3ee08d28d29d5ba4"
+  }
  },
  {
   "name": "azure-sap-internet-communication-architecture",
   "url": "https://arch-center.azureedge.net/sap-internet-communication-architecture.vsdx",
-  "sha256": "b277375154e0ba72ac547892a5f0f7dfc8c59fe0f765fdc82e1c137c0dd08304"
+  "sha256": "b277375154e0ba72ac547892a5f0f7dfc8c59fe0f765fdc82e1c137c0dd08304",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/sap/media/sap-internet-communication-architecture-main.svg",
+   "sha256": "ecff30f056c5fa85b1767141b0f38773c38cc97488f450226e0eb8e3c5c4b4a7"
+  }
  },
  {
   "name": "azure-sap-netweaver-windows",
   "url": "https://arch-center.azureedge.net/sap-netweaver-windows.vsdx",
-  "sha256": "9f4f5fe4e66fc8dedd98c607ec4c410d73d4c190b3c51063bd1b57d5f9f9782c"
+  "sha256": "9f4f5fe4e66fc8dedd98c607ec4c410d73d4c190b3c51063bd1b57d5f9f9782c",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/sap/media/sap-netweaver.svg",
+   "sha256": "23f6ff918a0c9afee36ec8df4ff075f1d83431af7636e29463567a6053c4de82"
+  }
  },
  {
   "name": "azure-sap-oracle-architecture-availability-zone",
   "url": "https://arch-center.azureedge.net/sap-oracle-architecture-availability-zone.vsdx",
-  "sha256": "6f3c3fd6f9f641bfb14e47b51776dd063aa9e73688cd24567897ae582348af2c"
+  "sha256": "6f3c3fd6f9f641bfb14e47b51776dd063aa9e73688cd24567897ae582348af2c",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/apps/media/sap-oracle-architecture.svg",
+   "sha256": "c00e66cb4a1f771cc196d67b9e6f3930ec13f3a782bc78ae65a1b855dc8572f7"
+  }
  },
  {
   "name": "azure-sap-whole-landscape",
   "url": "https://arch-center.azureedge.net/sap-whole-landscape.vsdx",
-  "sha256": "f9e32a7c54c462be1cf2f754fdebd94470711bf60e93fa11c4fc1ddcdb8eee37"
+  "sha256": "f9e32a7c54c462be1cf2f754fdebd94470711bf60e93fa11c4fc1ddcdb8eee37",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/sap/media/sap-whole-landscape.svg",
+   "sha256": "585266eeb79891a1c55443f9b5bcf9b2ccdb52ad34510d6f9befb19dd060ce38"
+  }
  },
  {
   "name": "azure-sap-workload-automation-suse",
   "url": "https://arch-center.azureedge.net/sap-workload-automation-suse.vsdx",
-  "sha256": "3b44942c043454cb2d5644f91ddf2bbb3f57d5b0d016dd09ffb494802d2f245d"
+  "sha256": "3b44942c043454cb2d5644f91ddf2bbb3f57d5b0d016dd09ffb494802d2f245d",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/solution-ideas/media/sap-workload-automation-suse-flow.svg",
+   "sha256": "5e2ad5af4ecc3dcba4d1555f3425e7c2711511f5c6dbd265f33d81cdcb2e7375"
+  }
  },
  {
   "name": "azure-sas-overview",
   "url": "https://arch-center.azureedge.net/sas-overview.vsdx",
-  "sha256": "6d422c2f09e04d9edf5a83c62e7587d621ae9c4a0493a3f49cecd8aa37ef7a71"
+  "sha256": "6d422c2f09e04d9edf5a83c62e7587d621ae9c4a0493a3f49cecd8aa37ef7a71",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/sas/images/sas-azure-guide-architecture-diagram.svg",
+   "sha256": "a694e4d25688a5ad971f7fd18eb1b75b26ed521aa7d7f501877e065916a9cb5b"
+  }
  },
  {
   "name": "azure-scalable-apps-performance-modeling-site-reliability",
@@ -1037,216 +1777,388 @@
  {
   "name": "azure-secure-baseline-aks-gitops-flow",
   "url": "https://arch-center.azureedge.net/secure-baseline-aks-gitops-flow.vsdx",
-  "sha256": "fdecac1206e339ef8cae57d91bc5308351c1a52814f89165d67ebb9e5aa6a82e"
+  "sha256": "fdecac1206e339ef8cae57d91bc5308351c1a52814f89165d67ebb9e5aa6a82e",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/reference-architectures/containers/aks/images/gitops-flow.svg",
+   "sha256": "6b179f2096615745c097b626d84f17d4edcac3ec84ffc36bcc2e9201818cb34e"
+  }
  },
  {
   "name": "azure-secure-baseline-aks-tls-termination",
   "url": "https://arch-center.azureedge.net/secure-baseline-aks-tls-termination.vsdx",
-  "sha256": "27cd22f0268afb9b3c492a67f0f7f230fae7fcba6e23b652ac4c692652772d31"
+  "sha256": "27cd22f0268afb9b3c492a67f0f7f230fae7fcba6e23b652ac4c692652772d31",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/reference-architectures/containers/aks/images/tls-termination.svg",
+   "sha256": "c848686ddf6e03dc54fd3fa4ee9201a8305a125c96b7eebd2855d0b4cc4eee98"
+  }
  },
  {
   "name": "azure-secure-baseline-aks-traffic-flow",
   "url": "https://arch-center.azureedge.net/secure-baseline-aks-traffic-flow.vsdx",
-  "sha256": "f0a470cf0c43daa6bd35eee26d9f1cf100831b48eab65ade5b3d5fbd8531e4d0"
+  "sha256": "f0a470cf0c43daa6bd35eee26d9f1cf100831b48eab65ade5b3d5fbd8531e4d0",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/reference-architectures/containers/aks/images/traffic-flow.svg",
+   "sha256": "d1704aa6bf8da70d9db36b0bb993051df3dbbbc7f72c1d2b61e37c21edbb3663"
+  }
  },
  {
   "name": "azure-secure-baseline-aks-workload-ci-cd",
   "url": "https://arch-center.azureedge.net/secure-baseline-aks-workload-ci-cd.vsdx",
-  "sha256": "d6e327c9cf99bb85b32bb7fd25798498f61630eb8698c75d32960b92e34345e6"
+  "sha256": "d6e327c9cf99bb85b32bb7fd25798498f61630eb8698c75d32960b92e34345e6",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/reference-architectures/containers/aks/images/workload-ci-cd.svg",
+   "sha256": "4afcffda6ef54a5f8f80e4b4c0b56ec6ad11fa86fbec30169536ed6f72efc0b1"
+  }
  },
  {
   "name": "azure-secure-compute-for-research",
   "url": "https://arch-center.azureedge.net/secure-compute-for-research.vsdx",
-  "sha256": "b873cfed780629a28411ba9022f1cb544c896cc2e2fc0213cc448b112da728a8"
+  "sha256": "b873cfed780629a28411ba9022f1cb544c896cc2e2fc0213cc448b112da728a8",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/ai-ml/architecture/_images/secure-compute-for-research.svg",
+   "sha256": "8a65324db4a7e7ffb9b72b71b10d32013f69443533353be7b0806e5c8761b502"
+  }
  },
  {
   "name": "azure-secure-hybrid-messaging-client",
   "url": "https://arch-center.azureedge.net/secure-hybrid-messaging-client.vsdx",
-  "sha256": "22c1d81494368cece6ba5e5a21ca3524734d9178d27d7af25a4ea61c488fce3e"
+  "sha256": "22c1d81494368cece6ba5e5a21ca3524734d9178d27d7af25a4ea61c488fce3e",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/hybrid/media/desktop-online-option-1.svg",
+   "sha256": "27500368a9ababf44d60d0bf1ca5cbc6add8cfb7c636b285c9a7e07c017b1928"
+  }
  },
  {
   "name": "azure-secure-hybrid-messaging-mobile",
   "url": "https://arch-center.azureedge.net/secure-hybrid-messaging-mobile.vsdx",
-  "sha256": "94309eeec8aa62a00cfc2156feb8cdfe16d2c99ec90231c728f08b1bda731207"
+  "sha256": "94309eeec8aa62a00cfc2156feb8cdfe16d2c99ec90231c728f08b1bda731207",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/hybrid/media/mobile-online.svg",
+   "sha256": "5d34eb4081c87dfbbedb9275ccfac7280cee8bdbb4d1ee106494aa51aee539fb"
+  }
  },
  {
   "name": "azure-secure-hybrid-messaging-web",
   "url": "https://arch-center.azureedge.net/secure-hybrid-messaging-web.vsdx",
-  "sha256": "1cee8224d72ff237f0e218ccf537dc7ddf2198c8000a1bea2a05e927e40900bc"
+  "sha256": "1cee8224d72ff237f0e218ccf537dc7ddf2198c8000a1bea2a05e927e40900bc",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/hybrid/media/hybrid-messaging-web.svg",
+   "sha256": "3b0571f5e0272f32ea812d5a0b4bb200e75e5f7f623c21068fc2b0575b6927b9"
+  }
  },
  {
   "name": "azure-security-get-started-diagram",
   "url": "https://arch-center.azureedge.net/security-get-started-diagram.vsdx",
-  "sha256": "eee68cb882ad8387a1f2835ffe31239c63aa9733c639a6db4ceabf28ef98629f"
+  "sha256": "eee68cb882ad8387a1f2835ffe31239c63aa9733c639a6db4ceabf28ef98629f",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/security/images/security-get-started-diagram.svg",
+   "sha256": "1f2791dbc372efac1c2b183cd98f1d2040ce5ef26c8a1be2c4f3b4c2e7fdf5f6"
+  }
  },
  {
   "name": "azure-simple-enterprise-integration",
   "url": "https://arch-center.azureedge.net/simple-enterprise-integration.vsdx",
-  "sha256": "c8139659c77f832c87c29fc474397807a87a7bdc9c09cadb6d8bfbe82830977b"
+  "sha256": "c8139659c77f832c87c29fc474397807a87a7bdc9c09cadb6d8bfbe82830977b",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/reference-architectures/enterprise-integration/images/simple-enterprise-integration.svg",
+   "sha256": "f28fccaf56d02d40613229d945354852f3fb5bb1f5022b9242a9ea5719eff5e7"
+  }
  },
  {
   "name": "azure-simplified-architecture",
   "url": "https://arch-center.azureedge.net/simplified-architecture.vsdx",
-  "sha256": "ec87b404d8c047e8ea534a5c57b4a45db81d13ad0a7e93f35ba9225fca0179ab"
+  "sha256": "ec87b404d8c047e8ea534a5c57b4a45db81d13ad0a7e93f35ba9225fca0179ab",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/data/media/small-medium-data-warehouse/simplified-architecture.svg",
+   "sha256": "7d346fe676c62cc1f79f13aad89cecaf08e0cc3c91c906bc1733127f183a487c"
+  }
  },
  {
   "name": "azure-small-medium-businesses-simplified-architecture",
   "url": "https://arch-center.azureedge.net/small-medium-businesses-simplified-architecture.vsdx",
-  "sha256": "75cbf8fee7ee7c4acfe4315fdc4cf34cc20f824d3bdfa777e94830ec7c637be1"
+  "sha256": "75cbf8fee7ee7c4acfe4315fdc4cf34cc20f824d3bdfa777e94830ec7c637be1",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/solution-ideas/media/small-medium-businesses-simplified-architecture.svg",
+   "sha256": "aaf16cb3b81312b078b98434b3e6b68ece84219732decd23439bcf24b156a064"
+  }
  },
  {
   "name": "azure-small-medium-data-warehouse",
   "url": "https://arch-center.azureedge.net/small-medium-data-warehouse.vsdx",
-  "sha256": "e14a4fc24b0067db4afea9feb24e28bff4ee602f32d716fb136c680efdadc715"
+  "sha256": "e14a4fc24b0067db4afea9feb24e28bff4ee602f32d716fb136c680efdadc715",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/data/media/small-medium-data-warehouse/small-medium-data-warehouse.svg",
+   "sha256": "74bd3a28647e2d9a02bea853d5f8e5833254d840e9c6db1ef14c4ac4774b6961"
+  }
  },
  {
   "name": "azure-solution-diagram-polyglot-persistence",
   "url": "https://arch-center.azureedge.net/solution-diagram-polyglot-persistence.vsdx",
-  "sha256": "83b281675cb23d8b264241a22870f5efdbe6cd1a21deab68f0d1f0787ab05970"
+  "sha256": "83b281675cb23d8b264241a22870f5efdbe6cd1a21deab68f0d1f0787ab05970",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/databases/idea/images/combine-relational-nosql/solution-diagram.svg",
+   "sha256": "7b5e075623b293fb48f0473cb634c816a875772f612b601c63c33e36efddbbbc"
+  }
  },
  {
   "name": "azure-split-brain-dns-host-private",
   "url": "https://arch-center.azureedge.net/split-brain-dns-host-private.vsdx",
-  "sha256": "2f691b2f782c40022c4f4b863be015ff1fb739f03e6311d02a07667a46754d42"
+  "sha256": "2f691b2f782c40022c4f4b863be015ff1fb739f03e6311d02a07667a46754d42",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/networking/media/split-brain-dns-host-private.svg",
+   "sha256": "d2ea7b3fa3cb159f383c47edf9c4309cebc4b40d1eb73f518c32fac1b1590a31"
+  }
  },
  {
   "name": "azure-split-brain-dns-host-public-alt",
   "url": "https://arch-center.azureedge.net/split-brain-dns-host-public-alt.vsdx",
-  "sha256": "376a90c12e8a5766155822ac38c402a4e3f168552fe3bd38695825299ff130e9"
+  "sha256": "376a90c12e8a5766155822ac38c402a4e3f168552fe3bd38695825299ff130e9",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/networking/media/split-brain-dns-host-public-alt.svg",
+   "sha256": "b8af128f09a5f7823f784ca6cadc21605b83d6b37c108019b53f70d5499bab88"
+  }
  },
  {
   "name": "azure-split-brain-dns-host-public",
   "url": "https://arch-center.azureedge.net/split-brain-dns-host-public.vsdx",
-  "sha256": "ee1ea97892800d45a1061a76e62e4c89292b1f39e1e07a54ebeedd7000b14699"
+  "sha256": "ee1ea97892800d45a1061a76e62e4c89292b1f39e1e07a54ebeedd7000b14699",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/networking/media/split-brain-dns-host-public.svg",
+   "sha256": "111cd657b9eae3544b9f7bdbf180cf05eb8a02413bd4ef07ff49c078d5cdde03"
+  }
  },
  {
   "name": "azure-split-brain-dns",
   "url": "https://arch-center.azureedge.net/split-brain-dns.vsdx",
-  "sha256": "04be57914ea808cd646b8fd89dbe8d35f844cffe574855e6a9b3874e4462f1bd"
+  "sha256": "04be57914ea808cd646b8fd89dbe8d35f844cffe574855e6a9b3874e4462f1bd",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/networking/media/split-brain-dns.svg",
+   "sha256": "9f8a29c0463a51e4b4fcbaaa97d6a3a8548ba7853c3aef4f6717005a9082a849"
+  }
  },
  {
   "name": "azure-spoke-to-spoke-source-diagrams",
   "url": "https://arch-center.azureedge.net/spoke-to-spoke-source-diagrams.vsdx",
-  "sha256": "d78f5d226b392c943a284a73ede950fcbef784a22f75a814a1da349e6ed840c7"
+  "sha256": "d78f5d226b392c943a284a73ede950fcbef784a22f75a814a1da349e6ed840c7",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/reference-architectures/hybrid-networking/images/virtual-network-manager-connectivity-options.svg",
+   "sha256": "2b1ccc3f6e7a3cc406a36b38191dfe13b90e165b38f7f39cb90af6331f5f3011"
+  }
  },
  {
   "name": "azure-spot-virtual-machine-architecture",
   "url": "https://arch-center.azureedge.net/spot-virtual-machine-architecture.vsdx",
-  "sha256": "32242b1452475b3b610508aebd6db16484b220532fd83c0c4c84c61da9f5c044"
+  "sha256": "32242b1452475b3b610508aebd6db16484b220532fd83c0c4c84c61da9f5c044",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/spot/media/spot-virtual-machine-architecture.svg",
+   "sha256": "28c467f78432573c953d92911ade291743caa8c546310b7f25494f7fc45d4abe"
+  }
  },
  {
   "name": "azure-storage-get-started-diagram",
   "url": "https://arch-center.azureedge.net/storage-get-started-diagram.vsdx",
-  "sha256": "89b24fca82b025f846f6c39a4cbcb74f830b66daac65fc9e874c341a9ff4b872"
+  "sha256": "89b24fca82b025f846f6c39a4cbcb74f830b66daac65fc9e874c341a9ff4b872",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/storage/images/storage-get-started-diagram.svg",
+   "sha256": "9e10a6226403eae63b41c7175d5481a8ea610fbcd2c03310f47a71bdb4d56708"
+  }
  },
  {
   "name": "azure-strangler-fig-pattern",
   "url": "https://arch-center.azureedge.net/strangler-fig-pattern.vsdx",
-  "sha256": "84077e3bd544e624d53c81d2c71bfbe7c9bed87c07cd7de8ce614bc136244ae2"
+  "sha256": "84077e3bd544e624d53c81d2c71bfbe7c9bed87c07cd7de8ce614bc136244ae2",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/patterns/_images/strangler-fig-pattern.svg",
+   "sha256": "ea886c8e515646155f6df0e111c4bf98f77d20f6efacfce4c562ae02b0dcdcc0"
+  }
  },
  {
   "name": "azure-stream-processing-databricks-event-hubs",
   "url": "https://arch-center.azureedge.net/stream-processing-databricks-event-hubs.vsdx",
-  "sha256": "8066a86fe18738e24cc92775e6439885c35fa89849974431cf43c0a70814d2e6"
+  "sha256": "8066a86fe18738e24cc92775e6439885c35fa89849974431cf43c0a70814d2e6",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/reference-architectures/data/images/stream-processing-databricks-event-hubs.svg",
+   "sha256": "b47a9c331a233435330c814524489ddefed09a05ae5f5bae564f852d3445fdc0"
+  }
  },
  {
   "name": "azure-stream-processing-databricks",
   "url": "https://arch-center.azureedge.net/stream-processing-databricks.vsdx",
-  "sha256": "4853c22bac8c63f045fbd92a8d1d10aa9cd924eaf98514946f9a2e6b4683a504"
+  "sha256": "4853c22bac8c63f045fbd92a8d1d10aa9cd924eaf98514946f9a2e6b4683a504",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/reference-architectures/data/images/stream-processing-databricks.svg",
+   "sha256": "1c4daa5b8e4438b243676971f24953f1ccaf56d989b7b219fdb60e0f3aede6f1"
+  }
  },
  {
   "name": "azure-stream-processing-stream-analytics",
   "url": "https://arch-center.azureedge.net/stream-processing-stream-analytics.vsdx",
-  "sha256": "5621e1e9932bf92164d5fa7a2ac30b1b8feaa7ef1b6b70a62f2fac2c02972d94"
+  "sha256": "5621e1e9932bf92164d5fa7a2ac30b1b8feaa7ef1b6b70a62f2fac2c02972d94",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/reference-architectures/data/images/stream-processing-asa/stream-processing-stream-analytics.svg",
+   "sha256": "1c9fe9abf66fe900bac5febf9f4f58c6098588cf0138ad972ac5867267825ddb"
+  }
  },
  {
   "name": "azure-stream-processing",
   "url": "https://arch-center.azureedge.net/stream-processing.vsdx",
-  "sha256": "290c73b0ecc4f3cbdeaf5a3a23ab1ed33bde3a5a5f39f91884cf6488fff9d85f"
+  "sha256": "290c73b0ecc4f3cbdeaf5a3a23ab1ed33bde3a5a5f39f91884cf6488fff9d85f",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/data-guide/images/stream-processing.svg",
+   "sha256": "52072b00f8ed7cd76a0b9afe0c342829415ce228c83b7c86fa6371a74ab67df8"
+  }
  },
  {
   "name": "azure-sync-mainframe-data-with-azure",
   "url": "https://arch-center.azureedge.net/sync-mainframe-data-with-azure.vsdx",
-  "sha256": "38d08168d4b84fd6fb1c19e96501ea86ddc6b67bc2d8dc9296362b127a45b141"
+  "sha256": "38d08168d4b84fd6fb1c19e96501ea86ddc6b67bc2d8dc9296362b127a45b141",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/reference-architectures/migration/images/sync-mainframe-data-with-azure.svg",
+   "sha256": "4287d5e0c305b87318bae3f28d1ec9233da4c5b49e5a3723d806b1570dbefbd4"
+  }
  },
  {
   "name": "azure-teamcenter-baseline-architecture",
   "url": "https://arch-center.azureedge.net/teamcenter-baseline-architecture.vsdx",
-  "sha256": "058052c3575c8cd36554feb77f0631b50af7eb5c45b9f5d04f48215fee0e6259"
+  "sha256": "058052c3575c8cd36554feb77f0631b50af7eb5c45b9f5d04f48215fee0e6259",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/manufacturing/media/teamcenter-baseline-architecture.svg",
+   "sha256": "99b17a470d9fe044a6b8e6882842d53b52e349c672383ebcaaff4fe7bfdb9fb8"
+  }
  },
  {
   "name": "azure-unlock-insights-from-conversational-data",
   "url": "https://arch-center.azureedge.net/unlock-insights-from-conversational-data.vsdx",
-  "sha256": "69e6de88ed91cb9ed43c1e2ceee177ac89e7a218c82e91c26207d0180c31d704"
+  "sha256": "69e6de88ed91cb9ed43c1e2ceee177ac89e7a218c82e91c26207d0180c31d704",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/ai-ml/idea/_images/unlock-insights-from-conversational-data.svg",
+   "sha256": "fabc04ffef7cb07021bc84d92b6106533b7016cfb342c17f09e7e4c01b254f02"
+  }
  },
  {
   "name": "azure-virtual-desktop-accelerator-enterprise-landing-zone",
   "url": "https://arch-center.azureedge.net/virtual-desktop-accelerator-enterprise-landing-zone.vsdx",
-  "sha256": "d7df3279d6d7cfac7e780bb3a70c78bcee8a741b2a2fb58d21e3eb8f7fa55b0c"
+  "sha256": "d7df3279d6d7cfac7e780bb3a70c78bcee8a741b2a2fb58d21e3eb8f7fa55b0c",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/landing-zones/azure-virtual-desktop/media/virtual-desktop-accelerator-enterprise-landing-zone.svg",
+   "sha256": "2d10d690c7214236de9c712153c89b8e36d395daa4e3b992aaa2eddb9ca32036"
+  }
  },
  {
   "name": "azure-virtual-desktop-accelerator-resource-organization-naming",
   "url": "https://arch-center.azureedge.net/virtual-desktop-accelerator-resource-organization-naming.vsdx",
-  "sha256": "7f3129d638e343c1e5e262a2f1d9b4593ef22809e42128ba24fa3c8d1f05e8b4"
+  "sha256": "7f3129d638e343c1e5e262a2f1d9b4593ef22809e42128ba24fa3c8d1f05e8b4",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/landing-zones/azure-virtual-desktop/media/virtual-desktop-accelerator-resource-organization-naming.svg",
+   "sha256": "b8a3c2cf9d8f815cca36989b490417e54cf2eabe44dc169cd1d86af0f3428f91"
+  }
  },
  {
   "name": "azure-virtual-desktop-get-started-diagram",
   "url": "https://arch-center.azureedge.net/virtual-desktop-get-started-diagram.vsdx",
-  "sha256": "8dc61bc845ec9cb640a7185f491aa2d955e4e179335b8d1a5f80ced079212d73"
+  "sha256": "8dc61bc845ec9cb640a7185f491aa2d955e4e179335b8d1a5f80ced079212d73",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/virtual-desktop/images/virtual-desktop-get-started-diagram.svg",
+   "sha256": "5648ded61d5be306123f1cbfa6330f4cbd83345c31f51dbe0ab46a0ff3966942"
+  }
  },
  {
   "name": "azure-virtual-machine-compliance-golden-image-publishing-architecture",
   "url": "https://arch-center.azureedge.net/virtual-machine-compliance-golden-image-publishing-architecture.vsdx",
-  "sha256": "e37d93b7f82396af2709e415d276f1a3a6a9d8e0e71b3d9835b69c05527a1963"
+  "sha256": "e37d93b7f82396af2709e415d276f1a3a6a9d8e0e71b3d9835b69c05527a1963",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/security/media/virtual-machine-compliance-golden-image-publishing-architecture.svg",
+   "sha256": "693cc374bc8892450f6f0c201a6d48f83f12d90ce08186220185f0164e5edee6"
+  }
  },
  {
   "name": "azure-virtual-machine-compliance-track-compliance-architecture",
   "url": "https://arch-center.azureedge.net/virtual-machine-compliance-track-compliance-architecture.vsdx",
-  "sha256": "58c6b14342684474fb85fddf5372476b29bc27406040d87b9faa3243a62c401f"
+  "sha256": "58c6b14342684474fb85fddf5372476b29bc27406040d87b9faa3243a62c401f",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/security/media/virtual-machine-compliance-track-compliance-architecture.svg",
+   "sha256": "d37b33a1378587c96ce9ba60b025653237e6164a86f717bbd6b59cf7dca63033"
+  }
  },
  {
   "name": "azure-w365-azure-network-connection-4",
   "url": "https://arch-center.azureedge.net/w365-azure-network-connection-4.vsdx",
-  "sha256": "a89db9316281b29064a2391f9ec18ccc4260a9e370f54faa996cf4265e4c4d9e"
+  "sha256": "a89db9316281b29064a2391f9ec18ccc4260a9e370f54faa996cf4265e4c4d9e",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/virtual-desktop/images/windows-365-placement-diagrams-updated-4.svg",
+   "sha256": "aa25f13c1a5b002c1d752f9a86682323c50555cff3b8b009a109df3f87702e31"
+  }
  },
  {
   "name": "azure-w365-azure-network-connection-5",
   "url": "https://arch-center.azureedge.net/w365-azure-network-connection-5.vsdx",
-  "sha256": "13a2c624ba3720228d0872f006004939a4417c98ed1e5b45d124c67f23b2580b"
+  "sha256": "13a2c624ba3720228d0872f006004939a4417c98ed1e5b45d124c67f23b2580b",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/virtual-desktop/images/windows-365-placement-diagrams-updated-5.svg",
+   "sha256": "012d026f8154f77e9a64984ef5c976fc7f3ba44f6677c91cae2566f01c15e565"
+  }
  },
  {
   "name": "azure-w365-azure-network-connection-6",
   "url": "https://arch-center.azureedge.net/w365-azure-network-connection-6.vsdx",
-  "sha256": "c2b9b55074bfbe5cb866c2305e6abf446dd51b246f00a91644bbf744e2b7dad3"
+  "sha256": "c2b9b55074bfbe5cb866c2305e6abf446dd51b246f00a91644bbf744e2b7dad3",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/virtual-desktop/images/windows-365-placement-diagrams-updated-6.svg",
+   "sha256": "6c12508d541479653ff4ebbdac721872d0a5ff07f82dd8d211651499969c9b6c"
+  }
  },
  {
   "name": "azure-w365-azure-network-connection-7",
   "url": "https://arch-center.azureedge.net/w365-azure-network-connection-7.vsdx",
-  "sha256": "4830a19ca151fe5764deae875e3d7129dcf4dad18a738cc3b8148d474d2f4e8a"
+  "sha256": "4830a19ca151fe5764deae875e3d7129dcf4dad18a738cc3b8148d474d2f4e8a",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/virtual-desktop/images/windows-365-placement-diagrams-updated-7.svg",
+   "sha256": "b5d65ccfe853e207f9e518518fb1547a6b071e983aa9daea36b562f93ad77b7b"
+  }
  },
  {
   "name": "azure-web-app-services",
   "url": "https://arch-center.azureedge.net/web-app-services.vsdx",
-  "sha256": "13462afb7c7dd510699bc729660ee16d2479b0d10c90b40188fabb83c97e73c0"
+  "sha256": "13462afb7c7dd510699bc729660ee16d2479b0d10c90b40188fabb83c97e73c0",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/web-apps/app-service/_images/baseline-app-service-architecture.svg",
+   "sha256": "fbbf741305ade8577a235d886ea1b5a1b0155d7d9b29d16443532de7304fd4e0"
+  }
  },
  {
   "name": "azure-web-queue-worker",
   "url": "https://arch-center.azureedge.net/web-queue-worker.vsdx",
-  "sha256": "1d3736d827fa64d456729d9928d67a11af3929ecb212b2cd016884e8c7214931"
+  "sha256": "1d3736d827fa64d456729d9928d67a11af3929ecb212b2cd016884e8c7214931",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/guide/architecture-styles/images/web-queue-worker-physical.svg",
+   "sha256": "57133114a9617594894a8dc3120bf20c938ccff9bb8517f18f936749059b22cb"
+  }
  },
  {
   "name": "azure-windows-vm-single-vm-diagram",
   "url": "https://arch-center.azureedge.net/windows-vm-single-vm-diagram.vsdx",
-  "sha256": "d02d80934393c0b53df39794e5750b0fa23f01b4032c879332c20d183fdfc030"
+  "sha256": "d02d80934393c0b53df39794e5750b0fa23f01b4032c879332c20d183fdfc030",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/reference-architectures/n-tier/images/single-vm-diagram.svg",
+   "sha256": "1e918fb1841dbbcd727fb3dcf753a2414c34bef959d94d3fdb4e2daabb61c4ca"
+  }
  },
  {
   "name": "azure-wordpress-app-service",
   "url": "https://arch-center.azureedge.net/wordpress-app-service.vsdx",
-  "sha256": "26546ba168ca72fedb53a22c9b8241ff1a43e0595a64d35db8e7b1e9842535e3"
+  "sha256": "26546ba168ca72fedb53a22c9b8241ff1a43e0595a64d35db8e7b1e9842535e3",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/example-scenario/infrastructure/media/wordpress-app-service.svg",
+   "sha256": "39d602985be07f35753afec415a8cd23802b3e9ea2238cfed90144fd4086d75a"
+  }
  },
  {
   "name": "azure-write-through-caching-functions-azure-sql-managed-redis",
   "url": "https://arch-center.azureedge.net/write-through-caching-functions-azure-sql-managed-redis.vsdx",
-  "sha256": "8fad46b193c0e433c57ef2ee41be149ba72bb64d4435dd36ac8fca664d1cf4f8"
+  "sha256": "8fad46b193c0e433c57ef2ee41be149ba72bb64d4435dd36ac8fca664d1cf4f8",
+  "visio": {
+   "url": "https://raw.githubusercontent.com/MicrosoftDocs/architecture-center/b60c2b4526bab9b5e77cba2d779e695ed9d6ab9a/docs/databases/architecture/_images/write-through-caching-functions-azure-sql-managed-redis.svg",
+   "sha256": "5987addb76835a3ef5f18ff6abaf255cc702bce18f20bc2221f8f3248f0e4ac8"
+  }
  }
 ]

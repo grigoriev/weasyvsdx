@@ -30,5 +30,9 @@ only, not the files:
 - The Azure icons inside them may be copied for architecture diagrams, training and documentation only,
   see the [terms of the icons](https://learn.microsoft.com/en-us/azure/architecture/icons/).
 
-`make azure` downloads the diagrams into the cache (`WEASYVSDX_CACHE`, by default `~/.cache/weasyvsdx`),
-and `make references` writes their references there too. Neither leaves the machine.
+For 228 of them `azure.json` also lists the SVG that Visio exported for the article, from commit
+`b60c2b4` of the documentation, with its SHA-256. These SVGs are in the repository of the documentation,
+but they hold the same icons, so they stay out of this repository too.
+
+`make azure` downloads the diagrams and their SVGs into the cache (`WEASYVSDX_CACHE`, by default
+`~/.cache/weasyvsdx`), and `make references` writes their references there too. Neither leaves the machine.
