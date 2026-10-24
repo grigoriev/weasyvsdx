@@ -34,7 +34,7 @@ MIB = 1024 * 1024
 # colors of its theme over their own.
 LIBVISIO = "0.1.7"
 VERSION_TIMEOUT = 10.0
-VERSION = re.compile(r"[0-9]+(?:\.[0-9]+)+")
+VERSION = re.compile(r"\d+(?:\.\d+)+")
 # The part of the error output of a tool that an error message quotes
 STDERR_CHARS = 300
 LOGGER = logging.getLogger("weasyvsdx")
