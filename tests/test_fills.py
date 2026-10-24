@@ -30,8 +30,9 @@ def page(count: int) -> ET.Element:
 
 
 def fills(page: dict[str, tuple[str | None, str | None]], background: dict[str, tuple[str | None, str | None]] | None = None, groups: frozenset[str] = frozenset()) -> Fills:
+    """Fills of the page and the background, the shapes of the background in the order of its keys."""
     background = background or {}
-    return Fills(page, background, frozenset(background) | groups, groups)
+    return Fills(page, background, {shape: index for index, shape in enumerate(background)}, groups)
 
 
 def test_the_colors_of_the_shapes_their_masters_and_styles() -> None:
@@ -58,7 +59,7 @@ def test_the_background_pages_their_shapes_and_groups() -> None:
     assert found is not None
     # The background page of the helper has a shape 1 with text only
     assert found.background == {"1": (None, None)}
-    assert found.background_ids == frozenset({"1"})
+    assert found.background_order == {"1": 0}
     assert found.groups == frozenset()
 
 
@@ -101,6 +102,15 @@ def test_the_background_comes_first_and_ends_at_a_shape_or_group_it_lacks() -> N
     result = recolor(svg, calls(*lines), fills({"1": ("#0000ff", None), "2": ("#000001", None)}, {"1": ("#ffffff", None), "2": ("#ffff00", None)}))
     assert result is not None
     assert [(element.get("style") or "").split("fill: ")[-1] for element in svg.iter(f"{{{SVG_NS}}}path")] == ["#ffffff;", "#ffff00;", "#0000ff;", "#000001;"]
+
+
+def test_the_background_ends_where_its_shapes_start_over() -> None:
+    # Shapes 1 and 2 of the background, then shape 1 of the page, outside any group: the order starts over
+    svg = page(4)
+    lines = (THEME, path("1"), path("1"), path("2"), path("1"))
+    result = recolor(svg, calls(*lines), fills({"1": ("#0000ff", None)}, {"1": ("#ffffff", None), "2": ("#ffff00", None)}))
+    assert result is not None
+    assert [(element.get("style") or "").split("fill: ")[-1] for element in svg.iter(f"{{{SVG_NS}}}path")] == ["#ffffff;", "#ffffff;", "#ffff00;", "#0000ff;"]
 
 
 def test_a_group_of_the_background_stays_on_the_background() -> None:

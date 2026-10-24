@@ -12,8 +12,10 @@ as in hidden.py, and its shape is the one gradients.path_shapes() names. A color
 100 draws white, as Visio draws most of them; an accent of the theme keeps what libvisio draws.
 
 libvisio draws the background pages first, and names their shapes by IDs that the page may use too. Their
-paths come before the first path of a shape the background pages lack, or of a group they lack, and take
-the colors of the background pages. A shape whose ID two shapes of one page share, a VSD and a VSDX that does
+paths come before the first path of a shape or a group the background pages lack, or of a shape that comes
+earlier in their order than the shape before it, and take the colors of the background pages. A page whose
+first shape has the ID of the last shape of its background, outside any group, takes the colors of the
+background for that shape. A shape whose ID two shapes of one page share, a VSD and a VSDX that does
 not read keep what libvisio wrote.
 """
 
@@ -45,11 +47,12 @@ Colors = tuple[str | None, str | None]
 
 @dataclass(frozen=True)
 class Fills:
-    """The fill colors of the shapes of the first page and of its background pages, by ID, and the IDs of the shapes and groups of the background pages."""
+    """The fill colors of the shapes of the first page and of its background pages, by ID, the place of each
+    shape of the background pages in the order libvisio draws them, and the IDs of their groups."""
 
     page: dict[str, Colors]
     background: dict[str, Colors]
-    background_ids: frozenset[str]
+    background_order: dict[str, int]
     groups: frozenset[str]
 
 
@@ -81,9 +84,11 @@ def _fills(package: Package) -> Fills:
     styles = package.styles()
     colors = package.colors()
     background = [placed for page in package.background_pages() for placed in page_shapes(package, page)]
-    ids = frozenset(placed.shape.get("ID", "") for placed in background)
+    order: dict[str, int] = {}
+    for placed in background:
+        order.setdefault(placed.shape.get("ID", ""), len(order))
     groups = frozenset(group.shape.get("ID", "") for placed in background for group in placed.groups)
-    return Fills(_colors(page_shapes(package), styles, colors), _colors(background, styles, colors), ids, groups)
+    return Fills(_colors(page_shapes(package), styles, colors), _colors(background, styles, colors), order, groups)
 
 
 def shape_fills(document: bytes) -> Fills | None:
@@ -102,7 +107,8 @@ def recolor(page: ET.Element, calls: list[Call], fills: Fills) -> list[Call] | N
     paths = drawn_paths(page)
     if len(paths) != len(shapes):
         return None
-    on_background = bool(fills.background_ids)
+    on_background = bool(fills.background_order)
+    place = 0
     result: list[Call] = []
     layers: list[str] = []
     style = ""
@@ -119,10 +125,11 @@ def recolor(page: ET.Element, calls: list[Call], fills: Fills) -> list[Call] | N
             continue
         path, shape = paths[index][0], shapes[index]
         index += 1
-        # The background ends at a shape it lacks, or at a group it lacks
+        # The background ends at a shape or a group it lacks, or where its shapes start over
         group = next((layer.removeprefix("id") for layer in reversed(layers) if layer), None)
-        if on_background and (shape not in fills.background_ids or (group is not None and group not in fills.groups)):
+        if on_background and (fills.background_order.get(shape, -1) < place or (group is not None and group not in fills.groups)):
             on_background = False
+        place = fills.background_order.get(shape, place)
         recolored = _recolored(style, (fills.background if on_background else fills.page).get(shape, (None, None)))
         if recolored is None:
             result.append((name, argument))
