@@ -13,6 +13,7 @@ directory, with a time limit, and on Linux with a limit on its memory and on the
 from __future__ import annotations
 
 import logging
+import re
 import shutil
 import subprocess
 import tempfile
@@ -29,6 +30,11 @@ CONVERTER = "vsd2xhtml"
 RAW_CONVERTER = "vsd2raw"
 EMF_CONVERTER = "emf2svg-conv"
 MIB = 1024 * 1024
+# The release of libvisio weasyvsdx is tested with. 0.1.8 to 0.1.11 fill the shapes of a VSDX with the
+# colors of its theme over their own.
+LIBVISIO = "0.1.7"
+VERSION_TIMEOUT = 10.0
+VERSION = re.compile(r"[0-9]+(?:\.[0-9]+)+")
 # The part of the error output of a tool that an error message quotes
 STDERR_CHARS = 300
 LOGGER = logging.getLogger("weasyvsdx")
@@ -60,6 +66,18 @@ class Tools:
     converter: str
     raw: str | None = None
     emf: str | None = None
+
+
+def libvisio_version(converter: str) -> str | None:
+    """The release of libvisio that vsd2xhtml reports, such as 0.1.7; None where it reports none."""
+    try:
+        result = subprocess.run([converter, "--version"], stdin=subprocess.DEVNULL, capture_output=True, timeout=VERSION_TIMEOUT, check=False)
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    words = result.stdout.decode(errors="replace").split()
+    if result.returncode != 0 or len(words) != 2 or VERSION.fullmatch(words[1]) is None:
+        return None
+    return words[1]
 
 
 def find_converter(name: str = CONVERTER) -> str | None:

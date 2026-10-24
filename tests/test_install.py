@@ -2,14 +2,16 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import helpers
 import pytest
 import weasyprint
 import weasysvg
 
 import weasyvsdx
-from weasyvsdx import fetch
-from weasyvsdx.convert import MIB, Limits, Tools
+from weasyvsdx import convert, fetch
+from weasyvsdx.convert import LIBVISIO, MIB, Limits, Tools, libvisio_version
 
 
 @pytest.fixture(autouse=True)
@@ -65,3 +67,27 @@ def test_install_warns_on_another_weasyprint(monkeypatch: pytest.MonkeyPatch) ->
     monkeypatch.setattr(weasyprint, "__version__", "71.0")
     with pytest.warns(RuntimeWarning, match=r"targets WeasyPrint 70.x, found 71.0"):
         weasyvsdx.install()
+
+
+def test_the_tests_run_on_the_libvisio_weasyvsdx_needs() -> None:
+    # The image pins it: a later libvisio fills the shapes of a VSDX with theme colors
+    assert libvisio_version(helpers.CONVERTER) == LIBVISIO == "0.1.7"
+
+
+@pytest.mark.parametrize(
+    ("body", "found"),
+    [("echo 'vsd2xhtml 0.1.11'", "found 0.1.11"), ("exit 1", "found unknown"), ("echo 'Usage: vsd2xhtml'", "found unknown"), ("sleep 5", "found unknown")],
+)
+def test_install_warns_on_another_libvisio(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, body: str, found: str) -> None:
+    monkeypatch.setattr(convert, "VERSION_TIMEOUT", 0.5)
+    converter = tmp_path / "vsd2xhtml"
+    converter.write_text(f"#!/bin/sh\n{body}\n")
+    converter.chmod(0o755)
+    with pytest.warns(RuntimeWarning, match=rf"tested with libvisio 0.1.7, {found}: libvisio 0.1.8 to 0.1.11 fill"):
+        weasyvsdx.install(converter=str(converter))
+
+
+def test_a_converter_that_cannot_run_has_no_version(tmp_path: Path) -> None:
+    converter = tmp_path / "vsd2xhtml"
+    converter.write_text("not a program")
+    assert libvisio_version(str(converter)) is None

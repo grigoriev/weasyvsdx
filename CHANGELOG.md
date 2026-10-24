@@ -34,6 +34,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   The EMF images of a page share one timeout.
   A drawing that does not convert renders as a broken image.
 - A drawing that libvisio draws as a page of no size renders as a broken image.
+- `install()` warns when `vsd2xhtml` reports another libvisio than 0.1.7, the release weasyvsdx is tested
+  with: 0.1.8 to 0.1.11 fill the shapes of a VSDX with the colors of its theme over their own.
 - A font of Microsoft that the system lacks falls back to its free replacement: Calibri to Carlito, Cambria to
   Caladea, Segoe UI to Selawik.
 - A comparison page on GitHub Pages shows each drawing of the corpus in LibreOffice, as libvisio writes it,
