@@ -96,7 +96,8 @@ def visio_svgs(checkout: Path) -> dict[str, str]:
 
 def add_visio(checkout: Path) -> int:
     """Each diagram of the list with the SVG of Visio its article shows, at the commit of the checkout."""
-    commit = subprocess.run(["git", "-C", str(checkout), "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
+    # The checkout is the working directory of git, not an argument it could take for an option
+    commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=checkout, capture_output=True, text=True, check=True).stdout.strip()
     svgs = visio_svgs(checkout)
     entries = json.loads(LIST.read_text())
     for entry in entries:
@@ -104,7 +105,7 @@ def add_visio(checkout: Path) -> int:
         if entry["url"] in svgs:
             path = svgs[entry["url"]]
             # The bytes of the commit the URL names, not those of the working tree, which may differ
-            committed = subprocess.run(["git", "-C", str(checkout), "show", f"{commit}:{path}"], capture_output=True, check=True).stdout
+            committed = subprocess.run(["git", "show", f"{commit}:{path}"], cwd=checkout, capture_output=True, check=True).stdout
             entry["visio"] = {"url": f"{DOCS}{commit}/{path}", "sha256": hashlib.sha256(committed).hexdigest()}
     LIST.write_text(json.dumps(entries, indent=1) + "\n")
     print(f"{sum(1 for entry in entries if 'visio' in entry)} of {len(entries)} diagrams have an SVG of Visio")
