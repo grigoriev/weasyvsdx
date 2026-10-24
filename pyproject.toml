@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "weasyvsdx"
-version = "0.1.0"
+version = "0.2.0"
 description = "Visio drawings (VSDX, VSD) for WeasyPrint, drawn as vector SVG through libvisio."
 readme = "README.md"
 license = "MIT"
