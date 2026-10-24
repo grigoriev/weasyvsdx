@@ -28,8 +28,8 @@ tools take some 41 MB on Debian.
 
 weasyvsdx runs on CPython 3.11 to 3.14.
 
-Install the tools of libvisio, and emf2svg for the EMF images that many drawings hold. On Debian and
-Ubuntu:
+Install the tools of libvisio, and emf2svg for the EMF images that many drawings hold. On Debian 13 and
+Ubuntu 24.04, which have the libvisio weasyvsdx needs (see "libvisio version"):
 
 ```sh
 apt-get install libvisio-tools emf2svg
@@ -44,6 +44,32 @@ pip install weasyvsdx
 weasyvsdx depends on WeasyPrint and on [weasysvg](https://github.com/grigoriev/weasysvg), which draws the
 text of the drawings. WeasyPrint needs Pango, see its
 [installation guide](https://doc.courtbouillon.org/weasyprint/stable/first_steps.html).
+
+### libvisio version
+
+Use libvisio 0.1.7. The tests and the bench run with it, and `install()` warns on any other release.
+libvisio 0.1.8 to 0.1.11, the latest, fill the shapes of a VSDX with the colors of its theme over their own
+colors: on the Azure diagrams of the bench, icons turn into olive disks and subnets into olive boxes.
+
+| Distribution | libvisio |
+|---|---|
+| Debian 13 (trixie) | 0.1.7 |
+| Ubuntu 24.04 | 0.1.7 |
+| Debian testing, unstable | 0.1.11 |
+| Ubuntu 26.04 | 0.1.10 |
+| Alpine 3.22, 3.23 | 0.1.8 |
+| Wolfi | none |
+
+To keep it, pin the release of the base image, for example `python:3.14-slim-trixie`, and check it at
+build time:
+
+```sh
+test "$(vsd2xhtml --version)" = "vsd2xhtml 0.1.7"
+```
+
+libvisio 0.1.9 and later also read the text background of a VSD, which 0.1.7 reads as black. weasyvsdx
+draws black behind dark text as white, the most common background, so the labels show. A colored
+background draws white as well.
 
 ### Verify
 
