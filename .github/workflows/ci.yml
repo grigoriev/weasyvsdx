@@ -77,6 +77,19 @@ jobs:
           PYTHON_VERSION: ${{ matrix.python-version }}
         run: make test BASE="python:${PYTHON_VERSION}-slim-trixie"
 
+  # The other libvisio weasyvsdx is tested with: 0.1.11, the latest, from Debian testing, on the newest Python
+  test-libvisio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Run tests with libvisio 0.1.11
+        run: make test BASE="python:3.14-slim-trixie" LIBVISIO=0.1.11
+
   sonar:
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -113,7 +126,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [lint, test, sonar]
+    needs: [lint, test, test-libvisio, sonar]
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

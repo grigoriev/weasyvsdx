@@ -30,9 +30,9 @@ CONVERTER = "vsd2xhtml"
 RAW_CONVERTER = "vsd2raw"
 EMF_CONVERTER = "emf2svg-conv"
 MIB = 1024 * 1024
-# The release of libvisio weasyvsdx is tested with. 0.1.8 to 0.1.11 fill the shapes of a VSDX with the
-# colors of its theme over their own.
-LIBVISIO = "0.1.7"
+# The releases of libvisio weasyvsdx is tested with: 0.1.7 of Debian 13, and 0.1.11, the latest. 0.1.8 and
+# later fill the shapes of a VSDX with the colors of its theme over their own, which fills.py undoes.
+LIBVISIO = ("0.1.7", "0.1.11")
 VERSION_TIMEOUT = 10.0
 VERSION = re.compile(r"\d+(?:\.\d+)+")
 # The part of the error output of a tool that an error message quotes

@@ -69,21 +69,21 @@ def test_install_warns_on_another_weasyprint(monkeypatch: pytest.MonkeyPatch) ->
         weasyvsdx.install()
 
 
-def test_the_tests_run_on_the_libvisio_weasyvsdx_needs() -> None:
-    # The image pins it: a later libvisio fills the shapes of a VSDX with theme colors
-    assert libvisio_version(helpers.CONVERTER) == LIBVISIO == "0.1.7"
+def test_the_tests_run_on_a_libvisio_weasyvsdx_is_tested_with() -> None:
+    # The image pins it, 0.1.7 by default and 0.1.11 in the job that tests it
+    assert libvisio_version(helpers.CONVERTER) in LIBVISIO == ("0.1.7", "0.1.11")
 
 
 @pytest.mark.parametrize(
     ("body", "found"),
-    [("echo 'vsd2xhtml 0.1.11'", "found 0.1.11"), ("exit 1", "found unknown"), ("echo 'Usage: vsd2xhtml'", "found unknown"), ("sleep 5", "found unknown")],
+    [("echo 'vsd2xhtml 0.1.9'", "found 0.1.9"), ("exit 1", "found unknown"), ("echo 'Usage: vsd2xhtml'", "found unknown"), ("sleep 5", "found unknown")],
 )
 def test_install_warns_on_another_libvisio(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, body: str, found: str) -> None:
     monkeypatch.setattr(convert, "VERSION_TIMEOUT", 0.5)
     converter = tmp_path / "vsd2xhtml"
     converter.write_text(f"#!/bin/sh\n{body}\n")
     converter.chmod(0o755)
-    with pytest.warns(RuntimeWarning, match=rf"tested with libvisio 0.1.7, {found}: libvisio 0.1.8 to 0.1.11 fill"):
+    with pytest.warns(RuntimeWarning, match=rf"tested with libvisio 0.1.7 and 0.1.11, {found}: other releases"):
         weasyvsdx.install(converter=str(converter))
 
 

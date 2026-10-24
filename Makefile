@@ -1,5 +1,7 @@
 # Tests and the visual bench run in Docker: WeasyPrint needs Pango and weasyvsdx needs vsd2xhtml, which macOS lacks.
 IMAGE ?= weasyvsdx-test
+# The libvisio of the images: 0.1.7, or 0.1.11 from Debian testing
+LIBVISIO ?= 0.1.7
 BASE ?= python:3.14-slim-trixie@sha256:a2b82f3c48559aa0a8446d9af49826b6e2b2016f4cd2afabfe6013ec53729170
 # The Azure diagrams and their references stay outside the repository, see tools/corpus/azure.py
 CACHE ?= $(HOME)/.cache/weasyvsdx
@@ -14,7 +16,7 @@ lint:
 	uv run mypy src tests tools
 
 test-image:
-	docker build --file Dockerfile.test --target test --build-arg BASE="$(BASE)" --tag $(IMAGE):test .
+	docker build --file Dockerfile.test --target test --build-arg BASE="$(BASE)" --build-arg LIBVISIO="$(LIBVISIO)" --tag $(IMAGE):test .
 
 test: test-image
 	$(RUN) $(IMAGE):test
@@ -25,7 +27,7 @@ azure:
 	WEASYVSDX_CACHE="$(CACHE)" python3 tools/corpus/azure.py fetch $(ARGS)
 
 visual-image:
-	docker build --file Dockerfile.test --target visual --build-arg BASE="$(BASE)" --tag $(IMAGE):visual .
+	docker build --file Dockerfile.test --target visual --build-arg BASE="$(BASE)" --build-arg LIBVISIO="$(LIBVISIO)" --tag $(IMAGE):visual .
 
 # make visual ARGS="--only azure" renders one group or name
 visual: visual-image azure

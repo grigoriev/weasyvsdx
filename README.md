@@ -47,9 +47,11 @@ text of the drawings. WeasyPrint needs Pango, see its
 
 ### libvisio version
 
-Use libvisio 0.1.7. The tests and the bench run with it, and `install()` warns on any other release.
-libvisio 0.1.8 to 0.1.11, the latest, fill the shapes of a VSDX with the colors of its theme over their own
-colors: on the Azure diagrams of the bench, icons turn into olive disks and subnets into olive boxes.
+Use libvisio 0.1.7 or 0.1.11, the latest. The tests run with both, and `install()` warns on any other
+release. libvisio 0.1.8 and later fill the shapes of a VSDX with the colors of its theme over their own:
+on the Azure diagrams of the bench, icons turned into olive disks and subnets into olive boxes. weasyvsdx
+takes the colors of the shapes from the XML of the VSDX instead, so both releases draw them alike: on the
+bench against Visio, a median mismatch of 24.7 % for either.
 
 | Distribution | libvisio |
 |---|---|
@@ -60,16 +62,16 @@ colors: on the Azure diagrams of the bench, icons turn into olive disks and subn
 | Alpine 3.22, 3.23 | 0.1.8 |
 | Wolfi | none |
 
-To keep it, pin the release of the base image, for example `python:3.14-slim-trixie`, and check it at
+To keep a release, pin the base image, for example `python:3.14-slim-trixie` for 0.1.7, and check it at
 build time:
 
 ```sh
 test "$(vsd2xhtml --version)" = "vsd2xhtml 0.1.7"
 ```
 
-libvisio 0.1.9 and later also read the text background of a VSD, which 0.1.7 reads as black. weasyvsdx
-draws black behind dark text as white, the most common background, so the labels show. A colored
-background draws white as well.
+libvisio 0.1.11 also fixes errors of memory safety, writes a page of no size for a drawing it cannot read
+instead of crashing, and reads the text background of a VSD, which 0.1.7 reads as black. With 0.1.7,
+weasyvsdx draws black behind dark text as white, the most common background, so the labels show.
 
 ### Verify
 
