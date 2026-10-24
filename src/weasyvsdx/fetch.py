@@ -62,7 +62,8 @@ class VisioFetcher:
 
     def __call__(self, url: str) -> Any:
         response = self._inner(url)
-        if not is_visio(response.content_type, url):
+        # A redirect may lead to the suffix, or away from it
+        if not (is_visio(response.content_type, url) or is_visio(response.content_type, response.url or "")):
             return response
         try:
             # One byte past the limit is enough to know that the drawing is too large
