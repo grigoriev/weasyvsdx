@@ -40,3 +40,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Caladea, Segoe UI to Selawik.
 - A comparison page on GitHub Pages shows each drawing of the corpus in LibreOffice, as libvisio writes it,
   and in weasyvsdx.
+- The bench also compares the Azure diagrams with the SVG that Visio exported for their article.
+  LibreOffice reads them through libvisio and shares its errors.

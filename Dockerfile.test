@@ -34,13 +34,13 @@ CMD ["uv", "run", "--frozen", "--all-extras", "pytest", "--cov", "--cov-report=t
 FROM test AS visual
 # The fonts of the weasyprint-service image with the replacements of Calibri and Cambria, and LibreOffice
 # Draw, which makes the references in this same image. The service converted Visio drawings with
-# LibreOffice before.
+# LibreOffice before. rsvg-convert rasterizes the SVGs that Visio exported of the Azure diagrams.
 RUN apt-get update \
     && apt-get install --yes --no-install-recommends \
         fonts-dejavu fonts-freefont-ttf fonts-ipafont-gothic fonts-noto-cjk fonts-noto-color-emoji \
         fonts-tlwg-loma-otf fonts-unifont fonts-wqy-zenhei \
         fonts-crosextra-carlito fonts-crosextra-caladea \
-        libreoffice-draw-nogui \
+        libreoffice-draw-nogui librsvg2-bin \
     && rm -rf /var/lib/apt/lists/*
 # Selawik, the open fallback Microsoft made for Segoe UI, which the Azure diagrams ask for. Debian has no
 # package of it: the release of microsoft/Selawik, checked by its SHA-256.

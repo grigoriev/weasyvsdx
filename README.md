@@ -154,7 +154,7 @@ in a temporary directory, with a time limit and, on Linux, limits on its memory 
 `vsd2xhtml` and `vsd2raw` run at the same time. The SVG then goes through WeasyPrint like any other SVG,
 and every URL inside it through the URL fetcher of the caller.
 
-## How it compares to LibreOffice
+## How it compares to LibreOffice and Visio
 
 The bench in [`tools/visual`](https://github.com/grigoriev/weasyvsdx/tree/main/tools/visual) renders 291
 drawings and compares each with its PNG export by LibreOffice 25.2:
@@ -175,12 +175,19 @@ it lays text out with fonts of its own choice, and breaks words in narrow blocks
 some drawings LibreOffice is wrong where weasyvsdx is right, for example it fills the whole of
 `netapp-files-moodle-zonal` blue.
 
+LibreOffice reads the drawings through libvisio, as weasyvsdx does, and shares its errors. So the bench
+also compares 206 Azure diagrams with the SVG that Visio exported for their article. The median mismatch
+is 39.5% against Visio, 38.1% against LibreOffice. Most of it is the icons of Azure, see "Known gaps".
+
 The median Azure diagram converts in 0.08 s, and 9 in 10 in less than 0.5 s. Drawings that embed bitmaps
 of tens of MB take seconds, 17 of the 250 more than one: libvisio writes the bitmaps out as base64. One,
 `adaptive-apps`, takes 46 s, more than the default timeout of 30 s: it converts only with a larger `timeout`.
 
 ## Known gaps
 
+- Most icons of Azure draw black or not at all. libvisio 0.1.7 does not take the geometry of a part of a
+  master group from the master, and reads no gradient of Visio 2013 and later (`FillGradient`). Visio
+  draws them in color, LibreOffice as weasyvsdx.
 - Only the first page renders. LibreOffice and the converters before it did the same.
 - Visio drawings ask for Calibri and Segoe UI most, fonts of Microsoft. A font the system lacks falls back
   to its free replacement, else to sans-serif: Calibri to Carlito and Cambria to Caladea, which share their
