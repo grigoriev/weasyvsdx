@@ -142,6 +142,8 @@ Where the license allows it, install the original fonts instead.
    - **Hidden text**: the text a shape of a VSDX hides (HideText, or a text cleared on the shape) goes. The
      generator wrote the name of each Azure icon under it.
    - **Hatches**: a fill pattern of Visio draws as the lines of its hatch. The generator filled it black.
+   - **Gradients**: a shape of a VSDX that fills with a gradient of Visio 2013 or later gets it, linear or
+     radial, from the XML of the page, its masters and styles. libvisio reads none, and filled it black.
    - **Line ends**: a line under an arrowhead ends at its base, as in Visio, not at its tip.
 3. EMF images become SVG through `emf2svg-conv`, and so does the EMF that Office puts inside a WMF image,
    and the picture an embedded OLE object shows.
@@ -177,7 +179,8 @@ some drawings LibreOffice is wrong where weasyvsdx is right, for example it fill
 
 LibreOffice reads the drawings through libvisio, as weasyvsdx does, and shares its errors. So the bench
 also compares 206 Azure diagrams with the SVG that Visio exported for their article. The median mismatch
-is 39.5% against Visio, 38.1% against LibreOffice. Most of it is the icons of Azure, see "Known gaps".
+is 26.3% against Visio, 48.3% against LibreOffice: weasyvsdx draws the gradients of the Azure icons, which
+LibreOffice fills black. Much of the rest is the icons of Azure, see "Known gaps".
 
 The median Azure diagram converts in 0.08 s, and 9 in 10 in less than 0.5 s. Drawings that embed bitmaps
 of tens of MB take seconds, 17 of the 250 more than one: libvisio writes the bitmaps out as base64. One,
@@ -185,9 +188,9 @@ of tens of MB take seconds, 17 of the 250 more than one: libvisio writes the bit
 
 ## Known gaps
 
-- Most icons of Azure draw black or not at all. libvisio 0.1.7 does not take the geometry of a part of a
-  master group from the master, and reads no gradient of Visio 2013 and later (`FillGradient`). Visio
-  draws them in color, LibreOffice as weasyvsdx.
+- Some parts of Azure icons are missing. libvisio 0.1.7 does not take the geometry of a part of a master
+  group from the master. LibreOffice leaves them out too. A gradient of a shape whose ID a background page
+  shares stays black, as do the gradients of a VSD and the rarer kinds, FillGradientDir 8 to 13.
 - Only the first page renders. LibreOffice and the converters before it did the same.
 - Visio drawings ask for Calibri and Segoe UI most, fonts of Microsoft. A font the system lacks falls back
   to its free replacement, else to sans-serif: Calibri to Carlito and Cambria to Caladea, which share their
