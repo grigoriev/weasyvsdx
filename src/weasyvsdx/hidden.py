@@ -14,6 +14,8 @@ from xml.etree import ElementTree as ET
 from .raw import Call, properties
 
 SVG_NS = "http://www.w3.org/2000/svg"
+# The class of the paths that geometry.py adds, which no drawPath call wrote
+MASTER_CLASS = "weasyvsdx-master"
 # Elements whose paths are no shapes of the page
 DEFINITIONS = frozenset(f"{{{SVG_NS}}}{tag}" for tag in ("defs", "marker", "pattern", "clipPath", "mask"))
 
@@ -25,7 +27,8 @@ def drawn_paths(page: ET.Element) -> list[tuple[ET.Element, ET.Element]]:
     def walk(parent: ET.Element) -> None:
         for child in parent:
             if child.tag == f"{{{SVG_NS}}}path":
-                found.append((child, parent))
+                if child.get("class") != MASTER_CLASS:
+                    found.append((child, parent))
             elif child.tag not in DEFINITIONS:
                 walk(child)
 

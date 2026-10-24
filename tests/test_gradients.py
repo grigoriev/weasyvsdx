@@ -171,7 +171,7 @@ def test_another_drawing_has_no_gradients() -> None:
 def test_a_path_without_a_name_belongs_to_the_layer_around_it() -> None:
     unnamed = "drawPath (svg:d: ((librevenge:path-action: M, svg:x: 0in, svg:y: 0in)))"
     lines = (unnamed, "startLayer (draw:id: id5)", unnamed, path("6"), "startLayer ()", unnamed, "endLayer", unnamed, "endLayer", "endLayer", unnamed, "drawPath (draw:id: id9)")
-    assert path_shapes(calls(*lines)) == ["", "5", "6", "", "5", ""]
+    assert path_shapes(calls(*lines)) == ["", "5", "6", "5", "5", ""]
 
 
 def test_a_linear_gradient_runs_along_its_angle_through_the_box() -> None:
