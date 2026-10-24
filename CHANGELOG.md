@@ -11,7 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Visio drawings (VSDX, VSDM, VSD and the templates and stencils of Visio) render in WeasyPrint as vector
   SVG: an `<img>`, `<object>` or `<embed>`, a CSS image, an `<image>` inside an SVG. `vsd2xhtml` of
-  libvisio draws the first page.
+  libvisio draws the first page. An untyped response is a drawing by the suffix of its URL, before or after
+  a redirect.
 - The text of a drawing wraps and aligns as in Visio: each text block is HTML in a `<foreignObject>`, from
   the output of `vsd2raw`, with its padding, vertical alignment, rotation, paragraphs, bullets and fonts,
   and the character scale of Visio, which widens the glyphs.
@@ -30,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - EMF images become SVG through `emf2svg-conv`, and so does the EMF that Office puts inside a WMF image,
   and the picture an embedded OLE object shows.
 - The tools run in processes of their own, with a timeout and, on Linux, limits on memory and output.
+  The EMF images of a page share one timeout.
   A drawing that does not convert renders as a broken image.
 - A font of Microsoft that the system lacks falls back to its free replacement: Calibri to Carlito, Cambria to
   Caladea, Segoe UI to Selawik.
