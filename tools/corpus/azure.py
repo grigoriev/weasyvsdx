@@ -85,11 +85,12 @@ def visio_svgs(checkout: Path) -> dict[str, str]:
         for link in LINK.finditer(text):
             images = [first or second for first, second in IMAGE.findall(text, start, link.start())]
             start = link.end()
-            if not images:
-                continue
-            svg = (article.parent / images[-1]).resolve()
-            if svg.is_relative_to(checkout.resolve()) and svg.is_file() and any(mark in svg.read_bytes()[:2000] for mark in VISIO_MARKS):
-                found.setdefault(link.group(0), svg.relative_to(checkout.resolve()).as_posix())
+            # The last one Visio exported, past any other SVG between it and the link
+            for image in reversed(images):
+                svg = (article.parent / image).resolve()
+                if svg.is_relative_to(checkout.resolve()) and svg.is_file() and any(mark in svg.read_bytes()[:2000] for mark in VISIO_MARKS):
+                    found.setdefault(link.group(0), svg.relative_to(checkout.resolve()).as_posix())
+                    break
     return found
 
 
