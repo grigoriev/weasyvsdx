@@ -13,10 +13,10 @@ import weasyprint
 import weasysvg
 
 from . import fetch as _fetch
-from .convert import CONVERTER, MIB, Limits, Tools, find_converter, find_tools
+from .convert import CONVERTER, LIBVISIO, MIB, Limits, Tools, find_converter, find_tools, libvisio_version
 from .errors import ConversionError
 
-__all__ = ["SUPPORTED_MAJOR", "ConversionError", "ConverterNotFoundError", "install", "installed"]
+__all__ = ["LIBVISIO", "SUPPORTED_MAJOR", "ConversionError", "ConverterNotFoundError", "install", "installed"]
 
 SUPPORTED_MAJOR = 70
 _INSTALLED: dict[str, str] = {}
@@ -31,6 +31,16 @@ def _check_version() -> None:
     if version.split(".", 1)[0] != str(SUPPORTED_MAJOR):
         warnings.warn(
             f"weasyvsdx targets WeasyPrint {SUPPORTED_MAJOR}.x, found {version or 'unknown'}: the patch may not apply",
+            RuntimeWarning,
+            stacklevel=3,
+        )
+
+
+def _check_libvisio(converter: str) -> None:
+    version = libvisio_version(converter)
+    if version != LIBVISIO:
+        warnings.warn(
+            f"weasyvsdx is tested with libvisio {LIBVISIO}, found {version or 'unknown'}: libvisio 0.1.8 to 0.1.11 fill the shapes of a VSDX with theme colors",
             RuntimeWarning,
             stacklevel=3,
         )
@@ -55,12 +65,14 @@ def install(
     through emf2svg-conv, where it is on the PATH; WeasyPrint cannot read EMF. One run of a tool may take
     ``timeout`` seconds, read ``max_input_mb`` of drawing and, on Linux, write ``max_output_mb`` of SVG and
     use ``max_memory_mb`` of memory. A drawing past a limit renders as a broken image. A later call
-    changes the converter and the limits. Raises ConverterNotFoundError when there is no converter.
+    changes the converter and the limits. Raises ConverterNotFoundError when there is no converter, and
+    warns when it reports another libvisio than ``LIBVISIO``.
     """
     _check_version()
     path = find_converter(converter or CONVERTER)
     if path is None:
         raise ConverterNotFoundError(f"{converter or CONVERTER} not found: install libvisio-tools")
+    _check_libvisio(path)
     found = find_tools(path)
     tools = Tools(path, found.raw if text else None, found.emf if emf else None)
     if tools.raw is not None and "foreign_object" not in weasysvg.installed():

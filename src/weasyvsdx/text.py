@@ -181,9 +181,10 @@ def luminance(color: str) -> float:
 def text_background(background: str, color: str) -> str:
     """The text background libvisio gives, white where it gives black behind dark text.
 
-    Visio stores the background as an index into its palette, white being 2. libvisio 0.1.7 takes the RGB
-    bytes next to the index of a VSD, which are 0 for a palette color, and so writes black: the dimensions of
-    a floor plan became black bars. Text that dark on black never reads, so black behind it means white.
+    Visio stores the background as an index into its palette, white being 2. libvisio 0.1.7 and 0.1.8 take
+    the RGB bytes next to the index of a VSD, which are 0 for a palette color, and so write black: the
+    dimensions of a floor plan became black bars. Text that dark on black never reads, so black behind it
+    means white. libvisio 0.1.9 reads the palette, and black then is black indeed.
     """
     if background.lower() == "#000000" and luminance(color) < DARK:
         return "#ffffff"

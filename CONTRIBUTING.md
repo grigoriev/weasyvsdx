@@ -18,10 +18,11 @@ make comparison                     # corpus/COMPARISON.md, corpus/comparison.ht
 uv build                            # wheel and sdist
 ```
 
-On Linux with Pango, `libvisio-tools` and `emf2svg` installed, `uv run pytest --cov` works without Docker.
+On Linux with Pango, `libvisio-tools` 0.1.7 and `emf2svg` installed, `uv run pytest --cov` works without Docker.
+See "libvisio version" in the README.
 
-CI runs actionlint, zizmor, ruff, mypy, the tests on Python 3.11 to 3.14, and SonarCloud for every pull
-request.
+CI runs actionlint, zizmor, ruff, mypy, the tests on Python 3.11 to 3.14 in `Dockerfile.test`, and SonarCloud
+for every pull request.
 
 ## Visual regression bench
 

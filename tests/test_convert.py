@@ -30,7 +30,7 @@ def script(tmp_path: Path, body: str, name: str = "fake-vsd2xhtml") -> str:
 
 
 def page_xhtml(svg_body: str) -> str:
-    return f'<html xmlns="{XHTML_NS}"><body><svg:svg xmlns:svg="{SVG_NS}" xmlns:xlink="http://www.w3.org/1999/xlink" width="1in">{svg_body}</svg:svg></body></html>'
+    return f'<html xmlns="{XHTML_NS}"><body><svg:svg xmlns:svg="{SVG_NS}" xmlns:xlink="http://www.w3.org/1999/xlink" width="1in" height="1in">{svg_body}</svg:svg></body></html>'
 
 
 def test_the_tools_of_libvisio_and_emf2svg() -> None:
@@ -94,17 +94,26 @@ def test_a_binary_vsd_converts_too() -> None:
     assert ET.fromstring(svg).tag == f"{{{SVG_NS}}}svg"
 
 
-def test_a_drawing_the_converter_rejects() -> None:
-    drawing = helpers.drawing("libvisio/tab-short-prefix.vsdx")
-    with pytest.raises(ConversionError, match=r"vsd2xhtml failed with exit code"):
+@pytest.mark.parametrize("name", ["tab-short-prefix.vsdx", "recursion-cycle.vsdx"])
+def test_a_drawing_libvisio_cannot_read_fails(name: str) -> None:
+    # Tests of libvisio, broken on purpose: 0.1.7 failed on the first and crashed on the second, 0.1.11
+    # writes a page of no size for both
+    drawing = helpers.drawing(f"libvisio/{name}")
+    with pytest.raises(ConversionError, match=r"exit code|has no size"):
         convert(drawing, helpers.TOOLS, LIMITS)
 
 
-def test_a_crash_of_the_converter_stays_in_its_process() -> None:
-    # libvisio 0.1.7 recurses until the stack runs out on this test of its own, a segmentation fault
-    drawing = helpers.drawing("libvisio/recursion-cycle.vsdx")
-    with pytest.raises(ConversionError, match=r"vsd2xhtml failed with exit code"):
-        convert(drawing, helpers.TOOLS, LIMITS)
+def test_a_crash_of_the_converter_stays_in_its_process(tmp_path: Path) -> None:
+    tools = Tools(script(tmp_path, "kill -SEGV $$"))
+    with pytest.raises(ConversionError, match=r"fake-vsd2xhtml failed with exit code"):
+        convert(b"drawing", tools, LIMITS)
+
+
+@pytest.mark.parametrize("size", ['width="0.0000in" height="0.0000in"', 'width="1in"', 'height="1in"'])
+def test_a_page_of_no_size_fails(size: str) -> None:
+    document = page_xhtml("").replace('width="1in" height="1in"', size).encode()
+    with pytest.raises(ConversionError, match=r"has no size"):
+        first_page(document)
 
 
 def test_vsd2raw_stops_when_vsd2xhtml_fails(tmp_path: Path) -> None:

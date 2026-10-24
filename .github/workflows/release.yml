@@ -22,15 +22,6 @@ jobs:
         with:
           persist-credentials: false
 
-      # WeasyPrint needs Pango, weasyvsdx the tools of libvisio and emf2svg. The tests assume these fonts,
-      # as Dockerfile.test does.
-      - name: Install Pango, libvisio-tools, emf2svg and fonts
-        run: |
-          sudo apt-get update
-          sudo apt-get install --yes --no-install-recommends \
-            libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 libvisio-tools emf2svg \
-            fonts-dejavu-core fonts-liberation
-
       - name: Install uv
         uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
 
@@ -47,8 +38,12 @@ jobs:
       - name: Type check with mypy
         run: uv run mypy src tests tools
 
+      # The tests run in Dockerfile.test, with Pango, emf2svg, the fonts they assume and libvisio 0.1.7 of
+      # Debian 13. The runner would bring the libvisio of its Ubuntu, 0.1.10 from Ubuntu 26.04 on.
       - name: Run tests
-        run: uv run pytest tests/ -v
+        env:
+          PYTHON_VERSION: ${{ matrix.python-version }}
+        run: make test BASE="python:${PYTHON_VERSION}-slim-trixie"
 
   build:
     runs-on: ubuntu-latest

@@ -108,8 +108,9 @@ their icons may not be redistributed.
 
 ## CI/CD
 
-- **CI** (`ci.yml`): actionlint and zizmor; tests on Python 3.11 to 3.14 with Pango, libvisio-tools,
-  emf2svg and fonts from apt; SonarCloud; build.
+- **CI** (`ci.yml`): actionlint and zizmor; ruff and mypy on the runner; tests on Python 3.11 to 3.14
+  through `make test`, in `Dockerfile.test`; SonarCloud on the `coverage.xml` of `make test`; build. The image
+  holds libvisio 0.1.7 of Debian 13; the runner would take the libvisio of its Ubuntu.
 - **Scorecard** (`scorecard.yml`): OpenSSF Scorecard, weekly and on push to main.
 - **Release** (`release.yml`): on `v*` tags, tests, one build with signed provenance, then PyPI
   through Trusted Publishing (`pypi` environment), then a GitHub release with the wheel, the sdist

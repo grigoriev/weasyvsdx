@@ -58,7 +58,7 @@ def test_a_broken_drawing_is_left_out_as_a_broken_image(caplog: pytest.LogCaptur
     with caplog.at_level(logging.ERROR, logger="weasyprint"):
         pdf = helpers.render(f'<img src="{broken}"><img src="{good}">')
     assert "This is a test." in helpers.text_of(pdf)
-    assert any("ConversionError" in record.getMessage() and "exit code" in record.getMessage() for record in caplog.records)
+    assert any("ConversionError" in record.getMessage() and ("exit code" in record.getMessage() or "has no size" in record.getMessage()) for record in caplog.records)
 
 
 def test_other_images_pass_unchanged() -> None:

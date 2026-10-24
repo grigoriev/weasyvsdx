@@ -11,10 +11,13 @@ FROM ghcr.io/astral-sh/uv:0.13.5@sha256:32a7bb39b496babbd997b0a39a4d66c126bdaf56
 
 FROM ${BASE} AS test
 # Pango for WeasyPrint, the tools of libvisio, emf2svg for EMF images, and the fonts the tests assume.
+# libvisio stays at 0.1.7, the release of trixie: 0.1.8 to 0.1.11 fill the shapes of a VSDX with theme
+# colors over their own. A base image with another libvisio fails here.
 RUN apt-get update \
     && apt-get install --yes --no-install-recommends \
         libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 libvisio-tools emf2svg \
         fonts-dejavu-core fonts-liberation \
+    && test "$(vsd2xhtml --version)" = "vsd2xhtml 0.1.7" \
     && rm -rf /var/lib/apt/lists/*
 COPY --from=uv /uv /uvx /usr/local/bin/
 # The environment lives outside the mounted source, so it never clashes with a host .venv
