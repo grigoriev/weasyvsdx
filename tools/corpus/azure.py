@@ -77,12 +77,14 @@ def make_list(checkout: Path) -> int:
 
 
 def visio_svgs(checkout: Path) -> dict[str, str]:
-    """The SVG of each diagram that Visio exported, by the URL of the diagram: the last one above its link."""
+    """The SVG of each diagram that Visio exported, by the URL of the diagram: the last one between its link and the link before."""
     found: dict[str, str] = {}
     for article in sorted((checkout / "docs").rglob("*.md")):
         text = article.read_text(errors="replace")
+        start = 0
         for link in LINK.finditer(text):
-            images = [first or second for first, second in IMAGE.findall(text[: link.start()])]
+            images = [first or second for first, second in IMAGE.findall(text, start, link.start())]
+            start = link.end()
             if not images:
                 continue
             svg = (article.parent / images[-1]).resolve()
