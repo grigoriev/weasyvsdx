@@ -59,6 +59,14 @@ uv build                # wheel and sdist
   (`start_with_moveto()`); `shortened()` ends a line at the base of its arrowhead.
 - `hatch.py`: a path whose style has `draw:fill: hatch` gets the lines of its hatch, clipped to it. They are
   `<line>` elements, so the path count that `hidden.py` pairs stays.
+- `package.py`: reads the XML of a VSDX within a budget of unpacked bytes: the first page, its background
+  pages, masters, styles and colors. `page_shapes()` walks the shapes of the first page as `Placed`: each with
+  its master shape and the groups around it.
+- `gradients.py`: the gradient of each shape of a VSDX (FillGradientEnabled, the FillGradient stops,
+  FillGradientDir and FillGradientAngle, through master and style chain), by its ID. A path gets it by the
+  `draw:id` of its `drawPath`, or of the `startLayer` around it. The gradient turns and flips with the shape
+  and its groups (`Turn`), unless RotateGradientWithShape is 0. An ID that occurs twice, on a background page
+  or as a shape of a master the page does not list, goes.
 - `hidden_text.py`: reads HideText and cleared texts from the XML of a VSDX (first page and masters) and aligns
   those texts with the text objects of `vsd2raw` (difflib); a matched hidden one goes in `replace_text()`.
 - `hidden.py`: the n-th drawn path goes when the n-th `drawPath` of `vsd2raw` has `draw:display: none`, a
