@@ -148,7 +148,7 @@ def panel(image: Image.Image, target: Path) -> str:
 
 def run(drawing: Drawing, out: Path, handler: Warnings) -> dict[str, Any]:
     handler.messages = []
-    row: dict[str, Any] = {"name": drawing.name, "group": drawing.group, "ms": None, "error": None, "warnings": [], "mismatch": None, "visio": None}
+    row: dict[str, Any] = {"name": drawing.name, "group": drawing.group, "ms": None, "error": None, "warnings": [], "mismatch": None, "visio": None, "visio_svg": drawing.visio is not None}
     if not drawing.reference.exists():
         row["error"] = "no reference: LibreOffice exports nothing, or make references has not run"
         return row
@@ -255,8 +255,12 @@ def compare(path: Path, rows: list[dict[str, Any]]) -> list[str]:
     # Against LibreOffice, then against Visio, which an older baseline lacks
     for key, suffix in (("mismatch", ""), ("visio", " (Visio)")):
         before: dict[str, float | None] = baseline.get(key, {})
+        # A drawing whose SVG of Visio is not in the cache has no Visio value, which is no regression
+        missing = [row for row in rows if key == "visio" and row["name"] in before and not row["visio_svg"]]
+        if missing:
+            print(f"{len(missing)} SVG of Visio not in the cache, run tools/corpus/azure.py fetch")
         for row in rows:
-            if row["name"] in before:
+            if row["name"] in before and row not in missing:
                 direction = moved(before[row["name"]], row.get(key))
                 if direction:
                     moves[direction].append(f"{row['name']}{suffix}: {before[row['name']]} -> {row.get(key)}")
