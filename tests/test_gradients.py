@@ -100,6 +100,12 @@ def test_offsets_and_opacities_stay_between_zero_and_one() -> None:
     assert gradients["1"] == Gradient("", 0.0, ((0.0, "#000000", 1.0), (1.0, "#000000", 0.0)))
 
 
+def test_a_shape_of_an_id_on_the_background_page_keeps_its_fill() -> None:
+    shapes = f"<Shape ID='1'>{ON}{STOPS}</Shape><Shape ID='2'>{ON}{STOPS}</Shape>"
+    assert list(shape_gradients(vsdx(shapes)) or {}) == ["1", "2"]
+    assert list(shape_gradients(vsdx(shapes, backed=True)) or {}) == ["2"]
+
+
 def test_another_drawing_has_no_gradients() -> None:
     assert shape_gradients(b"\xd0\xcf\x11\xe0 a VSD") is None
 

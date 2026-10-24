@@ -78,12 +78,31 @@ class Package:
 
     def first_page(self) -> ET.Element:
         """The first page that is no background page, the page libvisio writes first."""
-        targets = self.targets("visio/pages", "pages.xml")
+        return self._content(self._first_entry())
+
+    def background_ids(self) -> set[str]:
+        """The IDs of the shapes of the background pages of the first page, which libvisio draws before it."""
+        entries = {page.get("ID", ""): page for page in self.part("visio/pages/pages.xml").iter(f"{VISIO}Page")}
+        ids: set[str] = set()
+        seen = set()
+        back = self._first_entry().get("BackPage")
+        while back in entries and back not in seen:
+            seen.add(back)
+            ids.update(shape.get("ID", "") for shape in self._content(entries[back]).iter(f"{VISIO}Shape"))
+            back = entries[back].get("BackPage")
+        return ids
+
+    def _first_entry(self) -> ET.Element:
         for page in self.part("visio/pages/pages.xml").iter(f"{VISIO}Page"):
-            link = page.find(f"{VISIO}Rel")
-            if page.get("Background") != "1" and link is not None:
-                return self.part(f"visio/pages/{targets[link.get(RELATIONSHIP, '')]}")
+            if page.get("Background") != "1" and page.find(f"{VISIO}Rel") is not None:
+                return page
         raise KeyError("no foreground page")
+
+    def _content(self, entry: ET.Element) -> ET.Element:
+        """The part of a page of pages.xml."""
+        link = entry.find(f"{VISIO}Rel")
+        targets = self.targets("visio/pages", "pages.xml")
+        return self.part(f"visio/pages/{targets[link.get(RELATIONSHIP, '') if link is not None else '']}")
 
 
 def read(document: bytes, reader: Callable[[Package], Result]) -> Result | None:

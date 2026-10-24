@@ -144,9 +144,11 @@ def stretch_dibits(rows: list[bytes], height: int, *, bit_count: int = 8, compre
     return record + info + bits
 
 
-def vsdx(page: str | None, master: str | None = None, *, foreground: bool = True, copies: int = 0, document: str | None = None) -> bytes:
-    """A VSDX of a background page and the page, with one master of ID 2 and the content of document.xml if given; a page of None has no shapes."""
-    pages = f"<Pages {NS}><Page ID='4' Background='1'><Rel r:id='rId1'/></Page>" + ("<Page ID='0'><Rel r:id='rId2'/></Page>" if foreground else "") + "</Pages>"
+def vsdx(page: str | None, master: str | None = None, *, foreground: bool = True, copies: int = 0, document: str | None = None, backed: bool = False) -> bytes:
+    """A VSDX of a background page with a shape of ID 1 and the page, on that background if backed, with one master of ID 2 and the content of document.xml if given; a page of None has no shapes."""
+    # The background page is the background of itself: a loop that a reader must stop
+    back = " BackPage='4'" if backed else ""
+    pages = f"<Pages {NS}><Page ID='4' Background='1' BackPage='4'><Rel r:id='rId1'/></Page>" + (f"<Page ID='0'{back}><Rel r:id='rId2'/></Page>" if foreground else "") + "</Pages>"
     parts = {
         "visio/pages/pages.xml": pages,
         "visio/pages/_rels/pages.xml.rels": f"<Relationships {PACKAGE}><Relationship Id='rId1' Target='page1.xml'/><Relationship Id='rId2' Target='page2.xml'/></Relationships>",

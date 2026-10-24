@@ -139,6 +139,9 @@ def _gradients(package: Package) -> dict[str, Gradient]:
         gradient = _gradient(_chain(shape, master_shape, styles), colors)
         if gradient is not None:
             found[shape.get("ID", "")] = gradient
+    # libvisio names the shapes of a background page by their IDs too: a path of such an ID may be either
+    for shape_id in package.background_ids():
+        found.pop(shape_id, None)
     return found
 
 
