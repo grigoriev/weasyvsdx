@@ -98,6 +98,9 @@ def add_visio(checkout: Path) -> int:
     """Each diagram of the list with the SVG of Visio its article shows, at the commit of the checkout."""
     # The checkout is the working directory of git, not an argument it could take for an option
     commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=checkout, capture_output=True, text=True, check=True).stdout.strip()
+    # The articles and SVGs are read from the working tree, the hashes from the commit: both must agree
+    if subprocess.run(["git", "status", "--porcelain"], cwd=checkout, capture_output=True, text=True, check=True).stdout.strip():
+        raise SystemExit(f"{checkout} has changes that are not committed")
     svgs = visio_svgs(checkout)
     entries = json.loads(LIST.read_text())
     for entry in entries:
