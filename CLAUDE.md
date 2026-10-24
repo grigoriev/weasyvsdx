@@ -62,6 +62,11 @@ uv build                # wheel and sdist
 - `package.py`: reads the XML of a VSDX within a budget of unpacked bytes: the first page, its background
   pages, masters, styles and colors. `page_shapes()` walks the shapes of the first page as `Placed`: each with
   its master shape and the groups around it.
+- `fills.py`: the fill colors of each shape of a VSDX (FillForegnd, FillBkgnd, through master and style chain,
+  the value Visio saved; `Themed` draws white for QuickStyleFillColor 100 and keeps libvisio's color for an
+  accent), and of its background pages. `recolor()` restores them on the paths, which libvisio
+  0.1.8 and later fill with theme colors; its calls go to `hatch.py` only, as `markers.py` counts setStyle.
+  The background ends at the first path of a shape or group the background pages lack.
 - `gradients.py`: the gradient of each shape of a VSDX (FillGradientEnabled, the FillGradient stops,
   FillGradientDir and FillGradientAngle, through master and style chain), by its ID. A path gets it by the
   `draw:id` of its `drawPath`, or of the innermost named `startLayer` around it (`path_shapes()`). The gradient turns and flips with the shape
@@ -126,8 +131,9 @@ their icons may not be redistributed.
 ## CI/CD
 
 - **CI** (`ci.yml`): actionlint and zizmor; ruff and mypy on the runner; tests on Python 3.11 to 3.14
-  through `make test`, in `Dockerfile.test`; SonarCloud on the `coverage.xml` of `make test`; build. The image
-  holds libvisio 0.1.7 of Debian 13; the runner would take the libvisio of its Ubuntu.
+  through `make test`, in `Dockerfile.test`, with libvisio 0.1.7 of Debian 13; `test-libvisio` runs them once
+  more with 0.1.11 of Debian testing (`make test LIBVISIO=0.1.11`); SonarCloud on the `coverage.xml` of
+  `make test`; build. The runner would take the libvisio of its Ubuntu.
 - **Scorecard** (`scorecard.yml`): OpenSSF Scorecard, weekly and on push to main.
 - **Release** (`release.yml`): on `v*` tags, tests, one build with signed provenance, then PyPI
   through Trusted Publishing (`pypi` environment), then a GitHub release with the wheel, the sdist

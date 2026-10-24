@@ -419,6 +419,27 @@ def _sections(placed: Placed, budget: Budget | None = None) -> tuple[list[ET.Ele
     return sections, master
 
 
+def has_outline(placed: Placed, budget: Budget | None = None) -> bool:
+    """Whether a shape has a geometry section that shows, which libvisio draws; True past the budget, where it cannot tell."""
+    try:
+        return bool(_sections(placed, budget)[0])
+    except Exhausted:
+        return True
+
+
+def shape_box(placed: Placed, budget: Budget | None = None) -> tuple[float, float, float, float] | None:
+    """The box of the outline of a shape on the page, in inches, y up: left, bottom, right, top; None without one or past the budget."""
+    try:
+        sections, master = _sections(placed, budget)
+        points = [point for _, items in outline(placed, sections, master, budget) for point in items]
+    except Exhausted:
+        return None
+    if not points:
+        return None
+    xs, ys = [x for x, _ in points], [y for _, y in points]
+    return min(xs), min(ys), max(xs), max(ys)
+
+
 def outline(placed: Placed, sections: list[ET.Element], master: ET.Element | None, budget: Budget | None = None) -> list[Command]:
     """The commands of the geometry sections of a shape, on the page, in inches; Exhausted past the budget."""
     return [command for commands in outlines(placed, sections, master, budget) for command in commands]

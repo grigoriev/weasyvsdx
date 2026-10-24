@@ -210,7 +210,7 @@ Each drawing of the corpus in three renderings: LibreOffice, its PDF export; lib
 
 ### libvisio-testfile6
 
-[`visio/libvisio/testfile6.vsdx`](visio/libvisio/testfile6.vsdx) · mismatch with LibreOffice: libvisio 3.7 %, weasyvsdx 3.7 %
+[`visio/libvisio/testfile6.vsdx`](visio/libvisio/testfile6.vsdx) · mismatch with LibreOffice: libvisio 3.7 %, weasyvsdx 28.6 %
 
 | LibreOffice | libvisio | weasyvsdx |
 |---|---|---|

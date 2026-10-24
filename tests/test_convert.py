@@ -143,6 +143,7 @@ def test_the_text_stays_when_the_tools_count_other_objects(tmp_path: Path, caplo
     assert "count other text objects" in caplog.text
     assert "count other paths" in caplog.text
     assert "Parts of shapes of master groups" in caplog.text
+    assert "colors of its theme" in caplog.text
     assert "count other markers" in caplog.text
 
 

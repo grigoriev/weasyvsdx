@@ -22,7 +22,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
-from . import geometry, gradients, hatch, hidden, hidden_text, images, markers, paths, raw, text
+from . import fills, geometry, gradients, hatch, hidden, hidden_text, images, markers, paths, raw, text
 from .errors import ConversionError
 
 SVG_NS = "http://www.w3.org/2000/svg"
@@ -30,9 +30,9 @@ CONVERTER = "vsd2xhtml"
 RAW_CONVERTER = "vsd2raw"
 EMF_CONVERTER = "emf2svg-conv"
 MIB = 1024 * 1024
-# The release of libvisio weasyvsdx is tested with. 0.1.8 to 0.1.11 fill the shapes of a VSDX with the
-# colors of its theme over their own.
-LIBVISIO = "0.1.7"
+# The releases of libvisio weasyvsdx is tested with: 0.1.7 of Debian 13, and 0.1.11, the latest. 0.1.8 and
+# later fill the shapes of a VSDX with the colors of its theme over their own, which fills.py undoes.
+LIBVISIO = ("0.1.7", "0.1.11")
 VERSION_TIMEOUT = 10.0
 VERSION = re.compile(r"\d+(?:\.\d+)+")
 # The part of the error output of a tool that an error message quotes
@@ -176,8 +176,13 @@ def redraw(page: ET.Element, job: Job, document: bytes) -> None:
     # First: the steps after it pair the paths of the page with the drawPath calls, and pass by the paths it adds
     if geometry.add_missing(page, calls, document) is None:
         LOGGER.warning("Parts of shapes of master groups of a Visio drawing may be missing: vsd2raw and vsd2xhtml count other paths")
-    # Before hidden shapes go: both pair the paths of the page with the drawPath calls
-    if not hatch.fill_hatches(page, calls):
+    # Before hidden shapes go: these pair the paths of the page with the drawPath calls. The calls with the
+    # colors of the XML go to the hatches only: the arrowheads count the setStyle calls
+    colored = None
+    painted = fills.shape_fills(document)
+    if painted and (colored := fills.recolor(page, calls, painted)) is None:
+        LOGGER.warning("Shapes of a Visio drawing may fill with the colors of its theme: vsd2raw and vsd2xhtml count other paths")
+    if not hatch.fill_hatches(page, colored or calls):
         LOGGER.warning("Hatched shapes of a Visio drawing may fill black: vsd2raw and vsd2xhtml count other paths")
     filled = gradients.shape_gradients(document)
     if filled and not gradients.fill_gradients(page, calls, filled):

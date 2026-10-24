@@ -38,9 +38,9 @@ def _check_version() -> None:
 
 def _check_libvisio(converter: str) -> None:
     version = libvisio_version(converter)
-    if version != LIBVISIO:
+    if version not in LIBVISIO:
         warnings.warn(
-            f"weasyvsdx is tested with libvisio {LIBVISIO}, found {version or 'unknown'}: libvisio 0.1.8 to 0.1.11 fill the shapes of a VSDX with theme colors",
+            f"weasyvsdx is tested with libvisio {' and '.join(LIBVISIO)}, found {version or 'unknown'}: other releases may draw differently",
             RuntimeWarning,
             stacklevel=3,
         )
@@ -66,7 +66,7 @@ def install(
     ``timeout`` seconds, read ``max_input_mb`` of drawing and, on Linux, write ``max_output_mb`` of SVG and
     use ``max_memory_mb`` of memory. A drawing past a limit renders as a broken image. A later call
     changes the converter and the limits. Raises ConverterNotFoundError when there is no converter, and
-    warns when it reports another libvisio than ``LIBVISIO``.
+    warns when it reports a libvisio that is not in ``LIBVISIO``.
     """
     _check_version()
     path = find_converter(converter or CONVERTER)
