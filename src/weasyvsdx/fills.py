@@ -62,6 +62,8 @@ class Fills:
     groups: frozenset[str]
     # The boxes of the shapes whose ID the page and its background share, on the background and on the page
     boxes: dict[str, tuple[Box | None, Box | None]] = field(default_factory=dict)
+    # The IDs of the shapes of the background that draw no path: a path of such an ID is of the page
+    pathless: frozenset[str] = frozenset()
 
 
 def _color(value: str | None, colors: dict[str, str], quick_style: str | None) -> str | None:
@@ -102,8 +104,10 @@ def _fills(package: Package) -> Fills:
     by_id = {placed.shape.get("ID", ""): placed for placed in background}
     # One budget for the outlines of all these shapes, as for the shapes geometry.py draws on a page
     budget = geometry.Budget(geometry.MAX_SEGMENTS)
-    boxes = {shape_id: (geometry.shape_box(by_id[shape_id], budget), geometry.shape_box(placed, budget)) for placed in shapes if (shape_id := placed.shape.get("ID", "")) in by_id and (shape_id in page or shape_id in colors_of_background)}
-    return Fills(page, colors_of_background, order, groups, boxes)
+    shared = {shape_id: placed for placed in shapes if (shape_id := placed.shape.get("ID", "")) in by_id and (shape_id in page or shape_id in colors_of_background)}
+    pathless = frozenset(shape_id for shape_id in shared if not geometry.has_outline(by_id[shape_id], budget))
+    boxes = {shape_id: (geometry.shape_box(by_id[shape_id], budget), geometry.shape_box(placed, budget)) for shape_id, placed in shared.items()}
+    return Fills(page, colors_of_background, order, groups, boxes, pathless)
 
 
 def shape_fills(document: bytes) -> Fills | None:
@@ -139,6 +143,8 @@ class _Recolor:
         if self.on_background and (fills.background_order.get(shape, -1) < self.place or (group is not None and group not in fills.groups)):
             self.on_background = False
         self.place = fills.background_order.get(shape, self.place)
+        if self.on_background and shape in fills.pathless:
+            self.on_background = False
         if self.on_background and shape in fills.boxes:
             side = _side(data, fills.boxes[shape], self.page_height)
             if side is None:

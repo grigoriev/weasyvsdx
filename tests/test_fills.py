@@ -137,8 +137,16 @@ def test_the_boxes_of_the_shapes_of_one_id() -> None:
     geometry = "<Section N='Geometry' IX='0'><Row T='RelMoveTo' IX='1'><Cell N='X' V='0'/><Cell N='Y' V='0'/></Row><Row T='RelLineTo' IX='2'><Cell N='X' V='1'/><Cell N='Y' V='1'/></Row></Section>"
     found = shape_fills(vsdx(f"<Shape ID='1'>{square}{geometry}</Shape>", backed=True))
     assert found is not None
-    # The shape 1 of the background of the helper has no geometry
+    # The shape 1 of the background of the helper has no geometry: it draws no path
     assert found.boxes == {"1": (None, (0.0, 0.0, 1.0, 1.0))}
+    assert found.pathless == frozenset({"1"})
+
+
+def test_a_path_of_an_id_whose_background_shape_draws_none_is_of_the_page() -> None:
+    colors = Fills({"1": ("#0000ff", None)}, {"1": ("#ffffff", None)}, {"1": 0}, frozenset(), {"1": (None, None)}, frozenset({"1"}))
+    svg = page(1)
+    assert recolor(svg, calls(THEME, path("1")), colors) is not None
+    assert svg[0][0].get("style") == "fill-rule: evenodd; fill: #83992a; fill: #0000ff;"
 
 
 def test_the_outlines_past_the_budget_of_a_page_have_no_box(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -148,6 +156,8 @@ def test_the_outlines_past_the_budget_of_a_page_have_no_box(monkeypatch: pytest.
     found = shape_fills(vsdx(f"<Shape ID='1'>{square}{geometry_rows}</Shape>", backed=True))
     assert found is not None
     assert found.boxes == {"1": (None, None)}
+    # The shape of the background has no geometry at all: it draws no path, budget or not
+    assert found.pathless == frozenset({"1"})
 
 
 def test_a_group_of_the_background_stays_on_the_background() -> None:

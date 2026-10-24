@@ -301,8 +301,12 @@ def test_the_box_of_a_shape_or_none(monkeypatch: pytest.MonkeyPatch) -> None:
     assert geometry.shape_box(found["2"]) == (0.0, 0.0, 1.0, 1.0)
     # The group of the page has no geometry
     assert geometry.shape_box(found["1"]) is None
+    assert geometry.has_outline(found["2"])
+    assert not geometry.has_outline(found["1"])
     monkeypatch.setattr(geometry, "MAX_SEGMENTS", 0)
     assert geometry.shape_box(found["2"]) is None
+    # Past the budget it cannot tell, and takes the shape for one that draws
+    assert geometry.has_outline(found["2"])
 
 
 def test_the_segments_of_a_page_stay_bounded(monkeypatch: pytest.MonkeyPatch) -> None:
