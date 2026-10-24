@@ -1,6 +1,7 @@
 """The Visio diagrams of the Azure Architecture Center, kept outside the repository.
 
-Usage: azure.py list CHECKOUT    write corpus/azure.json from a checkout of MicrosoftDocs/architecture-center
+Usage: azure.py list CHECKOUT    write corpus/azure.json from a checkout of MicrosoftDocs/architecture-center,
+                                 keeping the SVG of Visio of each diagram
        azure.py visio CHECKOUT   add the SVG that Visio exported of each diagram to corpus/azure.json
        azure.py fetch [--only TEXT]  download the diagrams of corpus/azure.json and their SVGs into the cache
 
@@ -61,6 +62,8 @@ def make_list(checkout: Path) -> int:
     urls = sorted({match for path in docs.rglob("*") if path.suffix in (".md", ".yml") for match in LINK.findall(path.read_text(errors="replace"))})
     target = cache() / "azure"
     target.mkdir(parents=True, exist_ok=True)
+    # The SVG of Visio stays with its diagram, pinned to its own commit, until visio runs again
+    visio = {entry["url"]: entry["visio"] for entry in json.loads(LIST.read_text()) if "visio" in entry} if LIST.exists() else {}
     entries = []
     for url in urls:
         try:
@@ -69,7 +72,7 @@ def make_list(checkout: Path) -> int:
             print(f"{url}: {e}", file=sys.stderr)
             continue
         (target / f"{name(url)}.vsdx").write_bytes(data)
-        entries.append({"name": name(url), "url": url, "sha256": hashlib.sha256(data).hexdigest()})
+        entries.append({"name": name(url), "url": url, "sha256": hashlib.sha256(data).hexdigest()} | ({"visio": visio[url]} if url in visio else {}))
         print(f"{name(url)}: {len(data)} bytes", flush=True)
     LIST.write_text(json.dumps(entries, indent=1) + "\n")
     print(f"{len(entries)} of {len(urls)} diagrams in {LIST.relative_to(ROOT)}")
