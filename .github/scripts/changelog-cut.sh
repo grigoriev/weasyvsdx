@@ -73,17 +73,19 @@ awk -v version="$version" -v release_date="$release_date" '
         print "[" version "]: " base "/compare/" prev "...v" version
     }
     # Lines inside a fenced code block are neither headings nor links. Only a
-    # fence of the same character, at least as long, closes it.
+    # fence of the same character, at least as long and alone on its line,
+    # closes it.
     {
         heading = !fence && /^## /
         link = !fence && is_link($0)
         if (match($0, /^[[:space:]]*(```+|~~~+)/)) {
             mark = substr($0, RSTART, RLENGTH)
+            rest = substr($0, RSTART + RLENGTH)
             sub(/^[[:space:]]*/, "", mark)
             if (!fence) {
                 fence = substr(mark, 1, 1)
                 fence_length = length(mark)
-            } else if (substr(mark, 1, 1) == fence && length(mark) >= fence_length) {
+            } else if (substr(mark, 1, 1) == fence && length(mark) >= fence_length && rest ~ /^[[:space:]]*$/) {
                 fence = ""
             }
         }
