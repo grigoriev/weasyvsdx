@@ -91,7 +91,7 @@ def svg_size(path: Path) -> tuple[float, float] | None:
         return None
     lengths = []
     for value in (root.get("width"), root.get("height")):
-        match = re.fullmatch(r"([0-9.]+)(in|pt|px|mm|cm)?", (value or "").strip())
+        match = re.fullmatch(r"(\d+(?:\.\d*)?|\.\d+)(in|pt|px|mm|cm)?", (value or "").strip())
         if match is None:
             return None
         lengths.append(float(match.group(1)) / INCHES[match.group(2) or "px"])
@@ -169,17 +169,20 @@ def run(drawing: Drawing, out: Path, handler: Warnings) -> dict[str, Any]:
         return row
     # The page of WeasyPrint rounds to whole points, the reference to whole pixels
     ours = ours.crop((0, 0, *ref.size))
-    row["mismatch"], box = compared(ref, ours)
-    if box is not None:
-        row["panels"] = [panel(ref.crop(box), out / "img" / f"{drawing.name}.libreoffice.webp"), panel(ours.crop(box), out / "img" / f"{drawing.name}.weasyvsdx.webp")]
+    row["mismatch"], _ = compared(ref, ours)
+    images = {"libreoffice": ref, "weasyvsdx": ours}
     if drawing.visio is not None:
         visio = visio_image(drawing.visio, sizes, image_width, ref.size)
         if isinstance(visio, str):
             row["warnings"].append(visio)
         else:
-            row["visio"], box = compared(visio, ours)
-            if box is not None and "panels" in row:
-                row["panels"].append(panel(visio.crop(box), out / "img" / f"{drawing.name}.visio.webp"))
+            row["visio"], _ = compared(visio, ours)
+            images["visio"] = visio
+    # One crop for all panels, so that they show the same part of the page
+    box = ink_box(list(images.values()))
+    if box is not None:
+        box = padded(box, ref.size)
+        row["panels"] = [panel(image.crop(box), out / "img" / f"{drawing.name}.{key}.webp") for key, image in images.items()]
     return row
 
 
