@@ -120,8 +120,8 @@ jobs:
           chmod +x "$RUNNER_TEMP/askpass.sh"
           export GIT_ASKPASS="$RUNNER_TEMP/askpass.sh"
           REMOTE="https://x-access-token@github.com/${GITHUB_REPOSITORY}.git"
-          git push "$REMOTE" main
-          git push "$REMOTE" "v${NEW_VERSION}"
+          # Both refs or neither: a main without its tag would bump again on a rerun
+          git push --atomic "$REMOTE" main "v${NEW_VERSION}"
 
       - name: Summary
         env:
