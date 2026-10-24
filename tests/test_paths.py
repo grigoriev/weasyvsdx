@@ -64,3 +64,7 @@ def test_a_line_ends_at_the_base_of_its_arrowhead(data: str, end: str, expected:
 
 def test_no_length_no_change() -> None:
     assert shortened("M0,0 L10,0", 0.0, "end") == "M0,0 L10,0"
+
+
+def test_an_arc_with_compact_flags_starts_at_its_end() -> None:
+    assert moved_to_start("A10 10 0 0120 20L5 5") == "M20,20L5 5"

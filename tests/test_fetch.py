@@ -11,7 +11,7 @@ import helpers
 import pytest
 from weasyprint import document as wp_document
 from weasyprint import images as wp_images
-from weasyprint.urls import URLFetcher
+from weasyprint.urls import URLFetcher, URLFetcherResponse
 
 from weasyvsdx import fetch
 from weasyvsdx.convert import Limits
@@ -107,3 +107,12 @@ def test_the_hooked_loader_keeps_its_shape() -> None:
     assert fetch._ORIGINAL_GET_IMAGE_FROM_URI is wp_images.get_image_from_uri
     parameters = list(inspect.signature(wp_images.get_image_from_uri).parameters)
     assert parameters == list(inspect.signature(fetch._get_image_from_uri).parameters)
+
+
+@pytest.mark.parametrize(("requested", "final"), [("https://example.org/download", "https://example.org/plan.vsdx"), ("https://example.org/plan.vsdx", "https://example.org/download")])
+def test_a_redirect_to_or_from_a_visio_suffix_converts(requested: str, final: str) -> None:
+    def inner(url: str) -> URLFetcherResponse:
+        return URLFetcherResponse(final, helpers.drawing("poi/test.vsdx"), {"Content-Type": "application/octet-stream"})
+
+    response = VisioFetcher(inner, helpers.TOOLS, Limits())(requested)
+    assert response.content_type == fetch.SVG_TYPE

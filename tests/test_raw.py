@@ -47,7 +47,7 @@ def test_a_value_may_hold_a_comma() -> None:
     assert properties("style:font-name: Segoe UI,Bold, fo:font-size: 9pt") == {"style:font-name": "Segoe UI,Bold", "fo:font-size": "9pt"}
 
 
-@pytest.mark.parametrize(("value", "expected"), [("1in", 72.0), ("0.5in", 36.0), ("12.0000pt", 12.0), ("-0.25in", -18.0), ("2", 144.0), (None, 0.0), ("", 0.0), ("wide", 0.0)])
+@pytest.mark.parametrize(("value", "expected"), [("1in", 72.0), ("0.5in", 36.0), ("12.0000pt", 12.0), ("-0.25in", -18.0), ("2", 144.0), (None, 0.0), ("", 0.0), ("wide", 0.0), ("1..2pt", 0.0), (".", 0.0), (".5in", 36.0)])
 def test_points(value: str | None, expected: float) -> None:
     assert points(value) == expected
 

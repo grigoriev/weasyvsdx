@@ -151,7 +151,7 @@ some drawings LibreOffice is wrong where weasyvsdx is right, for example it fill
 
 The median Azure diagram converts in 0.08 s, and 9 in 10 in less than 0.5 s. Drawings that embed bitmaps
 of tens of MB take seconds, 17 of the 250 more than one: libvisio writes the bitmaps out as base64. One,
-`adaptive-apps`, takes 46 s and passes the default timeout of 30 s.
+`adaptive-apps`, takes 46 s, more than the default timeout of 30 s: it converts only with a larger `timeout`.
 
 ## Known gaps
 

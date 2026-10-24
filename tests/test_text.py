@@ -258,3 +258,11 @@ def test_a_line_separator_breaks_the_line() -> None:
     raw = page("startTextObject ()", f"openParagraph ({PARAGRAPH})", f"openSpan({SPAN})", "insertText (Transparency Geometry Width)", "closeSpan", "closeParagraph", "endTextObject")
     [text] = text_objects(first_page(raw))
     assert text.paragraphs[0].spans[0].text == ["Transparency\nGeometry\nWidth"]
+
+
+def test_a_font_name_cannot_end_its_css_string() -> None:
+    # vsd2raw splits its lines at a newline: a carriage return, a form feed, a quote and a backslash reach the name
+    name = 'Evil\r\f"\\; background:url(https://example.org/x)/*'
+    [text] = text_objects(first_page(page("startTextObject ()", "openParagraph ()", f"openSpan(style:font-name: {name})", "insertText (a)", "closeSpan", "closeParagraph", "endTextObject")))
+    [span] = html(foreign_object(text))[0]
+    assert span.get("style") == 'font-family:"Evil; background:url(https://example.org/x)/*", sans-serif'
