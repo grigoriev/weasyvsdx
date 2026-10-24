@@ -75,12 +75,15 @@ def _cell(chain: list[ET.Element], name: str) -> str | None:
 
 
 def _rows(chain: list[ET.Element], name: str) -> list[dict[str, str]]:
-    """The rows of a section, each cell from the first of the chain that sets it; a deleted row goes."""
+    """The rows of a section, each cell from the first of the chain that sets it; a deleted row or section goes."""
     rows: dict[str, dict[str, str]] = {}
     for source in reversed(chain):
         for section in source.findall(f"{VISIO}Section"):
             if section.get("N") != name:
                 continue
+            # A deleted section drops the rows it inherits
+            if section.get("Del") == "1":
+                rows.clear()
             for row in section.findall(f"{VISIO}Row"):
                 index = row.get("IX", "")
                 if row.get("Del") == "1":

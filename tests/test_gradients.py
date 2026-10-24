@@ -53,6 +53,13 @@ def test_a_shape_overrides_the_cells_and_stops_of_its_master() -> None:
     assert shape_gradients(vsdx(page, master)) == {"1": Gradient("", 0.0, ((0.22, "#ffffff", 1.0),))}
 
 
+def test_a_shape_that_deletes_the_stops_of_its_master_has_its_own_only() -> None:
+    master = f"<Shape ID='5'>{ON}{STOPS}</Shape>"
+    own = "<Section N='FillGradient' Del='1'/><Section N='FillGradient'><Row IX='3'><Cell N='GradientStopColor' V='#ffffff'/></Row></Section>"
+    page = f"<Shape ID='1' Master='2'><Section N='FillGradient' Del='1'/></Shape><Shape ID='2' Master='2'>{own}</Shape>"
+    assert shape_gradients(vsdx(page, master)) == {"2": Gradient("", 0.0, ((0.0, "#ffffff", 1.0),))}
+
+
 def test_a_gradient_of_a_style_and_the_styles_it_inherits() -> None:
     styles = f"<StyleSheets><StyleSheet ID='3' FillStyle='4'><Cell N='FillGradientDir' V='Themed'/></StyleSheet><StyleSheet ID='4' FillStyle='3'>{ON}{STOPS}</StyleSheet></StyleSheets>"
     page = "<Shape ID='1' FillStyle='3'/><Shape ID='2' FillStyle='9'/>"
