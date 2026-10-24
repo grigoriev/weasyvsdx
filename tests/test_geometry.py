@@ -284,14 +284,21 @@ def test_an_id_twice_or_on_the_background_stays() -> None:
     assert add_missing(page(1), calls(call("9")), vsdx(GROUP.replace("ID='1' Master", "ID='9' Master").replace("ID='3'", "ID='1'"), MASTER, backed=True)) == 2
 
 
+def test_empty_sections_take_from_the_budget(monkeypatch: pytest.MonkeyPatch) -> None:
+    empty = "".join(f"<Section N='Geometry' IX='{index}'/>" for index in range(1, 30))
+    master = MASTER.replace(f"{SQUARE}</Shape><Shape ID='7'>", f"{SQUARE}{empty}</Shape><Shape ID='7'>")
+    monkeypatch.setattr(geometry, "MAX_SEGMENTS", 25)
+    assert add_missing(page(0), calls(), vsdx(GROUP, master)) == 0
+
+
 def test_a_page_that_does_not_pair_or_a_drawing_that_does_not_read() -> None:
     assert add_missing(page(2), calls(call("1")), vsdx(GROUP, MASTER)) is None
     assert add_missing(page(0), calls(), b"\xd0\xcf\x11\xe0 a VSD") == 0
 
 
 def test_the_segments_of_a_page_stay_bounded(monkeypatch: pytest.MonkeyPatch) -> None:
-    # Room for the five rows, ten cells and five commands of shape 2, counted as they are read and built: shape 3 stops the page
-    monkeypatch.setattr(geometry, "MAX_SEGMENTS", 20)
+    # Room for the section, five rows, ten cells and five commands of shape 2, counted as they are read and built: shape 3 stops the page
+    monkeypatch.setattr(geometry, "MAX_SEGMENTS", 21)
     assert add_missing(page(0), calls(), vsdx(GROUP, MASTER)) == 2
-    monkeypatch.setattr(geometry, "MAX_SEGMENTS", 19)
+    monkeypatch.setattr(geometry, "MAX_SEGMENTS", 20)
     assert add_missing(page(0), calls(), vsdx(GROUP, MASTER)) == 0

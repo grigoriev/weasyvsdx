@@ -408,6 +408,8 @@ def _sections(placed: Placed, budget: Budget | None = None) -> tuple[list[ET.Ele
     own, inherited = by_index(placed.shape), by_index(master)
     sections = []
     for index in sorted(own.keys() | inherited.keys(), key=lambda index: int(index) if index.isdigit() else 0):
+        # Each section takes from the budget, an empty one too
+        budget.take()
         section = own.get(index)
         if section is not None and section.get("Del") == "1":
             continue
@@ -419,16 +421,27 @@ def _sections(placed: Placed, budget: Budget | None = None) -> tuple[list[ET.Ele
 
 def outline(placed: Placed, sections: list[ET.Element], master: ET.Element | None, budget: Budget | None = None) -> list[Command]:
     """The commands of the geometry sections of a shape, on the page, in inches; Exhausted past the budget."""
+    return [command for commands in outlines(placed, sections, master, budget) for command in commands]
+
+
+def outlines(placed: Placed, sections: list[ET.Element], master: ET.Element | None, budget: Budget | None = None) -> list[list[Command]]:
+    """The commands of each geometry section of a shape, on the page, in inches; Exhausted past the budget.
+
+    The size and the place of the shape are read once for all its sections.
+    """
     chain = _chain(placed)
     width, height = _value(chain, "Width"), _value(chain, "Height")
     master_width = _value([master], "Width") if master is not None else 0.0
     master_height = _value([master], "Height") if master is not None else 0.0
     shape = _Outline(width, height, width / master_width if master_width else 1.0, height / master_height if master_height else 1.0, budget)
+    form = _on_page(placed)
+    result = []
     for section in sections:
+        start = len(shape.commands)
         for kind, values, formulas, inherited in _rows(section):
             shape.row(kind, values, formulas, inherited)
-    form = _on_page(placed)
-    return [(name, tuple(form.apply(point) for point in points)) for name, points in shape.commands]
+        result.append([(name, tuple(form.apply(point) for point in points)) for name, points in shape.commands[start:]])
+    return result
 
 
 def path_data(commands: list[Command], page_height: float) -> str:
@@ -490,8 +503,7 @@ def _split(placed: Placed, sections: list[ET.Element], master: ET.Element | None
     """The commands of the sections that fill, closed ones without NoFill, and of those that stroke, without NoLine."""
     filled: list[Command] = []
     lined: list[Command] = []
-    for section in sections:
-        commands = outline(placed, [section], master, budget)
+    for section, commands in zip(sections, outlines(placed, sections, master, budget), strict=True):
         if cell([section], "NoFill") != "1" and _closed(commands):
             filled.extend(commands)
         if cell([section], "NoLine") != "1":
