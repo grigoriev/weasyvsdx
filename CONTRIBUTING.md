@@ -44,7 +44,7 @@ of the checkout.
 CI gate, and LibreOffice no exact reference: it picks its own fonts and breaks words in narrow text
 blocks. Judge a change by looking at the drawings it moves, zoomed in. A change that alters renderings
 runs `make visual-baseline` and commits `corpus/baseline.json`; `make visual-check` fails when a drawing got
-worse than its baseline.
+worse than its baseline, or when its SVG of Visio is not in the cache.
 
 A change that alters a rendering also runs `make comparison` and commits `corpus/COMPARISON.md`,
 `corpus/comparison.html` and `corpus/render`. GitHub Pages serves the page from the default branch. Edit the

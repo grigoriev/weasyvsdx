@@ -35,7 +35,7 @@ visual: visual-image azure
 visual-baseline: visual-image azure
 	$(VISUAL) python tools/visual/bench.py --write-baseline corpus/baseline.json
 
-# Compare with corpus/baseline.json: fails when a drawing got worse
+# Compare with corpus/baseline.json: fails when a drawing got worse or its SVG of Visio is missing
 visual-check: visual-image azure
 	$(VISUAL) python tools/visual/bench.py --against corpus/baseline.json
 

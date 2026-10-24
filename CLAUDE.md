@@ -28,7 +28,7 @@ make test               # pytest with coverage in Docker (Dockerfile.test, stage
 make azure              # download the Azure diagrams of corpus/azure.json into the cache
 make visual             # visual bench in Docker (stage "visual"), report in tools/visual/out/report.html
 make visual-baseline    # write corpus/baseline.json
-make visual-check       # compare with corpus/baseline.json, fails when a drawing got worse
+make visual-check       # compare with corpus/baseline.json, fails when a drawing got worse or its SVG of Visio is missing
 make references         # export the LibreOffice references again
 make comparison         # write corpus/COMPARISON.md, corpus/comparison.html (GitHub Pages), panels in corpus/render
 uv build                # wheel and sdist
