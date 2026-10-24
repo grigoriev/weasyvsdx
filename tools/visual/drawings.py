@@ -8,10 +8,12 @@ diagrams also have the SVG that Visio exported for their article, in the cache t
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 CORPUS = ROOT / "corpus"
@@ -36,10 +38,15 @@ def cache() -> Path:
     return Path(os.environ.get("WEASYVSDX_CACHE") or Path.home() / ".cache" / "weasyvsdx")
 
 
-def visio(name: str) -> Path | None:
-    """The SVG that Visio exported of the Azure diagram, where the cache holds one."""
-    path = cache() / "reference" / "visio" / f"{name}.svg"
-    return path if path.exists() else None
+def visio(item: dict[str, Any]) -> Path | None:
+    """The SVG that Visio exported of the Azure diagram, where the cache holds the one of corpus/azure.json."""
+    if "visio" not in item:
+        return None
+    path = cache() / "reference" / "visio" / f"{item['name']}.svg"
+    # A failed download leaves an older SVG in the cache: it would compare with another diagram
+    if not path.exists() or hashlib.sha256(path.read_bytes()).hexdigest() != item["visio"]["sha256"]:
+        return None
+    return path
 
 
 def drawings(only: str = "") -> list[Drawing]:
@@ -47,7 +54,7 @@ def drawings(only: str = "") -> list[Drawing]:
     items = [Drawing(item["name"], item["group"], CORPUS / "visio" / item["source"], CORPUS / "reference" / "libreoffice" / f"{item['name']}.png") for item in json.loads((CORPUS / "index.json").read_text())]
     azure = cache() / "azure"
     items += [
-        Drawing(item["name"], "azure", azure / f"{item['name']}.vsdx", cache() / "reference" / "libreoffice" / f"{item['name']}.png", visio(item["name"]))
+        Drawing(item["name"], "azure", azure / f"{item['name']}.vsdx", cache() / "reference" / "libreoffice" / f"{item['name']}.png", visio(item))
         for item in json.loads((CORPUS / "azure.json").read_text())
         if (azure / f"{item['name']}.vsdx").exists()
     ]
