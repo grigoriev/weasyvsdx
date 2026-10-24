@@ -211,6 +211,10 @@ def main() -> int:
     group.add_argument("--against", type=Path, help="compare the mismatch with this baseline")
     group.add_argument("--write-baseline", type=Path, help="store the mismatch in this baseline")
     args = parser.parse_args()
+    # A baseline of some drawings would stop the comparison of all the others
+    if args.write_baseline and (args.only or args.corpus_only):
+        parser.error("--write-baseline needs every drawing: leave out --only and --corpus-only")
+    baseline = inside(args.write_baseline) if args.write_baseline else None
     out = inside(args.out)
     (out / "pdf").mkdir(parents=True, exist_ok=True)
     (out / "img").mkdir(parents=True, exist_ok=True)
@@ -230,8 +234,8 @@ def main() -> int:
     (out / "rows.json").write_text(json.dumps(rows, indent=1) + "\n")
     report(rows, out)
     print(f"{len(rows)} drawings, report at {out / 'report.html'}")
-    if args.write_baseline:
-        write_baseline(inside(args.write_baseline), rows)
+    if baseline is not None:
+        write_baseline(baseline, rows)
     if args.against:
         return 1 if compare(inside(args.against), rows) else 0
     return 0
