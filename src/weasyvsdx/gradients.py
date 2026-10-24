@@ -183,11 +183,13 @@ def _gradients(package: Package) -> dict[str, Gradient]:
     # libvisio names a shape of a master that the page does not list, and a shape of a background page, by
     # their IDs too, which shapes of the page may have: a path of such an ID may be either
     ambiguous = package.background_ids()
+    seen = set()
     for placed in page_shapes(package):
         shape_id = placed.shape.get("ID", "")
-        if shape_id in found or shape_id in ambiguous:
+        if shape_id in seen or shape_id in ambiguous:
             ambiguous.add(shape_id)
             continue
+        seen.add(shape_id)
         gradient = _gradient(_chain(placed.shape, placed.master_shape, styles), colors, _turn(placed))
         if gradient is not None:
             found[shape_id] = gradient

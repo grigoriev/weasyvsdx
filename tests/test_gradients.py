@@ -149,6 +149,8 @@ def test_an_id_that_a_shape_of_a_master_shares_with_the_page_keeps_its_fill() ->
     master = f"<Shape ID='5' Type='Group'><Shapes><Shape ID='1'>{ON}{STOPS}</Shape><Shape ID='8'>{ON}{STOPS}</Shape></Shapes></Shape>"
     page = f"<Shape ID='1'>{ON}{STOPS}</Shape><Shape ID='2' Master='2'/>"
     assert list(shape_gradients(vsdx(page, master)) or {}) == ["8"]
+    # The same where the shape of the page fills without a gradient
+    assert list(shape_gradients(vsdx("<Shape ID='1'/><Shape ID='2' Master='2'/>", master)) or {}) == ["8"]
 
 
 def test_another_drawing_has_no_gradients() -> None:
