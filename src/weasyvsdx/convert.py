@@ -17,7 +17,7 @@ import shutil
 import subprocess
 import tempfile
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
@@ -127,9 +127,21 @@ def convert(data: bytes, tools: Tools, limits: Limits) -> bytes:
             if raw_job is not None:
                 raw_job.cancel()
         if tools.emf is not None:
-            emf = tools.emf
-            images.replace_emf(page, lambda path: run([emf, "-i", str(path), "-o", "/dev/stdout"], folder, limits), folder)
+            images.replace_emf(page, emf_converter(tools.emf, folder, limits), folder)
     return serialize(page)
+
+
+def emf_converter(emf: str, folder: Path, limits: Limits) -> images.Converter:
+    """emf2svg-conv for each EMF of a page. All of them share one timeout: a page may hold thousands."""
+    deadline = time.monotonic() + limits.timeout
+
+    def to_svg(path: Path) -> bytes:
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise ConversionError(f"the EMF images took more than {limits.timeout} s")
+        return run([emf, "-i", str(path), "-o", "/dev/stdout"], folder, replace(limits, timeout=remaining))
+
+    return to_svg
 
 
 def redraw(page: ET.Element, job: Job, document: bytes) -> None:

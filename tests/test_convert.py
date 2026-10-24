@@ -207,3 +207,17 @@ def test_xhtml_without_a_page() -> None:
 def test_a_missing_converter() -> None:
     assert find_converter("no-such-vsd2xhtml") is None
     assert find_converter() == helpers.CONVERTER
+
+
+def test_the_emf_images_of_a_page_share_one_timeout(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
+    # Four images of four seconds each: one timeout of a second for all, not one per image
+    emf = helpers.emf_rectangle()
+    elements = "".join(f'<svg:image width="10" height="6" xlink:href="data:image/emf;base64,{base64.b64encode(emf + bytes([index])).decode()}"/>' for index in range(4))
+    converter = script(tmp_path, "cat <<'EOF'\n" + page_xhtml(elements) + "\nEOF")
+    slow = script(tmp_path, "sleep 4", "fake-emf2svg-conv")
+    limits = Limits(timeout=1)
+    start = time.monotonic()
+    with caplog.at_level(logging.WARNING, logger="weasyvsdx"):
+        convert(b"drawing", Tools(converter, emf=slow), limits)
+    assert time.monotonic() - start < 3
+    assert "the EMF images took more than 1 s" in caplog.text
