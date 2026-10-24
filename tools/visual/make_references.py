@@ -55,11 +55,12 @@ def main() -> int:
             shutil.copyfile(drawing.path, path)
             inputs[drawing.name] = (drawing, path)
         export_all(folder, [path for _, path in inputs.values()])
-        missing = 0
+        missing = lost = 0
         for name, (drawing, _) in inputs.items():
             png = folder / "png" / f"{name}.png"
             if not png.exists():
                 print(f"{name}: LibreOffice exported nothing")
+                lost += drawing.reference.exists()
                 # A reference of an earlier LibreOffice would compare with a drawing this one cannot read
                 drawing.reference.unlink(missing_ok=True)
                 missing += 1
@@ -67,7 +68,10 @@ def main() -> int:
             drawing.reference.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(png, drawing.reference)
     print(f"{len(items) - missing} of {len(items)} references written")
-    return 0
+    # The broken drawings of the corpus never had a reference: only a reference that goes fails the run
+    if lost:
+        print(f"{lost} references removed")
+    return 1 if lost else 0
 
 
 if __name__ == "__main__":
