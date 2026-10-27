@@ -55,6 +55,8 @@ uv build                # wheel and sdist
   holds in its MS-WMF comment records (`embedded_emf()`) too. A `data:object/ole` shows the EMF of its
   MS-OLEDS presentation stream (`ole_preview()`, read with olefile). `upright_bitmaps()` turns a bitmap drawn
   to a negative height upright first: emf2svg-conv mirrors it.
+- `bitmaps.py`: a `data:image/bmp` with `BI_BITFIELDS` masks whose offset points at the masks gets the offset
+  past them (`pixel_offset_fixed()`). Visio writes such files; Pillow reads the masks as three pixels.
 - `paths.py`: a path without a leading moveto loses its first segment, whose end becomes the start
   (`start_with_moveto()`); `shortened()` ends a line at the base of its arrowhead.
 - `hatch.py`: a path whose style has `draw:fill: hatch` gets the lines of its hatch, clipped to it. They are

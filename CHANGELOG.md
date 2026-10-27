@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- A BMP icon with color masks draws whole. Visio writes the offset of its pixels without the masks, and
+  WeasyPrint drew the icon moved right by three pixels, its right edge on the left, with three colored dots.
+
 ## [0.2.0] - 2026-10-24
 
 ### Added
