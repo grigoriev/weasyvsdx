@@ -22,7 +22,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
-from . import fills, geometry, gradients, hatch, hidden, hidden_text, images, markers, paths, raw, text
+from . import bitmaps, fills, geometry, gradients, hatch, hidden, hidden_text, images, markers, paths, raw, text
 from .errors import ConversionError
 
 SVG_NS = "http://www.w3.org/2000/svg"
@@ -148,6 +148,7 @@ def convert(data: bytes, tools: Tools, limits: Limits) -> bytes:
         finally:
             if raw_job is not None:
                 raw_job.cancel()
+        bitmaps.fix_bitmaps(page)
         if tools.emf is not None:
             images.replace_emf(page, emf_converter(tools.emf, folder, limits), folder)
     return serialize(page)
