@@ -40,7 +40,7 @@ dev = [
     "pytest==9.2.0",
     "pytest-cov==7.1.0",
     "mypy==2.4.1",
-    "ruff==0.17.4",
+    "ruff==0.17.5",
     "pypdfium2==5.15.2",
 ]
 # The visual regression bench in tools/visual, run in Docker
